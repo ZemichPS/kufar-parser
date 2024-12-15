@@ -4,18 +4,15 @@ import by.zemich.kufar.properties.TelegramProperties;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.bots.TelegramLongPollingBot;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
 @Component
 public class TelegramBot extends TelegramLongPollingBot {
 
     private final TelegramProperties properties;
 
-    @Value("${telegram.token}")
-    private String token = "";
-
-    @Value("${telegram.name}")
-    private String name;
 
     public TelegramBot(TelegramProperties properties) {
         super(properties.getToken());
@@ -29,6 +26,14 @@ public class TelegramBot extends TelegramLongPollingBot {
 
     @Override
     public String getBotUsername() {
-        return name;
+        return properties.getName();
+    }
+
+    public void sendMessage(String chatId, String message) {
+        try {
+            execute(new SendMessage(chatId, message));
+        } catch (TelegramApiException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

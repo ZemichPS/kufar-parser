@@ -5,6 +5,7 @@ import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 import org.hibernate.engine.profile.Fetch;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -21,20 +22,23 @@ public class Advertisement {
     @UuidGenerator(style = UuidGenerator.Style.TIME)
     private UUID id;
     private long adId;
-    private String adLink;
+    private String link;
     private String category;
     private boolean companyAd;
     private String currency;
     private LocalDateTime publishedAt;
     private String subject;
     private String type;
+    private BigDecimal priceInByn;
+    private BigDecimal priceInUsd;
     @OneToMany(
             fetch = FetchType.LAZY,
             orphanRemoval = true,
             cascade = CascadeType.ALL,
             mappedBy = "advertisement"
     )
-    List<Parameter> parameters = new ArrayList<>();
+    List<Parameter> parameters;
+
     public void addParameter(Parameter parameter) {
         parameter.setAdvertisement(this);
         parameters.add(parameter);

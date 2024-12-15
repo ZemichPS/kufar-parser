@@ -1,9 +1,9 @@
 package by.zemich.kufar.properties;
 
 import lombok.*;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 
-@ConditionalOnProperty(prefix = "telegram")
+@ConfigurationProperties(prefix = "telegram")
 @Getter
 @Setter
 @AllArgsConstructor

@@ -1,15 +1,12 @@
 package by.zemich.kufar.dao.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.UuidGenerator;
 
 import java.util.UUID;
 
-@Entity
+@Entity(name = "parameters")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -20,8 +17,9 @@ public class Parameter {
     @UuidGenerator(style = UuidGenerator.Style.RANDOM)
     private UUID id;
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "advertisement_id", referencedColumnName = "id")
     private Advertisement advertisement;
+    private String identity;
     private String label;
     private String value;
-    private String identity;
 }

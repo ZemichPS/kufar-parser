@@ -1,16 +1,12 @@
 package by.zemich.kufar.input.rest;
 
 import by.zemich.kufar.dto.AdsResponseDTO;
-import by.zemich.kufar.service.ParserService;
+import by.zemich.kufar.service.AdParserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.Map;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -19,13 +15,13 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 public class AdvertisementController {
 
-    private final ParserService parserService;
+    private final AdParserService adParserService;
 
     @GetMapping(
             produces = "application/json"
     )
     public ResponseEntity<AdsResponseDTO> getAll(){
-        AdsResponseDTO response = parserService.parser();
+        AdsResponseDTO response = adParserService.parseAndSaveIfNotExists();
         return ok(response);
     }
 

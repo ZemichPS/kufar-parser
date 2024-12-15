@@ -8,4 +8,5 @@ import java.util.UUID;
 
 @Repository
 public interface AdvertisementRepository extends JpaRepository<Advertisement, UUID> {
+    boolean existsByAdId(long adId);
 }

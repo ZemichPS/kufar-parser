@@ -1,5 +1,6 @@
 package by.zemich.kufar.dto;
 
+import by.zemich.kufar.config.PriceDeserializer;
 import by.zemich.kufar.config.VlDeserializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
@@ -37,7 +38,9 @@ public class AdsResponseDTO {
         private String messageId;
         private PaidServicesDTO paidServices;
         private boolean phoneHidden;
+        @JsonDeserialize(using = PriceDeserializer.class)
         private BigDecimal priceByn;
+        @JsonDeserialize(using = PriceDeserializer.class)
         private BigDecimal priceUsd;
         private String remunerationType;
         private ShowParametersDTO showParameters;
