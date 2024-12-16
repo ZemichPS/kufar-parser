@@ -3,21 +3,28 @@ package by.zemich.kufar.service;
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dao.entity.User;
 import by.zemich.kufar.dao.entity.UserSubscription;
+import by.zemich.kufar.service.api.Messenger;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 @Slf4j
 public class NotificationService {
+    private final UserService userService;
+    private final Messenger<SendMessage> messenger;
     private final List<UserSubscription> subscriptions = new ArrayList<>();
 
     public void notify(Advertisement advertisement){
         subscriptions.stream()
                 .filter(subscription -> subscription.isSatisfied(advertisement))
-                .map(UserSubscription::getSubscriber)
+                .flatMap(subscription-> userService.getById(subscription.getId()).stream())
                 .forEach(this::notify);
     }
 

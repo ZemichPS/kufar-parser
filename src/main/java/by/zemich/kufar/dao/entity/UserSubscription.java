@@ -14,7 +14,15 @@ import java.util.UUID;
 @Setter
 public class UserSubscription {
     private UUID id;
-    private User subscriber;
+    private UUID subscriberId;
+
+    public UserSubscription() {
+    }
+
+    public UserSubscription(UUID id, UUID subscriberId) {
+        this.id = id;
+        this.subscriberId = subscriberId;
+    }
 
     @Setter(AccessLevel.NONE)
     private List<Criteria> criteriaList = new ArrayList<>();

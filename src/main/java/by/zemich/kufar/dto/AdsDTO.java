@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
-public class AdsResponseDTO {
+public class AdsDTO {
 
     private List<AdDTO> ads = new ArrayList<>();
     private PaginationDTO pagination;

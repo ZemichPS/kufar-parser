@@ -37,3 +37,13 @@ CREATE TABLE app.users
     CONSTRAINT unique_chat_id UNIQUE (telegram_chat_id)
 );
 
+CREATE TABLE app.geo
+(
+    id     BIGSERIAL PRIMARY KEY,
+    pid    BIGSERIAL,
+    name   VARCHAR(100),
+    type   VARCHAR(100),
+    tag    VARCHAR(100),
+    region INTEGER,
+    area   INTEGER
+);
