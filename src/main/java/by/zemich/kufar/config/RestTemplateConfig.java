@@ -8,7 +8,6 @@ import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
 import java.time.Duration;
-import java.time.temporal.TemporalUnit;
 
 @Configuration
 public class RestTemplateConfig {
@@ -17,12 +16,26 @@ public class RestTemplateConfig {
     String useragent;
 
     @Bean
-    RestTemplate restTemplate(RestTemplateBuilder builder, ResponseErrorHandler errorHandler) {
+    RestTemplate priorityRestTemplate(RestTemplateBuilder builder, ResponseErrorHandler errorHandler) {
         return builder
                 .connectTimeout(Duration.ofSeconds(10))
                 .readTimeout(Duration.ofSeconds(10))
                 .defaultHeader("User-agent", useragent)
                 .defaultHeader("content-type", "application/json")
+                .errorHandler(errorHandler)
+                .build();
+    }
+
+    @Bean
+    RestTemplate vek21restTemplate(RestTemplateBuilder builder, ResponseErrorHandler errorHandler) {
+        return builder
+                .connectTimeout(Duration.ofSeconds(10))
+                .readTimeout(Duration.ofSeconds(10))
+                .defaultHeader("User-agent", useragent)
+                .defaultHeader("Accept", "application/json")
+                .defaultHeader("sec-ch-ua", "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"")
+                .defaultHeader("sec-ch-ua-mobile", "?0")
+                .defaultHeader("sec-ch-ua-platform", "\"Windows\"")
                 .errorHandler(errorHandler)
                 .build();
     }

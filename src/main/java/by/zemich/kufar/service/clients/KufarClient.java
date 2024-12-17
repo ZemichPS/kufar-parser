@@ -1,25 +1,40 @@
 package by.zemich.kufar.service.clients;
 
+import by.zemich.kufar.dto.AdDetailsDTO;
 import by.zemich.kufar.dto.AdsDTO;
+import by.zemich.kufar.dto.FilterDto;
 import by.zemich.kufar.dto.GeoDataDTO;
-import lombok.RequiredArgsConstructor;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
+@Slf4j
 @Component
-@RequiredArgsConstructor
 public class KufarClient {
 
     private final String ADVERTISEMENT_URL = "https://api.kufar.by/search-api/v2/search/rendered-paginated";
-    private final String GEO_URL = "https://api.kufar.by/search-api/v2/search/rendered-paginated";
+    private final String GEO_URL = "https://cre-api-v2.kufar.by/yandex-geocoder/static/regions";
+    private final String AD_DETAILS_URL = "https://api.kufar.by/search-api/v2/item/{id}/rendered?lang=ru";
+    private final String AD_PHOTO_URL = "https://rms.kufar.by/v1/gallery/adim1/{filename.jpg}";
+    private final String FILTER_URL = "https://api.kufar.by/taxonomy-proxy/v1/dispatch?routing=web_generalist&parent=17000&application=ad_listing&platform=web";
 
     private final RestTemplate restTemplate;
+    private final ObjectMapper objectMapper;
+
+    public KufarClient(@Qualifier("priorityRestTemplate") RestTemplate restTemplate,
+                       ObjectMapper objectMapper) {
+        this.restTemplate = restTemplate;
+        this.objectMapper = objectMapper;
+    }
 
     public AdsDTO getNewAds() {
         URI uri = UriComponentsBuilder.fromHttpUrl(ADVERTISEMENT_URL)
@@ -32,13 +47,78 @@ public class KufarClient {
     }
 
     public List<GeoDataDTO> getGeoData() {
-        return restTemplate.exchange(
-                GEO_URL,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<List<GeoDataDTO>>() {
-                }
-        ).getBody();
+
+        String response = restTemplate.getForObject(GEO_URL, String.class);
+        try {
+            return objectMapper.readValue(response, new TypeReference<>() {
+            });
+        } catch (JsonProcessingException e) {
+            log.error("Failed to convert response. Error {}", e.getMessage());
+            throw new RuntimeException(e);
+        }
+
+
+    }
+
+    public AdDetailsDTO getDetails(Integer id) {
+        String fullAdDetailsUrl = AD_DETAILS_URL.replace("{id}", id.toString());
+        return restTemplate.getForObject(fullAdDetailsUrl, AdDetailsDTO.class);
+    }
+
+    public void getPhoto(String fileName) {
+        String fullPhotoUrl = AD_PHOTO_URL.replace("{filename.jpg}", fileName);
+    }
+
+    public String getPhotoUrl(String fileName) {
+        return AD_PHOTO_URL.replace("{filename.jpg}", fileName);
+    }
+
+    public FilterDto getFilters() {
+        return restTemplate.getForObject(FILTER_URL, FilterDto.class);
+    }
+
+    public List<ManufacturerDto> getManufacture() {
+        FilterDto filterDto = restTemplate.getForObject(FILTER_URL, FilterDto.class);
+
+        List<ManufacturerDto> manufacturerDtos = new ArrayList<>();
+        filterDto.getMetadata().getParameters().getRefs().values().stream()
+                .filter(ref -> "phones_brand".equals(ref.getName()))
+                .flatMap(ref -> ref.getValues().stream())
+                .map(value -> value.getLabels().get("ru"))
+                .map(ManufacturerDto::new)
+                .forEach(manufacturerDtos::add);
+
+        return manufacturerDtos;
+    }
+
+    public List<ManufacturerDto> getFilledManufacture() {
+        FilterDto filterDto = restTemplate.getForObject(FILTER_URL, FilterDto.class);
+
+        final Set<Map<Integer, List<String>>> identifierModelsMapSet = filterDto.getMetadata().getParameters().getRefs().values().stream()
+                .filter(ref -> "phones_model".equals(ref.getName()))
+                .map(ref -> {
+                    Integer variationId = ref.getVariationId();
+                    List<String> models = ref.getValues().stream()
+                            .map(value -> value.getLabels().get("ru"))
+                            .toList();
+
+                    return Map.of(variationId, models);
+                }).collect(Collectors.toSet());
+
+
+        filterDto.getMetadata().getParameters().getRules()
+                .stream()
+                .filter(ruleWrapper -> Objects.nonNull(ruleWrapper.getRule().getPhonesBrand()))
+                .map(ruleWrapper -> {
+                    List<String> refs = ruleWrapper.getRefs();
+                    String phoneBrandNumber = ruleWrapper.getRule().getPhonesBrand();
+                    ManufacturerDto manufacturerDto = new ManufacturerDto(phoneBrandNumber);
+
+
+                }).collect(Collectors.toSet());
+
+
+        return null;
     }
 
 

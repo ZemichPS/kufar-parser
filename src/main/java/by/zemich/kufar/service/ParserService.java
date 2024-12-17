@@ -13,8 +13,8 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ParserService {
     private final AdvertisementService advertisementService;
-    private final NotificationService notificationService;
     private final GeoService geoService;
+    private final SubscriptionManager subscriptionManager;
     private final KufarClient kufarClient;
 
     public void parseAdsAndSaveIfNotExists() {
@@ -29,7 +29,7 @@ public class ParserService {
                     return advertisement;
                 })
                 .map(advertisementService::save)
-                .forEach(notificationService::notify);
+                .forEach(subscriptionManager::notify);
     }
 
     public void updateGeoData() {

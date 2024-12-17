@@ -8,8 +8,12 @@ import java.util.UUID;
 
 public class SubscriptionSession extends AbstractDialogSession<Criteria> {
 
-    UserSubscription createUserSubscription(UUID subscriberId) {
-        UserSubscription userSubscription = new UserSubscription(UUID.randomUUID(), subscriberId);
+    public SubscriptionSession(UUID userID) {
+        super(userID);
+    }
+
+    public UserSubscription createUserSubscription() {
+        UserSubscription userSubscription = new UserSubscription(UUID.randomUUID(), getUserId());
         criteriaMap.forEach((key, value) -> {
             userSubscription.addCriteria(value);
         });

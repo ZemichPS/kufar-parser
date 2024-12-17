@@ -21,15 +21,15 @@ public class GeoService {
         return geoRepository.existsById(id);
     }
 
-    List<GeoData> findAll() {
+    public List<GeoData> findAll() {
         return geoRepository.findAll();
     }
 
-    List<GeoData> findAllRegions(){
-        return geoRepository.findAllByRegionNumber(1);
+    public List<GeoData> findAllRegions(){
+        return geoRepository.findAllByRegions();
     }
 
-    List<GeoData> findAllSettlementsByRegionNumber(Integer regionNumber) {
+    public List<GeoData> findAllSettlementsByRegionNumber(Integer regionNumber) {
         return geoRepository.findAllSettlementsByRegionNumber(regionNumber);
     }
 

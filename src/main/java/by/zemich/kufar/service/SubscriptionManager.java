@@ -16,15 +16,15 @@ import java.util.Optional;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class NotificationService {
+public class SubscriptionManager {
     private final UserService userService;
     private final Messenger<SendMessage> messenger;
     private final List<UserSubscription> subscriptions = new ArrayList<>();
 
-    public void notify(Advertisement advertisement){
+    public void notify(Advertisement advertisement) {
         subscriptions.stream()
                 .filter(subscription -> subscription.isSatisfied(advertisement))
-                .flatMap(subscription-> userService.getById(subscription.getId()).stream())
+                .flatMap(subscription -> userService.getById(subscription.getId()).stream())
                 .forEach(this::notify);
     }
 
@@ -36,7 +36,7 @@ public class NotificationService {
         subscriptions.remove(subscription);
     }
 
-    public void notify(User user){
+    public void notify(User user) {
         // TODO notify logic
         log.info("User {} will be notified", user.getUsername());
     }

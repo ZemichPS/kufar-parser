@@ -1,3 +1,8 @@
+DROP TABLE IF EXISTS app.users CASCADE;
+DROP TABLE IF EXISTS app.advertisement CASCADE;
+DROP TABLE IF EXISTS app.geo CASCADE;
+DROP TABLE IF EXISTS app.parameters CASCADE;
+
 CREATE SCHEMA IF NOT EXISTS app;
 
 CREATE TABLE app.advertisement
@@ -13,6 +18,7 @@ CREATE TABLE app.advertisement
     type         VARCHAR(10),
     price_in_byn NUMERIC,
     price_in_usd NUMERIC,
+    details TEXT,
     CONSTRAINT uniq_ad_id UNIQUE (ad_id)
 );
 
@@ -43,7 +49,7 @@ CREATE TABLE app.geo
     pid    BIGSERIAL,
     name   VARCHAR(100),
     type   VARCHAR(100),
-    tag    VARCHAR(100),
+    tag    TEXT,
     region INTEGER,
     area   INTEGER
 );

@@ -1,5 +1,6 @@
 package by.zemich.kufar.input.telegram.dialogs.addsubscription;
 
+import by.zemich.kufar.dao.entity.UserSubscription;
 import by.zemich.kufar.input.telegram.TelegramBot;
 import by.zemich.kufar.input.telegram.dialogs.api.DialogContext;
 import by.zemich.kufar.input.telegram.sessions.DialogSession;
@@ -9,14 +10,17 @@ import by.zemich.kufar.service.api.Messenger;
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 import org.telegram.telegrambots.meta.api.objects.Update;
 
-public class AdCriteriaContext implements DialogContext<Criteria, SendMessage> {
+import java.util.UUID;
+
+public class AdCriteriaContext implements DialogContext<Criteria> {
     private final DialogSession<Criteria> criteriaDialogSession;
-    private DialogState<Criteria, SendMessage, Update> state;
+    private DialogState<Criteria> state;
     private final Messenger<SendMessage> messenger;
 
 
     public AdCriteriaContext(TelegramBot telegramBot,
-                             DialogSession<Criteria> criteriaDialogSession, Messenger<SendMessage> messenger) {
+                             DialogSession<Criteria> criteriaDialogSession,
+                             Messenger<SendMessage> messenger) {
         this.criteriaDialogSession = criteriaDialogSession;
         this.messenger = messenger;
     }
@@ -27,7 +31,7 @@ public class AdCriteriaContext implements DialogContext<Criteria, SendMessage> {
     }
 
     @Override
-    public void setState(DialogState<Criteria> state) {
+    public void setNextState(DialogState<Criteria> state) {
         this.state = state;
     }
 
@@ -37,7 +41,9 @@ public class AdCriteriaContext implements DialogContext<Criteria, SendMessage> {
     }
 
     @Override
-    public void handleInput(String input) {
-        this.state.handleInput(this, input);
+    public void handleInput(Update update) {
+        this.state.handleInput(this, update);
     }
+
+
 }

@@ -2,9 +2,7 @@ package by.zemich.kufar.dao.entity;
 
 
 import by.zemich.kufar.model.criterias.Criteria;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,19 +10,18 @@ import java.util.UUID;
 
 @Getter
 @Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class UserSubscription {
     private UUID id;
     private UUID subscriberId;
-
-    public UserSubscription() {
-    }
 
     public UserSubscription(UUID id, UUID subscriberId) {
         this.id = id;
         this.subscriberId = subscriberId;
     }
 
-    @Setter(AccessLevel.NONE)
     private List<Criteria> criteriaList = new ArrayList<>();
 
     public void addCriteria(Criteria criteria) {
