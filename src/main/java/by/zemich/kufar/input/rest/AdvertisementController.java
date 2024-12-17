@@ -1,10 +1,12 @@
 package by.zemich.kufar.input.rest;
 
+import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dao.entity.GeoData;
 import by.zemich.kufar.dto.AdDetailsDTO;
 import by.zemich.kufar.dto.AdsDTO;
 import by.zemich.kufar.dto.FilterDto;
 import by.zemich.kufar.dto.GeoDataDTO;
+import by.zemich.kufar.service.AdvertisementService;
 import by.zemich.kufar.service.GeoService;
 import by.zemich.kufar.service.ParserService;
 import by.zemich.kufar.service.clients.KufarClient;
@@ -29,6 +31,7 @@ public class AdvertisementController {
     private final ParserService adParserService;
     private final GeoService geoService;
     private final KufarClient kufarClient;
+    private final AdvertisementService advertisementService;
 
     @GetMapping(
             produces = "application/json",
@@ -43,7 +46,7 @@ public class AdvertisementController {
             produces = "application/json",
             value = "/ads/{id}"
     )
-    public ResponseEntity<AdDetailsDTO> getAdDetails(@PathVariable Integer id) {
+    public ResponseEntity<AdDetailsDTO> getAdDetails(@PathVariable Long id) {
         AdDetailsDTO dto = kufarClient.getDetails(id);
         return ok(dto);
     }
@@ -55,7 +58,7 @@ public class AdvertisementController {
     public ResponseEntity<List<GeoDataDTO>> getGeos() {
         final List<GeoDataDTO> geoData = kufarClient.getGeoData();
         geoData.stream()
-                .filter(dto-> !geoService.existsById(dto.getId()))
+                .filter(dto -> !geoService.existsById(dto.getId()))
                 .map(Mapper::mapToEntity)
                 .forEach(geoService::save);
         return ok(geoData);
@@ -65,7 +68,7 @@ public class AdvertisementController {
             produces = "application/json",
             value = "/geos/all_regions"
     )
-    public ResponseEntity<List<GeoData>> findAllRegions(){
+    public ResponseEntity<List<GeoData>> findAllRegions() {
         final List<GeoData> allRegions = geoService.findAllRegions();
         return ResponseEntity.ok(allRegions);
     }
@@ -74,7 +77,7 @@ public class AdvertisementController {
             produces = "application/json",
             value = "/geos/all/{settlementId}"
     )
-    public ResponseEntity<List<GeoData>> findAllSettlementsByRegionNumber(@PathVariable Integer settlementId){
+    public ResponseEntity<List<GeoData>> findAllSettlementsByRegionNumber(@PathVariable Integer settlementId) {
         final List<GeoData> allRegions = geoService.findAllSettlementsByRegionNumber(settlementId);
         return ResponseEntity.ok(allRegions);
     }
@@ -83,7 +86,7 @@ public class AdvertisementController {
             produces = "application/json",
             value = "/geos/all"
     )
-    public ResponseEntity<List<GeoData>> findAll(){
+    public ResponseEntity<List<GeoData>> findAll() {
         final List<GeoData> allRegions = geoService.findAll();
         return ResponseEntity.ok(allRegions);
     }
@@ -92,7 +95,7 @@ public class AdvertisementController {
             produces = "application/json",
             value = "/filter"
     )
-    public ResponseEntity<FilterDto> filter(){
+    public ResponseEntity<FilterDto> filter() {
         return ResponseEntity.ok(kufarClient.getFilters());
     }
 
@@ -100,8 +103,28 @@ public class AdvertisementController {
             produces = "application/json",
             value = "/manufacture"
     )
-    public ResponseEntity<List<ManufacturerDto>> manufacture(){
+    public ResponseEntity<List<ManufacturerDto>> manufacture() {
         return ResponseEntity.ok(kufarClient.getManufacture());
+    }
+
+    @GetMapping(
+            produces = "application/json",
+            value = "/getAndSave"
+    )
+    public ResponseEntity<AdsDTO> getAdsAndSave() {
+        kufarClient.getNewAds();
+        return ResponseEntity.ok(kufarClient.getNewAds());
+    }
+
+    @GetMapping(
+            produces = "application/json",
+            value = "/get_all_details"
+    )
+    public ResponseEntity<List<String>> getAllDetails() {
+        return ResponseEntity.ok(advertisementService.getAll().stream()
+                .map(Advertisement::getDetails)
+                .toList()
+        );
     }
 
 }

@@ -1,9 +1,13 @@
 package by.zemich.kufar.service.clients;
 
+import by.zemich.kufar.dao.entity.Advertisement;
+import by.zemich.kufar.dao.entity.Parameter;
 import by.zemich.kufar.dto.AdDetailsDTO;
 import by.zemich.kufar.dto.AdsDTO;
 import by.zemich.kufar.dto.FilterDto;
 import by.zemich.kufar.dto.GeoDataDTO;
+import by.zemich.kufar.service.AdvertisementService;
+import by.zemich.kufar.utils.Mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,10 +34,13 @@ public class KufarClient {
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
 
+    private final AdvertisementService advertisementService;
+
     public KufarClient(@Qualifier("priorityRestTemplate") RestTemplate restTemplate,
-                       ObjectMapper objectMapper) {
+                       ObjectMapper objectMapper, AdvertisementService advertisementService) {
         this.restTemplate = restTemplate;
         this.objectMapper = objectMapper;
+        this.advertisementService = advertisementService;
     }
 
     public AdsDTO getNewAds() {
@@ -43,7 +50,27 @@ public class KufarClient {
                 .queryParam("size", "40")
                 .queryParam("sort", "lst.d")
                 .build().toUri();
-        return restTemplate.getForObject(uri, AdsDTO.class);
+        AdsDTO adsDTO = restTemplate.getForObject(uri, AdsDTO.class);
+
+        adsDTO.getAds().stream()
+                .filter(dto -> !advertisementService.existsByAdId(dto.getAdId()))
+                .map( dto-> {
+                    Advertisement advertisement = Mapper.mapToEntity(dto);
+                    dto.getAdParameters().stream().forEach(adParameterDTO -> {
+                        Parameter parameter = Mapper.mapToEntity(adParameterDTO);
+                        advertisement.addParameter(parameter);
+                    });
+                    return advertisement;
+                }
+                )
+                .map(advertisementService::save)
+                .forEach(advertisement -> {
+                    AdDetailsDTO adDetailsDTO = getDetails(advertisement.getAdId());
+                    advertisement.setDetails(adDetailsDTO.getResult().getBody());
+                    advertisementService.save(advertisement);
+                });
+
+        return adsDTO;
     }
 
     public List<GeoDataDTO> getGeoData() {
@@ -56,11 +83,9 @@ public class KufarClient {
             log.error("Failed to convert response. Error {}", e.getMessage());
             throw new RuntimeException(e);
         }
-
-
     }
 
-    public AdDetailsDTO getDetails(Integer id) {
+    public AdDetailsDTO getDetails(Long id) {
         String fullAdDetailsUrl = AD_DETAILS_URL.replace("{id}", id.toString());
         return restTemplate.getForObject(fullAdDetailsUrl, AdDetailsDTO.class);
     }
@@ -106,16 +131,16 @@ public class KufarClient {
                 }).collect(Collectors.toSet());
 
 
-        filterDto.getMetadata().getParameters().getRules()
-                .stream()
-                .filter(ruleWrapper -> Objects.nonNull(ruleWrapper.getRule().getPhonesBrand()))
-                .map(ruleWrapper -> {
-                    List<String> refs = ruleWrapper.getRefs();
-                    String phoneBrandNumber = ruleWrapper.getRule().getPhonesBrand();
-                    ManufacturerDto manufacturerDto = new ManufacturerDto(phoneBrandNumber);
-
-
-                }).collect(Collectors.toSet());
+//        filterDto.getMetadata().getParameters().getRules()
+//                .stream()
+//                .filter(ruleWrapper -> Objects.nonNull(ruleWrapper.getRule().getPhonesBrand()))
+//                .map(ruleWrapper -> {
+//                    List<String> refs = ruleWrapper.getRefs();
+//                    String phoneBrandNumber = ruleWrapper.getRule().getPhonesBrand();
+//                    ManufacturerDto manufacturerDto = new ManufacturerDto(phoneBrandNumber);
+//
+//
+//                }).collect(Collectors.toSet());
 
 
         return null;

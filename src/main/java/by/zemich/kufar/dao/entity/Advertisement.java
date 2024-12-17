@@ -21,7 +21,7 @@ public class Advertisement {
     @Id
     @UuidGenerator(style = UuidGenerator.Style.TIME)
     private UUID id;
-    private long adId;
+    private Long adId;
     private String link;
     private String category;
     private boolean companyAd;
@@ -31,6 +31,7 @@ public class Advertisement {
     private String type;
     private BigDecimal priceInByn;
     private BigDecimal priceInUsd;
+    private String details;
     @OneToMany(
             fetch = FetchType.LAZY,
             orphanRemoval = true,

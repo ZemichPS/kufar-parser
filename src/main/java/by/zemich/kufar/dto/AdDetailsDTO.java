@@ -1,6 +1,8 @@
 package by.zemich.kufar.dto;
 
+import by.zemich.kufar.config.VlDeserializer;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
 
 import java.util.List;
@@ -40,10 +42,12 @@ public class AdDetailsDTO {
     @Data
     public static class Parameter {
         private String pl; // Заголовок параметра
+        @JsonDeserialize(using = VlDeserializer.class)
         private String vl; // Значение для отображения
         private String p;  // Код параметра
         private Object v;  // Фактическое значение
         private String pu; // Уникальный ключ
+        private List<Object> g; // Уникальный ключ
     }
 
     @Data

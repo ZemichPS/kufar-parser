@@ -8,6 +8,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -23,6 +24,11 @@ public class AdvertisementService {
     public Page<Advertisement> get(Pageable pageable) {
         return adRepository.findAll(pageable);
     }
+
+    public List<Advertisement> getAll() {
+        return adRepository.findAll();
+    }
+
 
     public Advertisement getById(UUID id) {
         return adRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Advertisement not found"));
