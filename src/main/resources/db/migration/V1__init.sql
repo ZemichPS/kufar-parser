@@ -1,11 +1,10 @@
 DROP TABLE IF EXISTS app.users CASCADE;
-DROP TABLE IF EXISTS app.advertisement CASCADE;
+DROP TABLE IF EXISTS app.advertisements CASCADE;
 DROP TABLE IF EXISTS app.geo CASCADE;
-DROP TABLE IF EXISTS app.parameters CASCADE;
 
 CREATE SCHEMA IF NOT EXISTS app;
 
-CREATE TABLE app.advertisement
+CREATE TABLE app.advertisements
 (
     id           UUID PRIMARY KEY,
     ad_id        BIGSERIAL,
@@ -19,17 +18,8 @@ CREATE TABLE app.advertisement
     price_in_byn NUMERIC,
     price_in_usd NUMERIC,
     details TEXT,
+    parameters JSONB,
     CONSTRAINT uniq_ad_id UNIQUE (ad_id)
-);
-
-CREATE TABLE app.parameters
-(
-    id               UUID PRIMARY KEY,
-    advertisement_id UUID,
-    identity         VARCHAR(100),
-    value            VARCHAR(100),
-    label            VARCHAR(100),
-    CONSTRAINT fk_parameter_on_advertisement FOREIGN KEY (advertisement_id) REFERENCES app.advertisement (id)
 );
 
 CREATE TABLE app.users

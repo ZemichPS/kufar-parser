@@ -1,9 +1,10 @@
 package by.zemich.kufar.dao.entity;
 
+import io.hypersistence.utils.hibernate.type.json.JsonType;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UuidGenerator;
-import org.hibernate.engine.profile.Fetch;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -12,6 +13,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Entity
+@Table(name = "advertisements", schema = "app")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -32,16 +34,27 @@ public class Advertisement {
     private BigDecimal priceInByn;
     private BigDecimal priceInUsd;
     private String details;
-    @OneToMany(
-            fetch = FetchType.LAZY,
-            orphanRemoval = true,
-            cascade = CascadeType.ALL,
-            mappedBy = "advertisement"
-    )
-    List<Parameter> parameters;
+
+    @Type(JsonType.class)
+    @Column(columnDefinition = "jsonb")
+    private List<Parameter> parameters = new ArrayList<>();
 
     public void addParameter(Parameter parameter) {
-        parameter.setAdvertisement(this);
         parameters.add(parameter);
     }
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class Parameter {
+        public Parameter(String identity, String value) {
+            this.identity = identity;
+            this.value = value;
+        }
+        private String identity;
+        private String value;
+        private String label;
+    }
+
 }

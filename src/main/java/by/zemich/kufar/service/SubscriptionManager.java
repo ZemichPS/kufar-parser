@@ -1,43 +1,33 @@
 package by.zemich.kufar.service;
 
 import by.zemich.kufar.dao.entity.Advertisement;
-import by.zemich.kufar.dao.entity.User;
 import by.zemich.kufar.dao.entity.UserSubscription;
-import by.zemich.kufar.service.api.Messenger;
+import by.zemich.kufar.dao.repository.UserSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class SubscriptionManager {
-    private final UserService userService;
-    private final Messenger<SendMessage> messenger;
-    private final List<UserSubscription> subscriptions = new ArrayList<>();
+    private final UserSubscriptionRepository subscriptionRepository;
+    private final NotificationService notificationService;
 
-    public void notify(Advertisement advertisement) {
-        subscriptions.stream()
+    public void matchAndNotify(Advertisement advertisement) {
+        subscriptionRepository.findAll().stream()
                 .filter(subscription -> subscription.isSatisfied(advertisement))
-                .flatMap(subscription -> userService.getById(subscription.getId()).stream())
-                .forEach(this::notify);
+                .map(UserSubscription::getSubscriberId)
+                .forEach(userId-> notificationService.notifyMatchingAd(userId, advertisement));
     }
 
     public void subscribe(UserSubscription subscription) {
-        subscriptions.add(subscription);
+        subscriptionRepository.save(subscription);
     }
 
-    public void unsubscribe(UserSubscription subscription) {
-        subscriptions.remove(subscription);
-    }
-
-    public void notify(User user) {
-        // TODO notify logic
-        log.info("User {} will be notified", user.getUsername());
+    public void unsubscribe(UUID id) {
+        subscriptionRepository.deleteById(id);
     }
 }

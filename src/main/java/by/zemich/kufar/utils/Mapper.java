@@ -2,7 +2,6 @@ package by.zemich.kufar.utils;
 
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dao.entity.GeoData;
-import by.zemich.kufar.dao.entity.Parameter;
 import by.zemich.kufar.dto.AdsDTO;
 import by.zemich.kufar.dto.GeoDataDTO;
 
@@ -25,8 +24,8 @@ public class Mapper {
                 .build();
     }
 
-    public static Parameter mapToEntity(AdsDTO.AdParameterDTO dto) {
-        return Parameter.builder()
+    public static Advertisement.Parameter mapToEntity(AdsDTO.AdParameterDTO dto) {
+        return Advertisement.Parameter.builder()
                 .identity(dto.getP())
                 .label(dto.getPl())
                 .value(dto.getVl())

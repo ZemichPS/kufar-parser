@@ -7,7 +7,7 @@
 //import by.zemich.kufar.service.ManufactureService;
 //import org.springframework.beans.factory.annotation.Qualifier;
 //import org.springframework.stereotype.Component;
-//import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+//import org.telegram.telegrambots.meta.api.methods.sendText.SendMessage;
 //import org.telegram.telegrambots.meta.api.objects.Update;
 //import org.telegram.telegrambots.meta.api.objects.replykeyboard.ReplyKeyboardMarkup;
 //import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.KeyboardButton;

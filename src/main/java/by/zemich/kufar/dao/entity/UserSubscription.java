@@ -2,27 +2,39 @@ package by.zemich.kufar.dao.entity;
 
 
 import by.zemich.kufar.model.criterias.Criteria;
+import jakarta.persistence.Id;
 import lombok.*;
+import org.springframework.data.redis.core.RedisHash;
+import org.springframework.data.redis.core.TimeToLive;
 
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
 @Getter
 @Setter
-@AllArgsConstructor
-@NoArgsConstructor
 @ToString
+@RedisHash("user_subscription")
 public class UserSubscription {
+    @Id
     private UUID id;
     private UUID subscriberId;
+    @TimeToLive
+    private final Long expiresIn;
+    private List<Criteria> criteriaList = new ArrayList<>();
+
+    public UserSubscription(UUID id, UUID subscriberId, Long expiresIn) {
+        this.id = id;
+        this.subscriberId = subscriberId;
+        this.expiresIn = expiresIn;
+    }
 
     public UserSubscription(UUID id, UUID subscriberId) {
         this.id = id;
         this.subscriberId = subscriberId;
+        this.expiresIn = Duration.ofDays(7).getSeconds();
     }
-
-    private List<Criteria> criteriaList = new ArrayList<>();
 
     public void addCriteria(Criteria criteria) {
         criteriaList.add(criteria);

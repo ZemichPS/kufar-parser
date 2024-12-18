@@ -1,7 +1,7 @@
 //package by.zemich.kufar.input.telegram.dialogs.addsubscription.steps;
 //
 //import by.zemich.kufar.dao.entity.UserSubscription;
-//import by.zemich.kufar.input.telegram.dialogs.addsubscription.SubscriptionSession;
+//import by.zemich.kufar.input.telegram.dialogs.addsubscription.SubscriptionDialogSession;
 //import by.zemich.kufar.input.telegram.dialogs.api.AbstractDialogState;
 //import by.zemich.kufar.input.telegram.dialogs.api.DialogContext;
 //import by.zemich.kufar.input.telegram.dialogs.api.DialogState;
@@ -9,7 +9,7 @@
 //import by.zemich.kufar.service.SubscriptionManager;
 //import org.springframework.beans.factory.annotation.Qualifier;
 //import org.springframework.stereotype.Component;
-//import org.telegram.telegrambots.meta.api.methods.send.SendMessage;
+//import org.telegram.telegrambots.meta.api.methods.sendText.SendMessage;
 //import org.telegram.telegrambots.meta.api.objects.Update;
 //
 //import java.util.UUID;
@@ -25,7 +25,7 @@
 //
 //    @Override
 //    public void handleInput(DialogContext<Criteria> context, Update input) {
-//        SubscriptionSession subscriptionSession = (SubscriptionSession) context.getSession();
+//        SubscriptionDialogSession subscriptionSession = (SubscriptionDialogSession) context.getSession();
 //        UserSubscription subscription =  subscriptionSession.createUserSubscription();
 //        subscriptionManager.subscribe(subscription);
 //        context.sendMessage(getMessage(subscription));

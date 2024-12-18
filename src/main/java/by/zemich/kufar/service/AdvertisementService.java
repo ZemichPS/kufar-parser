@@ -2,7 +2,10 @@ package by.zemich.kufar.service;
 
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dao.repository.AdvertisementRepository;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.persistence.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -15,30 +18,51 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class AdvertisementService {
 
-    private final AdvertisementRepository adRepository;
+    private final AdvertisementRepository adsRepository;
+    private final ObjectMapper jsonMapper;
 
     public Advertisement save(Advertisement advertisement) {
-        return adRepository.save(advertisement);
+        return adsRepository.save(advertisement);
     }
 
     public Page<Advertisement> get(Pageable pageable) {
-        return adRepository.findAll(pageable);
+        return adsRepository.findAll(pageable);
     }
 
     public List<Advertisement> getAll() {
-        return adRepository.findAll();
+        return adsRepository.findAll();
+    }
+
+    public List<Advertisement> getAllByBrandAndModel(String brand, String model) {
+        String parameters = createParameters(
+                List.of(new Advertisement.Parameter("brand", brand),
+                        new Advertisement.Parameter("model", model))
+        );
+        return adsRepository.findAllByParameters(parameters);
+    }
+
+    public List<Advertisement> getAllByParameters(List<Advertisement.Parameter> parameters) {
+        return adsRepository.findAllByParameters(createParameters(parameters));
     }
 
 
     public Advertisement getById(UUID id) {
-        return adRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Advertisement not found"));
+        return adsRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Advertisement not found"));
     }
 
     public void delete(UUID id) {
-        adRepository.deleteById(id);
+        adsRepository.deleteById(id);
     }
 
-    public boolean existsByAdId(long adId) {
-        return adRepository.existsByAdId(adId);
+    public boolean existsByAdId(Long adId) {
+        return adsRepository.existsByAdId(adId);
+    }
+
+    private String createParameters(List<Advertisement.Parameter> parameters) {
+        try {
+            return jsonMapper.writeValueAsString(parameters);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

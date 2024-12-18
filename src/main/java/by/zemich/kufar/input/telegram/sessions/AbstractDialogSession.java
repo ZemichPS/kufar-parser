@@ -1,5 +1,8 @@
 package by.zemich.kufar.input.telegram.sessions;
 
+import jakarta.persistence.Id;
+import lombok.Getter;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -7,10 +10,15 @@ import java.util.UUID;
 
 public class AbstractDialogSession<T> implements DialogSession<T> {
 
-    protected final Map<String, T> criteriaMap = new HashMap<>();
-    private final UUID userID;
+    @Id
+    @Getter
+    private final UUID id;
 
-    public AbstractDialogSession(UUID userID) {
+    private final UUID userID;
+    protected final Map<String, T> criteriaMap = new HashMap<>();
+
+    public AbstractDialogSession(UUID id, UUID userID) {
+        this.id = id;
         this.userID = userID;
     }
 
@@ -33,6 +41,5 @@ public class AbstractDialogSession<T> implements DialogSession<T> {
     public UUID getUserId() {
         return userID;
     }
-
 
 }

@@ -1,7 +1,6 @@
 package by.zemich.kufar.model.criterias;
 
 import by.zemich.kufar.dao.entity.Advertisement;
-import by.zemich.kufar.dao.entity.Parameter;
 import lombok.Data;
 
 import java.util.ArrayList;
@@ -32,7 +31,7 @@ public class LocationCriteria implements Criteria {
     @Override
     public boolean isSatisfied(Advertisement advertisement) {
         Location adLocation = new Location();
-        List<Parameter> parameters = advertisement.getParameters();
+        List<Advertisement.Parameter> parameters = advertisement.getParameters();
         String area = getAreaFromParameters(parameters);
         String region = getRegionFromParameters(parameters);
         adLocation.setRegion(region);
@@ -40,18 +39,18 @@ public class LocationCriteria implements Criteria {
         return locations.contains(adLocation);
     }
 
-    private String getRegionFromParameters(List<Parameter> parameters) {
+    private String getRegionFromParameters(List<Advertisement.Parameter> parameters) {
         return parameters.stream()
                 .filter(param -> "region".equalsIgnoreCase(param.getIdentity()))
-                .map(Parameter::getValue)
+                .map(Advertisement.Parameter::getValue)
                 .findFirst().orElse("");
 
     }
 
-    private String getAreaFromParameters(List<Parameter> parameters) {
+    private String getAreaFromParameters(List<Advertisement.Parameter> parameters) {
         return parameters.stream()
                 .filter(param -> "area".equalsIgnoreCase(param.getIdentity()))
-                .map(Parameter::getValue)
+                .map(Advertisement.Parameter::getValue)
                 .findFirst().orElse("");
     }
 

@@ -1,7 +1,6 @@
 package by.zemich.kufar.service.clients;
 
 import by.zemich.kufar.dao.entity.Advertisement;
-import by.zemich.kufar.dao.entity.Parameter;
 import by.zemich.kufar.dto.AdDetailsDTO;
 import by.zemich.kufar.dto.AdsDTO;
 import by.zemich.kufar.dto.FilterDto;
@@ -57,7 +56,7 @@ public class KufarClient {
                 .map( dto-> {
                     Advertisement advertisement = Mapper.mapToEntity(dto);
                     dto.getAdParameters().stream().forEach(adParameterDTO -> {
-                        Parameter parameter = Mapper.mapToEntity(adParameterDTO);
+                        Advertisement.Parameter parameter = Mapper.mapToEntity(adParameterDTO);
                         advertisement.addParameter(parameter);
                     });
                     return advertisement;

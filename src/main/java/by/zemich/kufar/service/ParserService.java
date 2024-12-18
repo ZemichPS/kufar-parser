@@ -29,7 +29,7 @@ public class ParserService {
                     return advertisement;
                 })
                 .map(advertisementService::save)
-                .forEach(subscriptionManager::notify);
+                .forEach(subscriptionManager::matchAndNotify);
     }
 
     public void updateGeoData() {
