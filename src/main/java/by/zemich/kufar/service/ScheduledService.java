@@ -18,7 +18,6 @@ import java.util.List;
 public class ScheduledService {
     private final AdvertisementService advertisementService;
     private final GeoService geoService;
-    private final SubscriptionManager subscriptionManager;
     private final KufarClient kufarClient;
     private final List<PostPublisher> postPublishers;
 
