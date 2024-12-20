@@ -7,7 +7,6 @@ import by.zemich.kufar.service.clients.KufarClient;
 import by.zemich.kufar.utils.Mapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -38,7 +37,13 @@ public class ScheduledService {
                 })
                 .map(advertisementService::save)
                 .forEach(advertisement -> {
-                   postPublishers.forEach(publisher -> publisher.publish(advertisement));
+                   postPublishers.forEach(publisher -> {
+                       try {
+                           publisher.publish(advertisement);
+                       } catch (Exception e) {
+                           throw new RuntimeException(e);
+                       }
+                   });
                 });
     }
 

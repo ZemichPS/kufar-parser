@@ -13,7 +13,7 @@ public class CommunityPublisherService implements PostPublisher {
 
     private final PostManager postManager;
 
-    public void publish(Advertisement advertisement){
+    public void publish(Advertisement advertisement) throws Exception {
         SendPhoto photoPost = postManager.createPhotoPostFromAd(advertisement);
 
     }
