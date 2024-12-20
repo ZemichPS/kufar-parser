@@ -37,13 +37,14 @@ public class ScheduledService {
                 })
                 .map(advertisementService::save)
                 .forEach(advertisement -> {
-                   postPublishers.forEach(publisher -> {
-                       try {
-                           publisher.publish(advertisement);
-                       } catch (Exception e) {
-                           throw new RuntimeException(e);
-                       }
-                   });
+                    postPublishers.forEach(publisher -> {
+                        try {
+                            publisher.publish(advertisement);
+                        } catch (Exception e) {
+                            log.error("Failed to publish post in {}, Error: {}. ", publisher.getClass().getName(), e.getMessage());
+                            throw new RuntimeException(e);
+                        }
+                    });
                 });
     }
 
