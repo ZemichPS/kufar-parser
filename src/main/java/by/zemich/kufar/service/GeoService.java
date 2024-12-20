@@ -1,10 +1,9 @@
 package by.zemich.kufar.service;
 
 import by.zemich.kufar.dao.entity.GeoData;
-import by.zemich.kufar.dao.repository.GeoRepository;
+import by.zemich.kufar.dao.jparepository.GeoRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import java.util.List;
 

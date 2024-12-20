@@ -5,7 +5,7 @@ import lombok.Data;
 import java.util.List;
 
 @Data
-public class GoodsPageDTO {
+public class Century21stGoodsPageDTO {
     private List<ProductDTO> data;
 
     @Data

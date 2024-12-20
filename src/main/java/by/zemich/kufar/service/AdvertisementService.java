@@ -1,11 +1,10 @@
 package by.zemich.kufar.service;
 
 import by.zemich.kufar.dao.entity.Advertisement;
-import by.zemich.kufar.dao.repository.AdvertisementRepository;
+import by.zemich.kufar.dao.jparepository.AdvertisementRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityNotFoundException;
-import jakarta.persistence.Parameter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -35,7 +34,7 @@ public class AdvertisementService {
 
     public List<Advertisement> getAllByBrandAndModel(String brand, String model) {
         String parameters = createParameters(
-                List.of(new Advertisement.Parameter("brand", brand),
+                List.of(new Advertisement.Parameter("getBrand", brand),
                         new Advertisement.Parameter("model", model))
         );
         return adsRepository.findAllByParameters(parameters);

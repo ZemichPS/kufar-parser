@@ -5,10 +5,12 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.connection.RedisStandaloneConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceClientConfiguration;
 import org.springframework.data.redis.connection.lettuce.LettuceConnectionFactory;
+import org.springframework.data.redis.repository.configuration.EnableRedisRepositories;
 
 import java.time.Duration;
 
 @Configuration
+@EnableRedisRepositories(basePackages = "by.zemich.kufar.dao.redisrepository")
 public class RedisConnectionConfig {
 
     @Bean

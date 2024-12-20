@@ -1,4 +1,4 @@
-package by.zemich.kufar.dao.repository;
+package by.zemich.kufar.dao.jparepository;
 
 import by.zemich.kufar.dao.entity.GeoData;
 import org.springframework.data.jpa.repository.JpaRepository;

@@ -2,7 +2,7 @@ package by.zemich.kufar.service;
 
 import by.zemich.kufar.dao.entity.Manufacturer;
 import by.zemich.kufar.dao.entity.Model;
-import by.zemich.kufar.dao.repository.ManufacturerRepository;
+import by.zemich.kufar.dao.jparepository.ManufacturerRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 

@@ -16,7 +16,7 @@ public class GetProductPage21vekRequest {
     private List<AttributeDTO> attributes;
     private List<String> discountTypes;
     private String deliveryType;
-    private int page;
+    private int page = 1;
     private List<String> producerIds;
     private String sortDirection;
     private String sortField;

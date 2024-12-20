@@ -13,12 +13,12 @@ import java.util.UUID;
 @RequiredArgsConstructor
 public class NotificationService {
     private final UserService userService;
-    private final PostCreater postCreater;
+    private final PostManager postManager;
     private final PhotoMessenger<SendPhoto> telegramPhotoMessenger;
 
     public void notifyMatchingAd(UUID userId, Advertisement advertisement) {
         Long chatId = userService.getById(userId).map(User::getTelegramChatId).orElseThrow();
-        SendPhoto adPost = postCreater.createAddPostFromAd(advertisement);
+        SendPhoto adPost = postManager.createPhotoPostFromAd(advertisement);
         adPost.setChatId(chatId);
         telegramPhotoMessenger.sendPhoto(adPost);
     }

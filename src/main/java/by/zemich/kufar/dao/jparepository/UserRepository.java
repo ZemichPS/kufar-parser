@@ -1,4 +1,4 @@
-package by.zemich.kufar.dao.repository;
+package by.zemich.kufar.dao.jparepository;
 
 import by.zemich.kufar.dao.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

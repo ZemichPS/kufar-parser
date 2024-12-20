@@ -34,6 +34,7 @@ public class Advertisement {
     private BigDecimal priceInByn;
     private BigDecimal priceInUsd;
     private String details;
+    private boolean fullyFunctional;
 
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb")
@@ -57,4 +58,21 @@ public class Advertisement {
         private String label;
     }
 
+    public String getBrand(){
+        return this.parameters.stream()
+                .filter(param -> "brand".equals(param.identity))
+                .map(param -> param.value)
+                .findFirst().orElseThrow();
+    }
+
+    public String getModel(){
+        return this.parameters.stream()
+                .filter(param -> "model".equals(param.identity))
+                .map(param -> param.value)
+                .findFirst().orElseThrow();
+    }
+
+    public String getPhotoLink(){
+        return "https://rms.kufar.by/v1/gallery/adim1/{filename.jpg}".replace("{filename.jpg}", this.link);
+    }
 }

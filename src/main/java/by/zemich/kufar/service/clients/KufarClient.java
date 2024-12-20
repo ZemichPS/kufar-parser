@@ -29,6 +29,7 @@ public class KufarClient {
     private final String AD_DETAILS_URL = "https://api.kufar.by/search-api/v2/item/{id}/rendered?lang=ru";
     private final String AD_PHOTO_URL = "https://rms.kufar.by/v1/gallery/adim1/{filename.jpg}";
     private final String FILTER_URL = "https://api.kufar.by/taxonomy-proxy/v1/dispatch?routing=web_generalist&parent=17000&application=ad_listing&platform=web";
+    private final String GET_PAGE_BY_FILTER_URL = "https://api.kufar.by/search-api/v2/search/rendered-paginated?cat=17010&cmp=0&cnd=1&lang=ru&pb=5&sort=lst.d";
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -129,7 +130,6 @@ public class KufarClient {
                     return Map.of(variationId, models);
                 }).collect(Collectors.toSet());
 
-
 //        filterDto.getMetadata().getParameters().getRules()
 //                .stream()
 //                .filter(ruleWrapper -> Objects.nonNull(ruleWrapper.getRule().getPhonesBrand()))
@@ -141,8 +141,15 @@ public class KufarClient {
 //
 //                }).collect(Collectors.toSet());
 
-
         return null;
+    }
+//
+    public AdsDTO getAdsByModelAndPageNumber(String modelCategory, Integer pageSize) {
+        URI uri = UriComponentsBuilder.fromHttpUrl(GET_PAGE_BY_FILTER_URL)
+                .queryParam("phm", modelCategory)
+                .queryParam("size", pageSize)
+                .build().toUri();
+        return restTemplate.getForObject(uri, AdsDTO.class);
     }
 
 

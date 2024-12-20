@@ -2,7 +2,7 @@ package by.zemich.kufar.service;
 
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dao.entity.UserSubscription;
-import by.zemich.kufar.dao.repository.UserSubscriptionRepository;
+import by.zemich.kufar.dao.redisrepository.UserSubscriptionRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

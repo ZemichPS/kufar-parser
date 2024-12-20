@@ -1,7 +1,7 @@
 package by.zemich.kufar.service;
 
 import by.zemich.kufar.dao.entity.User;
-import by.zemich.kufar.dao.repository.UserRepository;
+import by.zemich.kufar.dao.jparepository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

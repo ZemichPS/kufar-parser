@@ -9,6 +9,7 @@ import by.zemich.kufar.dto.GeoDataDTO;
 import by.zemich.kufar.service.AdvertisementService;
 import by.zemich.kufar.service.GeoService;
 import by.zemich.kufar.service.ParserService;
+import by.zemich.kufar.service.PriceAnalyzer;
 import by.zemich.kufar.service.clients.KufarClient;
 import by.zemich.kufar.service.clients.ManufacturerDto;
 import by.zemich.kufar.utils.Mapper;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -32,6 +34,7 @@ public class AdvertisementController {
     private final GeoService geoService;
     private final KufarClient kufarClient;
     private final AdvertisementService advertisementService;
+    private final PriceAnalyzer priceAnalyzer;
 
     @GetMapping(
             produces = "application/json",
@@ -125,6 +128,18 @@ public class AdvertisementController {
                 .map(Advertisement::getDetails)
                 .toList()
         );
+    }
+
+
+    @GetMapping(
+            produces = "application/json",
+            value = "/get_market_price_by_model/{model}"
+    )
+    public ResponseEntity<BigDecimal> getMarketPriceByModel(@PathVariable String model) {
+        AdsDTO ads = kufarClient.getAdsByModelAndPageNumber(model, 340);
+        List<BigDecimal> list = ads.getAds().stream().map(AdsDTO.AdDTO::getPriceByn).filter(price-> price.compareTo(BigDecimal.valueOf(150))>= 0).toList();
+        BigDecimal result = priceAnalyzer.getMarketPrice(list);
+        return ResponseEntity.ok(result);
     }
 
 }

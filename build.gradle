@@ -31,7 +31,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     implementation 'org.flywaydb:flyway-core'
     implementation 'org.telegram:telegrambots:6.9.7.1'
-    implementation 'io.hypersistence:hypersistence-utils-hibernate-60:3.5.0'
+    implementation 'io.hypersistence:hypersistence-utils-hibernate-63:3.9.0'
 
    // implementation 'redis.clients:jedis:5.2.0'
     compileOnly 'org.projectlombok:lombok'

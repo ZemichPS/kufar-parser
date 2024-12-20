@@ -1,4 +1,4 @@
-package by.zemich.kufar.dao.repository;
+package by.zemich.kufar.dao.redisrepository;
 
 import by.zemich.kufar.input.telegram.dialogs.addsubscription.SubscriptionDialogSession;
 import org.springframework.data.repository.CrudRepository;
