@@ -1,6 +1,7 @@
 package by.zemich.kufar.service;
 
 import by.zemich.kufar.dao.entity.Advertisement;
+import by.zemich.kufar.dto.AdDetailsDTO;
 import by.zemich.kufar.dto.AdsDTO;
 import by.zemich.kufar.service.api.PostPublisher;
 import by.zemich.kufar.service.clients.KufarClient;
@@ -35,6 +36,12 @@ public class ScheduledService {
                     return advertisement;
                 })
                 .map(advertisementService::save)
+                .map(advertisement -> {
+                    AdDetailsDTO detailsDTO = kufarClient.getDetails(advertisement.getAdId());
+                    String details = detailsDTO.getResult().getBody();
+                    advertisement.setDetails(details);
+                    return advertisementService.save(advertisement);
+                })
                 .forEach(advertisement -> {
                     postPublishers.forEach(publisher -> {
                         try {
@@ -47,11 +54,15 @@ public class ScheduledService {
                 });
     }
 
+    @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
     public void updateGeoData() {
         kufarClient.getGeoData().stream()
                 .map(Mapper::mapToEntity)
                 .forEach(geoService::save);
     }
+
+    @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
+    public void updateModelsList() {}
 
 
 }

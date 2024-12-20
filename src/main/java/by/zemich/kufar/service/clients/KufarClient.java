@@ -50,27 +50,7 @@ public class KufarClient {
                 .queryParam("size", "40")
                 .queryParam("sort", "lst.d")
                 .build().toUri();
-        AdsDTO adsDTO = restTemplate.getForObject(uri, AdsDTO.class);
-
-        adsDTO.getAds().stream()
-                .filter(dto -> !advertisementService.existsByAdId(dto.getAdId()))
-                .map( dto-> {
-                    Advertisement advertisement = Mapper.mapToEntity(dto);
-                    dto.getAdParameters().stream().forEach(adParameterDTO -> {
-                        Advertisement.Parameter parameter = Mapper.mapToEntity(adParameterDTO);
-                        advertisement.addParameter(parameter);
-                    });
-                    return advertisement;
-                }
-                )
-                .map(advertisementService::save)
-                .forEach(advertisement -> {
-                    AdDetailsDTO adDetailsDTO = getDetails(advertisement.getAdId());
-                    advertisement.setDetails(adDetailsDTO.getResult().getBody());
-                    advertisementService.save(advertisement);
-                });
-
-        return adsDTO;
+        return restTemplate.getForObject(uri, AdsDTO.class);
     }
 
     public List<GeoDataDTO> getGeoData() {
@@ -143,7 +123,8 @@ public class KufarClient {
 
         return null;
     }
-//
+
+    //
     public AdsDTO getAdsByModelAndPageNumber(String modelCategory, Integer pageSize) {
         URI uri = UriComponentsBuilder.fromHttpUrl(GET_PAGE_BY_FILTER_URL)
                 .queryParam("phm", modelCategory)
