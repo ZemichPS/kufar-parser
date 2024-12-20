@@ -8,7 +8,7 @@ import by.zemich.kufar.dto.FilterDto;
 import by.zemich.kufar.dto.GeoDataDTO;
 import by.zemich.kufar.service.AdvertisementService;
 import by.zemich.kufar.service.GeoService;
-import by.zemich.kufar.service.ParserService;
+import by.zemich.kufar.service.ScheduledService;
 import by.zemich.kufar.service.PriceAnalyzer;
 import by.zemich.kufar.service.clients.KufarClient;
 import by.zemich.kufar.service.clients.ManufacturerDto;
@@ -30,7 +30,7 @@ import static org.springframework.http.ResponseEntity.ok;
 @RequiredArgsConstructor
 public class AdvertisementController {
 
-    private final ParserService adParserService;
+    private final ScheduledService adParserService;
     private final GeoService geoService;
     private final KufarClient kufarClient;
     private final AdvertisementService advertisementService;

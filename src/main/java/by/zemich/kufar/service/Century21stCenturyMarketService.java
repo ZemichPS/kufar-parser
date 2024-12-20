@@ -5,6 +5,7 @@ import by.zemich.kufar.dto.Century21stGoodsPageDTO;
 import by.zemich.kufar.dto.GetProductPage21vekRequest;
 import by.zemich.kufar.service.api.MarketService;
 import by.zemich.kufar.service.clients.Century21Client;
+import by.zemich.kufar.utils.Mapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -22,7 +23,8 @@ public class Century21stCenturyMarketService implements MarketService {
         // TODO написать логику получения страницы товара
         GetProductPage21vekRequest request = new GetProductPage21vekRequest();
         Century21stGoodsPageDTO century21stGoodsPageDTO = century21Client.getPage(request);
-        return  century21stGoodsPageDTO.getData().getFirst().getLink();
+        Century21stGoodsPageDTO.ProductDTO productDTO = century21stGoodsPageDTO.getData().getFirst();
+        return Mapper.mapToDto(productDTO);
     }
 
     @Override

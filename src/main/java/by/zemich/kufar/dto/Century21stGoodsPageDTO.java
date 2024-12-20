@@ -2,6 +2,7 @@ package by.zemich.kufar.dto;
 
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Data
@@ -15,7 +16,7 @@ public class Century21stGoodsPageDTO {
         private String link;
         private Integer rating;
         private String preview;
-        private Double price;
+        private BigDecimal price;
         private Double oldPrice;
         private List<String> discountTypes;
         private Integer promoDiscount;
