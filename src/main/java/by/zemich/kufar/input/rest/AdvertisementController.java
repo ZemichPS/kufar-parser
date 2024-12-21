@@ -69,6 +69,15 @@ public class AdvertisementController {
 
     @GetMapping(
             produces = "application/json",
+            value = "/brands"
+    )
+    public ResponseEntity<List<FilterDto.RuleWrapper>> getBrands() {
+        List<FilterDto.RuleWrapper>  filledManufacture = kufarClient.getFilledManufacture();
+        return ok(filledManufacture);
+    }
+
+    @GetMapping(
+            produces = "application/json",
             value = "/geos/all_regions"
     )
     public ResponseEntity<List<GeoData>> findAllRegions() {
@@ -102,13 +111,7 @@ public class AdvertisementController {
         return ResponseEntity.ok(kufarClient.getFilters());
     }
 
-    @GetMapping(
-            produces = "application/json",
-            value = "/manufacture"
-    )
-    public ResponseEntity<List<ManufacturerDto>> manufacture() {
-        return ResponseEntity.ok(kufarClient.getManufacture());
-    }
+
 
     @GetMapping(
             produces = "application/json",

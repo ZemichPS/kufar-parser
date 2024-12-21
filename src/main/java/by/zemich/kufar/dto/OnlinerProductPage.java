@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 @Data
-public class OnlinerPage {
+public class OnlinerProductPage {
     private PriceRange priceRange;
     private int producersTotal;
     private ProducerInfo producers;

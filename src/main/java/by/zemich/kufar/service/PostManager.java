@@ -15,8 +15,10 @@ import java.io.InputStream;
 import java.net.URL;
 import java.nio.file.Files;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -26,15 +28,18 @@ public class PostManager {
 
     private final List<PostTextProcessor> postTextProcessors;
     private final FileLoader fileLoader;
+    private final PostLimitedCache<UUID, SendPhoto> postLimitedCache = new PostLimitedCache<>(500);
 
     public SendPhoto createPhotoPostFromAd(Advertisement advertisement) {
         // TODO написать логику создания поста
-        InputFile photo = getInputFile(advertisement);
-        String text = getPostText(advertisement);
-        return SendPhoto.builder()
-                .photo(photo)
-                .caption(text)
-                .build();
+        return postLimitedCache.computeIfAbsent(advertisement.getId(), uuid -> {
+            InputFile photo = getInputFile(advertisement);
+            String text = getPostText(advertisement);
+            return SendPhoto.builder()
+                    .photo(photo)
+                    .caption(text)
+                    .build();
+        });
     }
 
     private String getPostText(Advertisement advertisement) {

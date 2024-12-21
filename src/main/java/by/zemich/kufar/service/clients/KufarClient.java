@@ -82,47 +82,71 @@ public class KufarClient {
         return restTemplate.getForObject(FILTER_URL, FilterDto.class);
     }
 
-    public List<ManufacturerDto> getManufacture() {
+    public List<FilterDto.RuleWrapper> getFilledManufacture() {
         FilterDto filterDto = restTemplate.getForObject(FILTER_URL, FilterDto.class);
 
-        List<ManufacturerDto> manufacturerDtos = new ArrayList<>();
-        filterDto.getMetadata().getParameters().getRefs().values().stream()
-                .filter(ref -> "phones_brand".equals(ref.getName()))
-                .flatMap(ref -> ref.getValues().stream())
-                .map(value -> value.getLabels().get("ru"))
-                .map(ManufacturerDto::new)
-                .forEach(manufacturerDtos::add);
+        FilterDto.Ref brandsRef = filterDto.getMetadata().getParameters().getRefs().values().stream()
+                .filter(ref -> "phones_brand".equals(ref.getName())).findFirst().get();
 
-        return manufacturerDtos;
-    }
+        System.out.println("brands: %s".formatted(brandsRef));
 
-    public List<ManufacturerDto> getFilledManufacture() {
-        FilterDto filterDto = restTemplate.getForObject(FILTER_URL, FilterDto.class);
+        FilterDto.Ref modelsRef = filterDto.getMetadata().getParameters().getRefs().values().stream()
+                .filter(ref -> "phones_model".equals(ref.getName())).findFirst().get();
 
-        final Set<Map<Integer, List<String>>> identifierModelsMapSet = filterDto.getMetadata().getParameters().getRefs().values().stream()
-                .filter(ref -> "phones_model".equals(ref.getName()))
-                .map(ref -> {
-                    Integer variationId = ref.getVariationId();
-                    List<String> models = ref.getValues().stream()
-                            .map(value -> value.getLabels().get("ru"))
-                            .toList();
-
-                    return Map.of(variationId, models);
-                }).collect(Collectors.toSet());
-
-//        filterDto.getMetadata().getParameters().getRules()
-//                .stream()
-//                .filter(ruleWrapper -> Objects.nonNull(ruleWrapper.getRule().getPhonesBrand()))
-//                .map(ruleWrapper -> {
-//                    List<String> refs = ruleWrapper.getRefs();
-//                    String phoneBrandNumber = ruleWrapper.getRule().getPhonesBrand();
-//                    ManufacturerDto manufacturerDto = new ManufacturerDto(phoneBrandNumber);
-//
-//
-//                }).collect(Collectors.toSet());
+        System.out.println("brands: %s".formatted(modelsRef));
+        filterDto.getMetadata().getParameters().getRules().stream()
+                .filter(ruleWrapper -> ruleWrapper.getRule().getCategory()!= null)
+                .filter(ruleWrapper -> ruleWrapper.getRule().getCategory().equalsIgnoreCase("17010"))
+                .filter(ruleWrapper -> )
+                .toList();
 
         return null;
+
+//        return filterDto.getMetadata().getParameters().getRules().stream()
+//                .filter(ruleWrapper -> ruleWrapper.getRule().getCategory() != null)
+//                .filter(ruleWrapper -> ruleWrapper.getRule().getCategory().equalsIgnoreCase("17010"))
+//                .filter(ruleWrapper -> ruleWrapper.getRule().getPhonesBrand() != null)
+//                .map(ruleWrapper -> {
+//                    Integer phoneBrand = Integer.parseInt(ruleWrapper.getRule().getPhonesBrand());
+//                    List<Integer> refs = ruleWrapper.getRefs().stream()
+//                            .map(Integer::parseInt)
+//                            .toList();
+//                    return Map.entry(phoneBrand, refs);
+//                })
+//                .map(entry -> {
+//                    Integer manufactureId = entry.getKey();
+//                    String brandName = brandsRef.getValues().stream()
+//                            .filter(value -> Integer.parseInt(value.getValue()) == manufactureId)
+//                            .map(value -> value.getLabels().get("ru"))
+//                            .findFirst().orElse("");
+//
+//                    List<ManufacturerDto.ModelDto> models = entry.getValue().stream()
+//                            .map(id -> modelsRef.getValues().stream()
+//                                    .filter(Objects::nonNull)
+//                                    .filter(value -> Integer.parseInt(value.getValue()) == id)
+//                                    .findFirst()
+//                            ).filter(Optional::isPresent)
+//                            .map(Optional::get)
+//                            .map(value -> value.getLabels().get("ru"))
+//                            .map(ManufacturerDto.ModelDto::new)
+//                            .toList();
+//                    return new ManufacturerDto(brandName, models);
+//                }).toList();
     }
+
+//    public List<ManufacturerDto> getManufacture() {
+//        FilterDto filterDto = restTemplate.getForObject(FILTER_URL, FilterDto.class);
+//
+//        List<ManufacturerDto> manufacturerDtos = new ArrayList<>();
+//        filterDto.getMetadata().getParameters().getRefs().values().stream()
+//                .filter(ref -> "phones_brand".equals(ref.getName()))
+//                .flatMap(ref -> ref.getValues().stream())
+//                .map(value -> value.getLabels().get("ru"))
+//                .map(ManufacturerDto::new)
+//                .forEach(manufacturerDtos::add);
+//
+//        return manufacturerDtos;
+//    }
 
     //
     public AdsDTO getAdsByModelAndPageNumber(String modelCategory, Integer pageSize) {
