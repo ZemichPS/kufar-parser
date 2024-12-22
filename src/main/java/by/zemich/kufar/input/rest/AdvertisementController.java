@@ -71,9 +71,9 @@ public class AdvertisementController {
             produces = "application/json",
             value = "/brands"
     )
-    public ResponseEntity<List<FilterDto.RuleWrapper>> getBrands() {
-        List<FilterDto.RuleWrapper>  filledManufacture = kufarClient.getFilledManufacture();
-        return ok(filledManufacture);
+    public ResponseEntity< List<ManufacturerDto>> getBrands() {
+        List<ManufacturerDto>  manufactures = kufarClient.getFilledManufacture();
+        return ok(manufactures);
     }
 
     @GetMapping(

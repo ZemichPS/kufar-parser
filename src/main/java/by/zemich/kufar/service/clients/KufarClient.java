@@ -82,56 +82,32 @@ public class KufarClient {
         return restTemplate.getForObject(FILTER_URL, FilterDto.class);
     }
 
-    public List<FilterDto.RuleWrapper> getFilledManufacture() {
+    public List<ManufacturerDto> getFilledManufacture() {
         FilterDto filterDto = restTemplate.getForObject(FILTER_URL, FilterDto.class);
+        Map<String, FilterDto.Ref> refs = filterDto.getMetadata().getParameters().getRefs();
+        List<FilterDto.RuleWrapper> rules = filterDto.getMetadata().getParameters().getRules();
 
-        FilterDto.Ref brandsRef = filterDto.getMetadata().getParameters().getRefs().values().stream()
-                .filter(ref -> "phones_brand".equals(ref.getName())).findFirst().get();
+        if (refs == null || rules == null) {
+            return Collections.emptyList();
+        }
+        return rules.stream()
+                .filter(ruleWrapper -> ruleWrapper.getRule() != null && "17010".equals(ruleWrapper.getRule().getCategory()))
+                .flatMap(ruleWrapper -> ruleWrapper.getRefs().stream())
+                .map(refs::get)
+                .filter(Objects::nonNull)
+                .filter(ref -> "phones_brand".equals(ref.getName()))
+                .flatMap(brandRef -> brandRef.getValues().stream()
+                        .map(value -> {
+                            String manufacturerName = value.getLabels().get("ru"); // Получаем имя производителя
+                            List<ManufacturerDto.ModelDto> models = refs.values().stream()
+                                    .filter(ref -> "phones_model".equals(ref.getName()))
+                                    .flatMap(modelRef -> modelRef.getValues().stream()
+                                            .map(modelValue -> new ManufacturerDto.ModelDto(modelValue.getLabels().get("ru"))))
+                                    .collect(Collectors.toList());
 
-        System.out.println("brands: %s".formatted(brandsRef));
-
-        FilterDto.Ref modelsRef = filterDto.getMetadata().getParameters().getRefs().values().stream()
-                .filter(ref -> "phones_model".equals(ref.getName())).findFirst().get();
-
-        System.out.println("brands: %s".formatted(modelsRef));
-        filterDto.getMetadata().getParameters().getRules().stream()
-                .filter(ruleWrapper -> ruleWrapper.getRule().getCategory()!= null)
-                .filter(ruleWrapper -> ruleWrapper.getRule().getCategory().equalsIgnoreCase("17010"))
-                .filter(ruleWrapper -> )
-                .toList();
-
-        return null;
-
-//        return filterDto.getMetadata().getParameters().getRules().stream()
-//                .filter(ruleWrapper -> ruleWrapper.getRule().getCategory() != null)
-//                .filter(ruleWrapper -> ruleWrapper.getRule().getCategory().equalsIgnoreCase("17010"))
-//                .filter(ruleWrapper -> ruleWrapper.getRule().getPhonesBrand() != null)
-//                .map(ruleWrapper -> {
-//                    Integer phoneBrand = Integer.parseInt(ruleWrapper.getRule().getPhonesBrand());
-//                    List<Integer> refs = ruleWrapper.getRefs().stream()
-//                            .map(Integer::parseInt)
-//                            .toList();
-//                    return Map.entry(phoneBrand, refs);
-//                })
-//                .map(entry -> {
-//                    Integer manufactureId = entry.getKey();
-//                    String brandName = brandsRef.getValues().stream()
-//                            .filter(value -> Integer.parseInt(value.getValue()) == manufactureId)
-//                            .map(value -> value.getLabels().get("ru"))
-//                            .findFirst().orElse("");
-//
-//                    List<ManufacturerDto.ModelDto> models = entry.getValue().stream()
-//                            .map(id -> modelsRef.getValues().stream()
-//                                    .filter(Objects::nonNull)
-//                                    .filter(value -> Integer.parseInt(value.getValue()) == id)
-//                                    .findFirst()
-//                            ).filter(Optional::isPresent)
-//                            .map(Optional::get)
-//                            .map(value -> value.getLabels().get("ru"))
-//                            .map(ManufacturerDto.ModelDto::new)
-//                            .toList();
-//                    return new ManufacturerDto(brandName, models);
-//                }).toList();
+                            return new ManufacturerDto(manufacturerName, models);
+                        }))
+                .collect(Collectors.toList());
     }
 
 //    public List<ManufacturerDto> getManufacture() {
