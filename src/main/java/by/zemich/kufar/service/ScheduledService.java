@@ -1,6 +1,7 @@
 package by.zemich.kufar.service;
 
 import by.zemich.kufar.dao.entity.Advertisement;
+import by.zemich.kufar.dao.entity.Manufacturer;
 import by.zemich.kufar.dto.AdDetailsDTO;
 import by.zemich.kufar.dto.AdsDTO;
 import by.zemich.kufar.service.api.PostPublisher;
@@ -21,6 +22,8 @@ public class ScheduledService {
     private final GeoService geoService;
     private final KufarClient kufarClient;
     private final List<PostPublisher> postPublishers;
+    private final ManufactureService manufactureService;
+    private final ModelService modelService;
 
     @Scheduled(initialDelay = 5_000, fixedDelay = 60_000)
     void parseAdsAndSaveIfNotExists() {
@@ -47,7 +50,7 @@ public class ScheduledService {
                         try {
                             publisher.publish(advertisement);
                         } catch (Exception e) {
-                            log.error("Failed to publish post in {}, Error: {}. ", publisher.getClass().getName(), e.getMessage());
+                            log.error("Failed to publish post in {}, Cause: {}. ", publisher.getClass().getName(), e.getMessage());
                             throw new RuntimeException(e);
                         }
                     });
@@ -62,7 +65,26 @@ public class ScheduledService {
     }
 
     @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
-    public void updateModelsList() {}
+    public void getAndUpdateManufacturesAndModelsList() {
+        kufarClient.getFilledManufacture().stream()
+                .forEach(manufacturerDto -> {
+                    manufactureService.getById(manufacturerDto.getId())
+                            .ifPresentOrElse(
+                                    manufacturer -> {
+                                        manufacturerDto.getModels().stream()
+                                                .filter(modelDto -> !modelService.existsByName(modelDto.getName()))
+                                                .map(Mapper::mapToEntity)
+                                                .forEach(model -> {
+                                                    manufacturer.addModel(model);
+                                                    manufactureService.save(manufacturer);
+                                                });
+                                    }, () -> {
+                                        Manufacturer manufacturer = Mapper.mapToEntity(manufacturerDto);
+                                        manufacturerDto.getModels().stream().map(Mapper::mapToEntity).forEach(manufacturer::addModel);
+                                        manufactureService.save(manufacturer);
+                                    });
+                });
+    }
 
 
 }

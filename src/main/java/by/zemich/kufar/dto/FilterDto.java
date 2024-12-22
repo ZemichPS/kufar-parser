@@ -29,7 +29,7 @@ public class FilterDto {
     @Data
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Ref {
-        private int variationId;
+        private String variationId;
         private String name;
         private String urlName;
         private boolean required;

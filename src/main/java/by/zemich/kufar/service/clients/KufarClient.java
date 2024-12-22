@@ -1,12 +1,10 @@
 package by.zemich.kufar.service.clients;
 
-import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dto.AdDetailsDTO;
 import by.zemich.kufar.dto.AdsDTO;
 import by.zemich.kufar.dto.FilterDto;
 import by.zemich.kufar.dto.GeoDataDTO;
 import by.zemich.kufar.service.AdvertisementService;
-import by.zemich.kufar.utils.Mapper;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -18,7 +16,6 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Component
@@ -84,47 +81,41 @@ public class KufarClient {
 
     public List<ManufacturerDto> getFilledManufacture() {
         FilterDto filterDto = restTemplate.getForObject(FILTER_URL, FilterDto.class);
-        Map<String, FilterDto.Ref> refs = filterDto.getMetadata().getParameters().getRefs();
-        List<FilterDto.RuleWrapper> rules = filterDto.getMetadata().getParameters().getRules();
 
-        if (refs == null || rules == null) {
-            return Collections.emptyList();
-        }
-        return rules.stream()
-                .filter(ruleWrapper -> ruleWrapper.getRule() != null && "17010".equals(ruleWrapper.getRule().getCategory()))
-                .flatMap(ruleWrapper -> ruleWrapper.getRefs().stream())
-                .map(refs::get)
-                .filter(Objects::nonNull)
-                .filter(ref -> "phones_brand".equals(ref.getName()))
-                .flatMap(brandRef -> brandRef.getValues().stream()
-                        .map(value -> {
-                            String manufacturerName = value.getLabels().get("ru"); // Получаем имя производителя
-                            List<ManufacturerDto.ModelDto> models = refs.values().stream()
-                                    .filter(ref -> "phones_model".equals(ref.getName()))
-                                    .flatMap(modelRef -> modelRef.getValues().stream()
-                                            .map(modelValue -> new ManufacturerDto.ModelDto(modelValue.getLabels().get("ru"))))
-                                    .collect(Collectors.toList());
+        List<FilterDto.RuleWrapper> ruleWrappers = filterDto.getMetadata().getParameters().getRules().stream()
+                .filter(ruleWrapper -> ruleWrapper.getRule().getCategory() != null)
+                .filter(ruleWrapper -> ruleWrapper.getRule().getCategory().equalsIgnoreCase("17010"))
+                .toList();
 
-                            return new ManufacturerDto(manufacturerName, models);
-                        }))
-                .collect(Collectors.toList());
+        List<FilterDto.Ref> phonesBrand = filterDto.getMetadata().getParameters().getRefs().values().stream()
+                .filter(ref1 -> ref1.getName().equalsIgnoreCase("phones_brand"))
+                .toList();
+
+        List<FilterDto.Ref> phonesModels = filterDto.getMetadata().getParameters().getRefs().values().stream()
+                .filter(ref1 -> ref1.getName().equalsIgnoreCase("phones_model"))
+                .toList();
+
+        return ruleWrappers.stream()
+                .map(
+                        ruleWrapper -> {
+                            String brandId = ruleWrapper.getRule().getPhonesBrand();
+                            String brandName = phonesBrand.stream().flatMap(ref -> ref.getValues().stream())
+                                    .filter(value -> value.getValue().equalsIgnoreCase(brandId))
+                                    .map(value -> value.getLabels().get("ru"))
+                                    .findFirst().orElse("");
+
+                            List<ManufacturerDto.ModelDto> modelList = ruleWrapper.getRefs().stream()
+                                    .flatMap(modelRefId -> phonesModels.stream().filter(ref -> ref.getVariationId().equals(modelRefId)))
+                                    .flatMap(ref -> ref.getValues().stream().map(value -> value.getLabels().get("ru")))
+                                    .map(ManufacturerDto.ModelDto::new)
+                                    .toList();
+
+                            return new ManufacturerDto(Objects.nonNull(brandId) ? Long.parseLong(brandId) : 0, brandName, modelList);
+                        }
+                ).filter(manufacturer -> manufacturer.getId() != 0)
+                .toList();
     }
 
-//    public List<ManufacturerDto> getManufacture() {
-//        FilterDto filterDto = restTemplate.getForObject(FILTER_URL, FilterDto.class);
-//
-//        List<ManufacturerDto> manufacturerDtos = new ArrayList<>();
-//        filterDto.getMetadata().getParameters().getRefs().values().stream()
-//                .filter(ref -> "phones_brand".equals(ref.getName()))
-//                .flatMap(ref -> ref.getValues().stream())
-//                .map(value -> value.getLabels().get("ru"))
-//                .map(ManufacturerDto::new)
-//                .forEach(manufacturerDtos::add);
-//
-//        return manufacturerDtos;
-//    }
-
-    //
     public AdsDTO getAdsByModelAndPageNumber(String modelCategory, Integer pageSize) {
         URI uri = UriComponentsBuilder.fromHttpUrl(GET_PAGE_BY_FILTER_URL)
                 .queryParam("phm", modelCategory)

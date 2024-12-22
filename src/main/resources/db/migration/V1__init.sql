@@ -1,6 +1,8 @@
 DROP TABLE IF EXISTS app.users CASCADE;
 DROP TABLE IF EXISTS app.advertisements CASCADE;
 DROP TABLE IF EXISTS app.geo CASCADE;
+DROP TABLE IF EXISTS app.manufacturers CASCADE;
+DROP TABLE IF EXISTS app.models;
 
 CREATE SCHEMA IF NOT EXISTS app;
 
@@ -17,8 +19,8 @@ CREATE TABLE app.advertisements
     type         VARCHAR(10),
     price_in_byn NUMERIC,
     price_in_usd NUMERIC,
-    details TEXT,
-    parameters JSONB,
+    details      TEXT,
+    parameters   JSONB,
     CONSTRAINT uniq_ad_id UNIQUE (ad_id)
 );
 
@@ -43,3 +45,18 @@ CREATE TABLE app.geo
     region INTEGER,
     area   INTEGER
 );
+
+CREATE TABLE app.manufactures
+(
+    id   BIGSERIAL PRIMARY KEY,
+    name VARCHAR(100)
+);
+
+CREATE TABLE app.models
+(
+    id             UUID PRIMARY KEY,
+    manufacture_id BIGSERIAL,
+    name           VARCHAR(100),
+    FOREIGN KEY (manufacture_id) REFERENCES app.manufactures (id)
+
+)

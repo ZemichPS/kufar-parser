@@ -1,17 +1,16 @@
 package by.zemich.kufar.dao.entity;
 
 import jakarta.persistence.*;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Setter;
-import lombok.ToString;
+import lombok.*;
 
 import java.util.List;
 
 @Entity
 @Getter @Setter
+@Builder @AllArgsConstructor @NoArgsConstructor
 @ToString(exclude = "models")
 @EqualsAndHashCode(exclude = "models")
+@Table(schema = "app", name = "manufactures")
 public class Manufacturer {
     @Id
     private Long id;

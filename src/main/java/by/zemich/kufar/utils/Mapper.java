@@ -2,10 +2,13 @@ package by.zemich.kufar.utils;
 
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dao.entity.GeoData;
+import by.zemich.kufar.dao.entity.Manufacturer;
+import by.zemich.kufar.dao.entity.Model;
 import by.zemich.kufar.dto.AdsDTO;
 import by.zemich.kufar.dto.Century21stGoodsPageDTO;
 import by.zemich.kufar.dto.GeoDataDTO;
 import by.zemich.kufar.service.api.MarketService;
+import by.zemich.kufar.service.clients.ManufacturerDto;
 
 import java.util.ArrayList;
 
@@ -46,6 +49,20 @@ public class Mapper {
                 .area(source.getArea())
                 .build();
     }
+
+    public static Manufacturer mapToEntity(ManufacturerDto source) {
+        return Manufacturer.builder()
+                .id(source.getId())
+                .name(source.getName())
+                .build();
+    }
+
+    public static Model mapToEntity(ManufacturerDto.ModelDto source) {
+        return Model.builder()
+                .name(source.getName())
+                .build();
+    }
+
 
     public static MarketService.ProductDataDto mapToDto(Century21stGoodsPageDTO.ProductDTO source){
         return new MarketService.ProductDataDto(source.getLink(), source.getPrice());
