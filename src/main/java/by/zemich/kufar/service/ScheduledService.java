@@ -13,6 +13,8 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +28,7 @@ public class ScheduledService {
     private final ModelService modelService;
 
     @Scheduled(initialDelay = 5_000, fixedDelay = 60_000)
-    void parseAdsAndSaveIfNotExists() {
+    public void getNewAdsAndSaveIfNotExists() {
         AdsDTO response = kufarClient.getNewAds();
 
         response.getAds().stream()
@@ -45,13 +47,13 @@ public class ScheduledService {
                     advertisement.setDetails(details);
                     return advertisementService.save(advertisement);
                 })
-                .forEach(advertisement -> {
+      //          .parallel()
+                .forEach(advertisement ->  {
                     postPublishers.forEach(publisher -> {
                         try {
                             publisher.publish(advertisement);
                         } catch (Exception e) {
                             log.error("Failed to publish post in {}, Cause: {}. ", publisher.getClass().getName(), e.getMessage());
-                            throw new RuntimeException(e);
                         }
                     });
                 });
@@ -66,7 +68,7 @@ public class ScheduledService {
 
     @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
     public void getAndUpdateManufacturesAndModelsList() {
-        kufarClient.getFilledManufacture().stream()
+        kufarClient.getFilledManufacture()
                 .forEach(manufacturerDto -> {
                     manufactureService.getById(manufacturerDto.getId())
                             .ifPresentOrElse(
@@ -78,9 +80,13 @@ public class ScheduledService {
                                                     manufacturer.addModel(model);
                                                     manufactureService.save(manufacturer);
                                                 });
-                                    }, () -> {
+                                    },
+                                    () -> {
                                         Manufacturer manufacturer = Mapper.mapToEntity(manufacturerDto);
-                                        manufacturerDto.getModels().stream().map(Mapper::mapToEntity).forEach(manufacturer::addModel);
+                                        manufacturerDto.getModels().stream()
+                                                .filter(Objects::nonNull)
+                                                .map(Mapper::mapToEntity)
+                                                .forEach(manufacturer::addModel);
                                         manufactureService.save(manufacturer);
                                     });
                 });

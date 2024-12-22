@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS app.users CASCADE;
 DROP TABLE IF EXISTS app.advertisements CASCADE;
 DROP TABLE IF EXISTS app.geo CASCADE;
-DROP TABLE IF EXISTS app.manufacturers CASCADE;
-DROP TABLE IF EXISTS app.models;
+DROP TABLE IF EXISTS app.manufactures CASCADE;
+DROP TABLE IF EXISTS app.models CASCADE ;
 
 CREATE SCHEMA IF NOT EXISTS app;
 
@@ -21,6 +21,7 @@ CREATE TABLE app.advertisements
     price_in_usd NUMERIC,
     details      TEXT,
     parameters   JSONB,
+    fully_functional BOOLEAN,
     CONSTRAINT uniq_ad_id UNIQUE (ad_id)
 );
 

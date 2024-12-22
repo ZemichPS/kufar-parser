@@ -54,6 +54,7 @@ public class Mapper {
         return Manufacturer.builder()
                 .id(source.getId())
                 .name(source.getName())
+                .models(new ArrayList<>())
                 .build();
     }
 

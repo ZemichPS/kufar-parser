@@ -7,11 +7,8 @@ import org.hibernate.annotations.UuidGenerator;
 import java.util.UUID;
 
 @Entity
-@Getter
-@Setter
-@Builder
-@NoArgsConstructor
-@AllArgsConstructor
+@Getter @Setter @Builder @ToString
+@NoArgsConstructor @AllArgsConstructor
 @Table(schema = "app", name = "models")
 public class Model {
     @Id

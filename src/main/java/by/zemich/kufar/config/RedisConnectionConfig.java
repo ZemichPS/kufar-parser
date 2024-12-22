@@ -20,7 +20,7 @@ public class RedisConnectionConfig {
 
     RedisStandaloneConfiguration configuration() {
         RedisStandaloneConfiguration configuration = new RedisStandaloneConfiguration();
-        configuration.setHostName("localhost");
+        configuration.setHostName("localhost"); // заменить на in-memory-db из docker compose (название сервиса)
         configuration.setPort(6379);
 
         return configuration;
@@ -28,7 +28,6 @@ public class RedisConnectionConfig {
 
     LettuceClientConfiguration clientConfiguration() {
         return LettuceClientConfiguration.builder()
-                .useSsl().and()
                 .commandTimeout(Duration.ofSeconds(2))
                 .shutdownTimeout(Duration.ZERO)
                 .build();

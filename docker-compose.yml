@@ -2,9 +2,9 @@ version: "3.7"
 
 services:
 
-  cache:
+  in-memory-db:
     container_name: cache
-    image: redis:7.4.1
+    image: redis:8.0-M02-alpine
     restart: always
     ports:
       - "6379:6379"
