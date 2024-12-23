@@ -11,12 +11,17 @@ import by.zemich.kufar.service.api.MarketService;
 import by.zemich.kufar.service.clients.ManufacturerDto;
 
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class Mapper {
     public static Advertisement mapToEntity(AdsDTO.AdDTO source) {
         return Advertisement.builder()
                 .adId(source.getAdId())
                 .link(source.getAdLink())
+                .images(source.getImages().stream()
+                        .map(AdsDTO.ImageDTO::getPath)
+                        .collect(Collectors.joining(";"))
+                )
                 .category(source.getCategory())
                 .companyAd(source.isCompanyAd())
                 .publishedAt(source.getListTime())

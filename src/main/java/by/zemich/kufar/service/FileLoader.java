@@ -13,6 +13,8 @@ import java.util.UUID;
 @Component
 public class FileLoader {
     public File downloadImage(String imageUrl) throws Exception {
+        if(imageUrl == null || imageUrl.isEmpty()) throw new RuntimeException("Image URL is empty");
+
         URL url = new URL(imageUrl);
         File tempFile = Files.createTempFile("telegram_image_"+ UUID.randomUUID(), ".jpg").toFile();
 

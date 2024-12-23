@@ -22,6 +22,7 @@ CREATE TABLE app.advertisements
     details      TEXT,
     parameters   JSONB,
     fully_functional BOOLEAN,
+    images TEXT,
     CONSTRAINT uniq_ad_id UNIQUE (ad_id)
 );
 

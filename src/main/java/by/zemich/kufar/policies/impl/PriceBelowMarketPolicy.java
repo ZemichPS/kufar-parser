@@ -20,11 +20,17 @@ public class PriceBelowMarketPolicy implements Policy<Advertisement> {
     // TODO написать логику
     @Override
     public boolean isSatisfiedBy(Advertisement advertisement) {
+        BigDecimal productPrice = advertisement.getPriceInByn();
+
         List<BigDecimal> prices = advertisementService.getAllByBrandAndModel(advertisement.getBrand(), advertisement.getModel()).stream()
                 .map(Advertisement::getPriceInByn)
                 .filter(price -> price.compareTo(BigDecimal.ZERO) > 0)
                 .toList();
-        BigDecimal marketPrice = priceAnalyzer.getMarketPrice(prices);
-        return advertisement.getPriceInByn().compareTo(marketPrice) >= 0;
+        try {
+            BigDecimal marketPrice = priceAnalyzer.getMarketPrice(prices);
+            return marketPrice.compareTo(productPrice) >= 0;
+        } catch (Exception e) {
+            return false;
+        }
     }
 }

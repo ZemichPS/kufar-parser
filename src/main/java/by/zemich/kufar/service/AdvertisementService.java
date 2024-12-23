@@ -34,8 +34,8 @@ public class AdvertisementService {
 
     public List<Advertisement> getAllByBrandAndModel(String brand, String model) {
         String parameters = createParameters(
-                List.of(new Advertisement.Parameter("getBrand", brand),
-                        new Advertisement.Parameter("model", model))
+                List.of(new Advertisement.Parameter("phones_brand", brand),
+                        new Advertisement.Parameter("phones_model", model))
         );
         return adsRepository.findAllByParameters(parameters);
     }

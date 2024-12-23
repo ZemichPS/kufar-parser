@@ -1,33 +1,30 @@
 package by.zemich.kufar.service.channels;
 
 import by.zemich.kufar.dao.entity.Advertisement;
-import by.zemich.kufar.policies.impl.OnlyFullyFunctionalAdsPolicy;
-import by.zemich.kufar.policies.impl.OnlyOriginalDevicesPolicy;
-import by.zemich.kufar.policies.impl.PriceBelowMarketPolicy;
-import by.zemich.kufar.service.AdvertisementService;
+import by.zemich.kufar.policies.impl.*;
 import by.zemich.kufar.service.PostManager;
-import by.zemich.kufar.service.PriceAnalyzer;
 import by.zemich.kufar.service.api.Channel;
 import by.zemich.kufar.service.api.PhotoMessenger;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 @Component
-public class MainChannel extends Channel {
+public class IphoneChannel extends Channel {
     private final PostManager postManager;
-    private final String CHANNEL_CHAT_ID = "-1002385506241";
-    private final String CHANNEL_CHAT_NANE = "Выгодные объявления с Kufar";
+    private final String CHANNEL_CHAT_ID = "-1002317731094";
+    private final String CHANNEL_CHAT_NANE = "Выгодные объявления с Kufar смартфонов Iphone";
 
 
-    public MainChannel(PhotoMessenger<SendPhoto> messenger,
-                       PostManager postManager,
-                       PriceAnalyzer priceAnalyzer,
-                       AdvertisementService advertisementService) {
+    public IphoneChannel(PhotoMessenger<SendPhoto> messenger,
+                         PostManager postManager) {
         super(messenger);
         this.postManager = postManager;
-        //this.policies.add(new PriceBelowMarketPolicy(priceAnalyzer, advertisementService));
-       // this.policies.add(new OnlyFullyFunctionalAdsPolicy());
+
+        //this.policies.add(new OnlyDefiniteBrandAdsPolicy("Apple"));
+        this.policies.add(new OnlyDefiniteBrandAndModelAdsPolicy("Apple", "iPhone 14 Pro"));
+        this.policies.add(new OnlyFullyFunctionalAdsPolicy());
         this.policies.add(new OnlyOriginalDevicesPolicy());
+        this.policies.add(new SmartphoneMemoryCapacityAdsPolicy("256"));
     }
 
     public void publish(Advertisement advertisement) throws Exception {

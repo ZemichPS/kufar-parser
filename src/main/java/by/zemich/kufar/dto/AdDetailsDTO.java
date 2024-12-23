@@ -1,6 +1,7 @@
 package by.zemich.kufar.dto;
 
 import by.zemich.kufar.config.VlDeserializer;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Data;
@@ -40,6 +41,7 @@ public class AdDetailsDTO {
     }
 
     @Data
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Parameter {
         private String pl; // Заголовок параметра
         @JsonDeserialize(using = VlDeserializer.class)

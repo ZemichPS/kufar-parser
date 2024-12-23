@@ -15,6 +15,11 @@ public class HeaderPostTextProcessor implements PostTextProcessor {
     public String getLine(Advertisement advertisement) {
         String brand = advertisement.getBrand();
         String model = advertisement.getModel();
-        return "\uD83D\uDCF1 %s %s".formatted(brand, model);
+        String header = brand + " " + model;
+        return "\uD83D\uDCF1 %s".formatted(getHtmlStyle(header));
+    }
+
+    private String getHtmlStyle(String source) {
+        return "<b>" + source + "</b>";
     }
 }

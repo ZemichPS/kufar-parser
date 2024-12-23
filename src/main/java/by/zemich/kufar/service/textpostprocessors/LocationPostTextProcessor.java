@@ -6,10 +6,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
-public class PricePostTextProcessor implements PostTextProcessor {
+public class LocationPostTextProcessor implements PostTextProcessor {
     @Override
     public String getLine(Advertisement advertisement) {
-        return "\uD83C\uDFF7\uFE0F Цена: " + advertisement.getPriceInByn();
+        return "\uD83C\uDF0D Адрес: " + advertisement.getFullAddress();
     }
 }

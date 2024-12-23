@@ -10,7 +10,7 @@ public class OnlyOriginalDevicesPolicy implements Policy<Advertisement> {
     }
 
     private boolean containsDataAboutUnoriginality(String adDetails) {
-        return adDetails.toLowerCase().contains("копия");
+        return !adDetails.toLowerCase().contains("копия");
     }
 
 

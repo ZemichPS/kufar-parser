@@ -4,21 +4,13 @@ import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.service.api.PostTextProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
 import java.io.File;
-import java.io.FileOutputStream;
-import java.io.InputStream;
-import java.net.URL;
-import java.nio.file.Files;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -33,10 +25,13 @@ public class PostManager {
     public SendPhoto createPhotoPostFromAd(Advertisement advertisement) {
         // TODO написать логику создания поста
         return postLimitedCache.computeIfAbsent(advertisement.getId(), uuid -> {
-            InputFile photo = getInputFile(advertisement);
+            InputFile photo = getInputFile(advertisement.getPhotoLink());
             String text = getPostText(advertisement);
+            SendPhoto sendPhoto = new SendPhoto();
             return SendPhoto.builder()
                     .photo(photo)
+                    .chatId("54504156056")
+                    .parseMode("HTML")
                     .caption(text)
                     .build();
         });
@@ -49,14 +44,14 @@ public class PostManager {
                 .collect(Collectors.joining("\n"));
     }
 
-    private InputFile getInputFile(Advertisement advertisement) {
+    private InputFile getInputFile(String photoLink) {
         File imageFile = null;
         try {
-            imageFile = fileLoader.downloadImage(advertisement.getPhotoLink());
+            imageFile = fileLoader.downloadImage(photoLink);
         } catch (Exception e) {
             log.error("Error downloading original advertisement image. Try to download default image from resources", e);
             try {
-                imageFile = fileLoader.loadFileFromResources("default.");
+                imageFile = fileLoader.loadFileFromResources("images/default.jpg");
             } catch (Exception ex) {
                 log.error("Error downloading image from resources", ex);
                 return new InputFile();

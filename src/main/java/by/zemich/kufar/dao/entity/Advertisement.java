@@ -8,9 +8,7 @@ import org.hibernate.annotations.UuidGenerator;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Table(name = "advertisements", schema = "app")
@@ -35,6 +33,7 @@ public class Advertisement {
     private BigDecimal priceInUsd;
     private String details;
     private boolean fullyFunctional;
+    private String images;
 
     @Type(JsonType.class)
     @Column(columnDefinition = "jsonb")
@@ -53,26 +52,63 @@ public class Advertisement {
             this.identity = identity;
             this.value = value;
         }
+
         private String identity;
         private String value;
         private String label;
     }
 
-    public String getBrand(){
+    public String getBrand() {
         return this.parameters.stream()
-                .filter(param -> "brand".equals(param.identity))
+                .filter(param -> "phones_brand".equals(param.identity))
                 .map(param -> param.value)
                 .findFirst().orElseThrow();
     }
 
-    public String getModel(){
+    public String getModel() {
         return this.parameters.stream()
-                .filter(param -> "model".equals(param.identity))
+                .filter(param -> "phones_model".equals(param.identity))
                 .map(param -> param.value)
-                .findFirst().orElseThrow();
+                .findFirst().orElse("");
     }
 
-    public String getPhotoLink(){
-        return "https://rms.kufar.by/v1/gallery/adim1/{filename.jpg}".replace("{filename.jpg}", this.link);
+    public Optional<String> getParameterValueByParameterName(String parameterName) {
+        return this.parameters.stream()
+                .filter(param -> parameterName.equals(param.identity))
+                .map(param -> param.value)
+                .findFirst();
+    }
+
+    public String getFullAddress() {
+        String region = this.parameters.stream()
+                .filter(param -> "region".equals(param.identity))
+                .map(param -> param.value)
+                .findFirst()
+                .orElse("");
+
+        String area = this.parameters.stream()
+                .filter(param -> "area".equals(param.identity))
+                .map(param -> param.value)
+                .findFirst()
+                .orElse("");
+
+        return area + ", " + region;
+    }
+
+    public String getCondition(){
+        return this.parameters.stream()
+                .filter(param -> "condition".equals(param.identity))
+                .map(param -> param.value)
+                .findFirst()
+                .orElse("");
+    }
+
+    public List<String> getLinks(){
+        return Arrays.stream(this.images.split(";")).toList();
+    }
+
+    public String getPhotoLink() {
+        String imageFilePath =  this.images.split(";")[0];
+        return "https://rms.kufar.by/v1/gallery/{filename.jpg}".replace("{filename.jpg}", imageFilePath);
     }
 }

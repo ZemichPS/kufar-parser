@@ -1,5 +1,6 @@
 package by.zemich.kufar.input.rest;
 
+import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.service.AdvertisementService;
 import by.zemich.kufar.service.GeoService;
 import by.zemich.kufar.service.ScheduledService;
@@ -7,9 +8,9 @@ import by.zemich.kufar.service.PriceAnalyzer;
 import by.zemich.kufar.service.clients.KufarClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -31,8 +32,8 @@ public class AdvertisementController {
             value = "/update_models"
     )
     public ResponseEntity<Void> getUpdateModels() {
-     scheduledService.getAndUpdateManufacturesAndModelsList();
-     return ResponseEntity.noContent().build();
+        scheduledService.getAndUpdateManufacturesAndModelsList();
+        return ResponseEntity.noContent().build();
     }
 
     @GetMapping(
@@ -51,6 +52,28 @@ public class AdvertisementController {
     public ResponseEntity<Void> getNewAdsAndSave() {
         scheduledService.getNewAdsAndSaveIfNotExists();
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(
+            produces = "application/json",
+            value = "/get_ad_by_brand_and_model"
+    )
+    public ResponseEntity<List<Advertisement>> getAdsByBrandAndModel(@RequestParam String brand, @RequestParam String model) {
+        final List<Advertisement> allByBrandAndModel = advertisementService.getAllByBrandAndModel(brand, model);
+        return ResponseEntity.ok(allByBrandAndModel);
+    }
+
+
+    @GetMapping(
+            produces = "application/json",
+            value = "/get_details"
+    )
+    public ResponseEntity<List<String>> getAdsByBrandAndModel() {
+        List<String> details = advertisementService.getAll().stream()
+                .filter(advertisement -> !advertisement.isCompanyAd())
+                .map(Advertisement::getDetails)
+                .toList();
+        return ResponseEntity.ok(details);
     }
 
 }

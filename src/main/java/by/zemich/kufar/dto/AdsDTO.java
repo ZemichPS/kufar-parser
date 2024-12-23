@@ -63,7 +63,8 @@ public class AdsDTO {
         @JsonDeserialize(using = VlDeserializer.class)
         private String vl;
         private String p;
-        private String v;
+      //  @JsonDeserialize(using = PriceDeserializer.class)
+        private Object v;
         private String pu;
     }
 

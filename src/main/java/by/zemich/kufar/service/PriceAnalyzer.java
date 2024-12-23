@@ -21,7 +21,7 @@ public class PriceAnalyzer {
      */
     public BigDecimal getMarketPrice(List<BigDecimal> prices) {
         if (prices == null || prices.isEmpty()) {
-            throw new IllegalArgumentException("Prices list cannot be null or empty");
+            throw new IllegalArgumentException("Price isFullyFunctional exception. Prices list cannot be null or empty");
         }
 
         // Фильтрация цен от выбросов
@@ -34,13 +34,6 @@ public class PriceAnalyzer {
         // Рыночная цена как среднее между средней и медианной
         BigDecimal marketPrice = meanPrice.add(medianPrice)
                 .divide(BigDecimal.valueOf(2), RoundingMode.HALF_UP);
-
-        // Вывод результатов (можно заменить на логирование в реальном приложении)
-        System.out.println("Оригинальные цены: " + prices);
-        System.out.println("Отфильтрованные цены: " + filteredPrices);
-        System.out.println("Средняя цена: " + meanPrice);
-        System.out.println("Медианная цена: " + medianPrice);
-        System.out.println("Рыночная цена: " + marketPrice);
 
         return marketPrice;
     }
@@ -61,9 +54,9 @@ public class PriceAnalyzer {
         BigDecimal lowerBound = q1.subtract(OUTLIER_MULTIPLIER.multiply(iqr));
         BigDecimal upperBound = q3.add(OUTLIER_MULTIPLIER.multiply(iqr));
 
-        System.out.println("межквартальный размах iqr: " + iqr);
-        System.out.println("нижняя граница: " + lowerBound);
-        System.out.println("верхняя граница: " + upperBound);
+//        System.out.println("межквартальный размах iqr: " + iqr);
+//        System.out.println("нижняя граница: " + lowerBound);
+//        System.out.println("верхняя граница: " + upperBound);
 
         // Возвращаем только те цены, которые находятся в допустимых пределах
         return sortedPrices.stream()

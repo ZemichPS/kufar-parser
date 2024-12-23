@@ -7,14 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 @Component
-@RequiredArgsConstructor
 public class ConditionPostTextProcessor implements PostTextProcessor {
-
-    private final ConditionAnalyzer conditionAnalyzer;
 
     @Override
     public String getLine(Advertisement advertisement) {
-        if (conditionAnalyzer.analyze(advertisement.getDetails())) return "Состояние: ✅";
-        return "Состояние: ⚠\uFE0F";
+        return "Состояние: " + advertisement.getCondition();
     }
 }

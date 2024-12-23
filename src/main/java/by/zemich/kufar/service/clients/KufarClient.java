@@ -44,9 +44,10 @@ public class KufarClient {
         URI uri = UriComponentsBuilder.fromHttpUrl(ADVERTISEMENT_URL)
                 .queryParam("cat", "17010")
                 .queryParam("lang", "17000")
-                .queryParam("size", "40")
+                .queryParam("size", "100")
                 .queryParam("sort", "lst.d")
                 .build().toUri();
+
         return restTemplate.getForObject(uri, AdsDTO.class);
     }
 

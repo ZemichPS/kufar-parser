@@ -9,6 +9,7 @@ import by.zemich.kufar.service.clients.KufarClient;
 import by.zemich.kufar.utils.Mapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
@@ -17,6 +18,7 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 @Service
+@EnableScheduling
 @RequiredArgsConstructor
 @Slf4j
 public class ScheduledService {
@@ -26,8 +28,9 @@ public class ScheduledService {
     private final List<PostPublisher> postPublishers;
     private final ManufactureService manufactureService;
     private final ModelService modelService;
+    private final ConditionAnalyzer conditionAnalyzer;
 
-    @Scheduled(initialDelay = 5_000, fixedDelay = 60_000)
+    @Scheduled(initialDelay = 5_000, fixedDelay = 30_000)
     public void getNewAdsAndSaveIfNotExists() {
         AdsDTO response = kufarClient.getNewAds();
 
@@ -45,15 +48,18 @@ public class ScheduledService {
                     AdDetailsDTO detailsDTO = kufarClient.getDetails(advertisement.getAdId());
                     String details = detailsDTO.getResult().getBody();
                     advertisement.setDetails(details);
+                    advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(details));
+                    log.info("устройство полностью исправно: {}", advertisement.isFullyFunctional());
                     return advertisementService.save(advertisement);
                 })
-      //          .parallel()
-                .forEach(advertisement ->  {
+                //.parallel()
+                .forEach(advertisement -> {
                     postPublishers.forEach(publisher -> {
                         try {
                             publisher.publish(advertisement);
                         } catch (Exception e) {
-                            log.error("Failed to publish post in {}, Cause: {}. ", publisher.getClass().getName(), e.getMessage());
+                            //throw new RuntimeException(e);
+                            log.error("Failed to publish post in {}, Cause: {}. ", publisher.getClass().getName(), e.toString());
                         }
                     });
                 });
