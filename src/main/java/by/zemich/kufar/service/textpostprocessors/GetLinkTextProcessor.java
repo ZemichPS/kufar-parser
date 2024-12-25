@@ -7,16 +7,12 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-@Order(Ordered.LOWEST_PRECEDENCE)
+@Order(Integer.MAX_VALUE)
 public class GetLinkTextProcessor implements PostTextProcessor {
     @Override
     public String getLine(Advertisement advertisement) {
-        return getHtmlLink(advertisement.getLink());
+        return PostTextProcessor.getHtmlLink(advertisement.getLink(), "ссылка");
     }
 
-    private String getHtmlLink(String sourceLink) {
-        return """
-                <a href="%s">ссылка</a>
-                """.formatted(sourceLink);
-    }
+
 }

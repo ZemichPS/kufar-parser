@@ -27,7 +27,6 @@ public class PostManager {
         return postLimitedCache.computeIfAbsent(advertisement.getId(), uuid -> {
             InputFile photo = getInputFile(advertisement.getPhotoLink());
             String text = getPostText(advertisement);
-            SendPhoto sendPhoto = new SendPhoto();
             return SendPhoto.builder()
                     .photo(photo)
                     .chatId("54504156056")

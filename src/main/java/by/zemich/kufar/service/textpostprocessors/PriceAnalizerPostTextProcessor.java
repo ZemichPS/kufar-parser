@@ -21,19 +21,28 @@ public class PriceAnalizerPostTextProcessor implements PostTextProcessor {
 
     @Override
     public String getLine(Advertisement advertisement) {
+        if (!advertisement.isFullyFunctional()) return "";
         String brand = advertisement.getBrand();
         String model = advertisement.getModel();
+        String memoryAmount = advertisement.getParameterValueByParameterName("phablet_phones_memory").orElse("");
 
-        final List<BigDecimal> prices = advertisementService.getAllByBrandAndModel(brand, model).stream()
-                .filter(Advertisement::isFullyFunctional)
-                .map(Advertisement::getPriceInByn)
-                .toList();
+        List<BigDecimal> prices;
+
+        if (memoryAmount.isEmpty()) {
+            return "";
+        } else {
+            prices = advertisementService.getAllByBrandAndModelWithMemoryAmount(brand, model, memoryAmount).stream()
+                    .filter(Advertisement::isFullyFunctional)
+                    .filter(adv -> adv.getCondition().equals(advertisement.getCondition()))
+                    .map(Advertisement::getPriceInByn)
+                    .toList();
+        }
 
         if (!minDataSize.isSatisfiedBy(prices.size())) {
             return "";
         }
 
         BigDecimal marketPrice = priceAnalyzer.getMarketPrice(prices);
-        return "Рыночная цена: " + marketPrice;
+        return "\uD83D\uDCC8 %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Средняя рыночная стоимость (c учётом состояния и объёма памяти) ")) + marketPrice;
     }
 }

@@ -54,10 +54,6 @@ public class PriceAnalyzer {
         BigDecimal lowerBound = q1.subtract(OUTLIER_MULTIPLIER.multiply(iqr));
         BigDecimal upperBound = q3.add(OUTLIER_MULTIPLIER.multiply(iqr));
 
-//        System.out.println("межквартальный размах iqr: " + iqr);
-//        System.out.println("нижняя граница: " + lowerBound);
-//        System.out.println("верхняя граница: " + upperBound);
-
         // Возвращаем только те цены, которые находятся в допустимых пределах
         return sortedPrices.stream()
                 .filter(price -> price.compareTo(BigDecimal.ZERO) > 0) // Фильтрация цен больше нуля

@@ -3,18 +3,21 @@ package by.zemich.kufar.policies.impl;
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.policies.api.Policy;
 
+import java.util.List;
+
 public class OnlyDefiniteBrandAndModelAdsPolicy implements Policy<Advertisement> {
 
     private final String BRAND_NAME;
-    private final String MODEL_NAME;
+    private final List<String> models;
 
-    public OnlyDefiniteBrandAndModelAdsPolicy(String brandName, String modelName) {
+    public OnlyDefiniteBrandAndModelAdsPolicy(String brandName, List<String> models) {
         BRAND_NAME = brandName;
-        MODEL_NAME = modelName;
+        this.models = models;
     }
 
     @Override
     public boolean isSatisfiedBy(Advertisement advertisement) {
-        return advertisement.getBrand().equalsIgnoreCase(BRAND_NAME) && advertisement.getModel().equalsIgnoreCase(MODEL_NAME);
+        String model = advertisement.getModel();
+        return advertisement.getBrand().equalsIgnoreCase(BRAND_NAME) &&  models.contains(model);
     }
 }
