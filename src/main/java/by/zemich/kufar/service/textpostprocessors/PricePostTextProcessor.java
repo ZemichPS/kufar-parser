@@ -10,6 +10,6 @@ import org.springframework.stereotype.Component;
 public class PricePostTextProcessor implements PostTextProcessor {
     @Override
     public String getLine(Advertisement advertisement) {
-        return "\uD83C\uDFF7\uFE0F Цена: " + advertisement.getPriceInByn();
+        return "\uD83C\uDFF7\uFE0F %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Цена")) + advertisement.getPriceInByn();
     }
 }

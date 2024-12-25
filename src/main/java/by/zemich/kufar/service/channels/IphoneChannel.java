@@ -8,6 +8,8 @@ import by.zemich.kufar.service.api.PhotoMessenger;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
+import java.util.List;
+
 @Component
 public class IphoneChannel extends Channel {
     private final PostManager postManager;
@@ -21,10 +23,16 @@ public class IphoneChannel extends Channel {
         this.postManager = postManager;
 
         //this.policies.add(new OnlyDefiniteBrandAdsPolicy("Apple"));
-        this.policies.add(new OnlyDefiniteBrandAndModelAdsPolicy("Apple", "iPhone 14 Pro"));
+        this.policies.add(new OnlyDefiniteBrandAndModelAdsPolicy(
+                "Apple",
+                List.of(
+                        "iPhone 14 Pro",
+                        "iPhone 13 Pro"
+                )
+        ));
         this.policies.add(new OnlyFullyFunctionalAdsPolicy());
         this.policies.add(new OnlyOriginalDevicesPolicy());
-        this.policies.add(new SmartphoneMemoryCapacityAdsPolicy("256"));
+        this.policies.add(new SmartphoneMemoryCapacityAdsPolicy(List.of("256", "512")));
     }
 
     public void publish(Advertisement advertisement) throws Exception {

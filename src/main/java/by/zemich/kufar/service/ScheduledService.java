@@ -12,10 +12,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
+
+import static java.lang.Thread.sleep;
 
 @Service
 @EnableScheduling
@@ -49,7 +52,6 @@ public class ScheduledService {
                     String details = detailsDTO.getResult().getBody();
                     advertisement.setDetails(details);
                     advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(details));
-                    log.info("устройство полностью исправно: {}", advertisement.isFullyFunctional());
                     return advertisementService.save(advertisement);
                 })
                 //.parallel()
@@ -57,6 +59,18 @@ public class ScheduledService {
                     postPublishers.forEach(publisher -> {
                         try {
                             publisher.publish(advertisement);
+                        }catch (TelegramApiRequestException telegramApiRequestException){
+                            log.error("Failed to publish post cause of {}. Try to sleep and push again", telegramApiRequestException.toString());
+                            try {
+                                sleep(5000);
+                                try {
+                                    publisher.publish(advertisement);
+                                } catch (Exception e) {
+                                    throw new RuntimeException(e);
+                                }
+                            } catch (InterruptedException e) {
+                                log.error("Failed to publish post {}", advertisement);
+                            }
                         } catch (Exception e) {
                             //throw new RuntimeException(e);
                             log.error("Failed to publish post in {}, Cause: {}. ", publisher.getClass().getName(), e.toString());

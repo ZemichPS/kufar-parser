@@ -1,16 +1,14 @@
 package by.zemich.kufar.input.rest;
 
 import by.zemich.kufar.dao.entity.Advertisement;
-import by.zemich.kufar.service.AdvertisementService;
-import by.zemich.kufar.service.GeoService;
-import by.zemich.kufar.service.ScheduledService;
-import by.zemich.kufar.service.PriceAnalyzer;
+import by.zemich.kufar.service.*;
 import by.zemich.kufar.service.clients.KufarClient;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -25,6 +23,7 @@ public class AdvertisementController {
     private final AdvertisementService advertisementService;
     private final PriceAnalyzer priceAnalyzer;
     private final ScheduledService scheduledService;
+    private final AdvertisementServiceFacade advertisementServiceFacade;
 
 
     @GetMapping(
@@ -74,6 +73,45 @@ public class AdvertisementController {
                 .map(Advertisement::getDetails)
                 .toList();
         return ResponseEntity.ok(details);
+    }
+
+    @GetMapping(
+            produces = "application/json",
+            value = "/update_condition"
+    )
+    public ResponseEntity<Void> updateAdvertisementCondition() {
+        advertisementServiceFacade.updateAdvertisementCauseNewConditionRules();
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(
+            produces = "application/json",
+            value = "/locations"
+    )
+    public ResponseEntity<List<String>> getLocations() {
+        List<String> list = advertisementService.getAll().stream().
+                map(advertisement -> advertisement.getParameterValueByParameterName("area"))
+                .filter(Optional::isPresent)
+                .map(Optional::get)
+                .distinct()
+                .toList();
+        return ResponseEntity.ok(list);
+    }
+
+    @GetMapping(
+            produces = "application/json",
+            value = "/by_locations"
+    )
+    public ResponseEntity<List<String>> getByLocations(@RequestParam String location) {
+//        List<String> list = advertisementService.getAll().stream().
+//                map(advertisement -> advertisement.getParameterValueByParameterName("area"))
+//                .filter(Optional::isPresent)
+//                .filter()
+//                .map(Optional::get)
+//                .distinct()
+//                .toList();
+//        return ResponseEntity.ok(list);
+        return null;
     }
 
 }

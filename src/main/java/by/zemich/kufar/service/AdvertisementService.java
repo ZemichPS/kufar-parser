@@ -40,6 +40,16 @@ public class AdvertisementService {
         return adsRepository.findAllByParameters(parameters);
     }
 
+    public List<Advertisement> getAllByBrandAndModelWithMemoryAmount(String brand, String model, String memoryAmount) {
+        String parameters = createParameters(
+                List.of(new Advertisement.Parameter("phones_brand", brand),
+                        new Advertisement.Parameter("phones_model", model),
+                        new Advertisement.Parameter("phablet_phones_memory", memoryAmount)
+                )
+        );
+        return adsRepository.findAllByParameters(parameters);
+    }
+
     public List<Advertisement> getAllByParameters(List<Advertisement.Parameter> parameters) {
         return adsRepository.findAllByParameters(createParameters(parameters));
     }

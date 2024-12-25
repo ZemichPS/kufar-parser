@@ -4,12 +4,14 @@ import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.service.api.PostTextProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Slf4j
+@Order(value = 3)
 @Component
 public class DetailsPostTextProcessor implements PostTextProcessor {
 
@@ -18,12 +20,10 @@ public class DetailsPostTextProcessor implements PostTextProcessor {
         String details = advertisement.getDetails();
         String removed = removeExtraCharacters(details);
         String prepared = reduce(removed);
-        return "Описание: " + getHtmlStyle(prepared);
+        return "⋮ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Описание")) + PostTextProcessor.getItalicHtmlStyle(prepared);
     }
 
-    private String getHtmlStyle(String source) {
-        return "<i>" + source + "</i>";
-    }
+
 
     private String reduce(String source) {
         if (source.length() >= 400) return source.substring(0, 400) + "...(смотри на сайте)";
