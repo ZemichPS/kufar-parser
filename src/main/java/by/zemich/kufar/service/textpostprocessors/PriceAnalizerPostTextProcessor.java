@@ -6,13 +6,18 @@ import by.zemich.kufar.service.AdvertisementService;
 import by.zemich.kufar.service.PriceAnalyzer;
 import by.zemich.kufar.service.api.PostTextProcessor;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.temporal.ChronoUnit;
+import java.time.temporal.TemporalUnit;
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
+@Log4j2
 public class PriceAnalizerPostTextProcessor implements PostTextProcessor {
 
     private final PriceAnalyzer priceAnalyzer;
@@ -31,11 +36,13 @@ public class PriceAnalizerPostTextProcessor implements PostTextProcessor {
         if (memoryAmount.isEmpty()) {
             return "";
         } else {
+            long startTime = System.currentTimeMillis();
             prices = advertisementService.getAllByBrandAndModelWithMemoryAmount(brand, model, memoryAmount).stream()
                     .filter(Advertisement::isFullyFunctional)
                     .filter(adv -> adv.getCondition().equals(advertisement.getCondition()))
                     .map(Advertisement::getPriceInByn)
                     .toList();
+            log.info("Время получения цены данной модели: {} millis", System.currentTimeMillis() - startTime);
         }
 
         if (!minDataSize.isSatisfiedBy(prices.size())) {
