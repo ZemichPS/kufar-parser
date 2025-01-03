@@ -60,5 +60,4 @@ CREATE TABLE app.models
     manufacture_id BIGSERIAL,
     name           VARCHAR(100),
     FOREIGN KEY (manufacture_id) REFERENCES app.manufactures (id)
-
 )
