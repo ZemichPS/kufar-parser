@@ -4,11 +4,12 @@ import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dao.entity.Manufacturer;
 import by.zemich.kufar.dto.AdDetailsDTO;
 import by.zemich.kufar.dto.AdsDTO;
-import by.zemich.kufar.service.api.PostPublisher;
+import by.zemich.kufar.service.api.AdvertisementPublisher;
 import by.zemich.kufar.service.clients.KufarClient;
 import by.zemich.kufar.utils.Mapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -16,7 +17,6 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 import static java.lang.Thread.sleep;
 
@@ -28,10 +28,11 @@ public class ScheduledService {
     private final AdvertisementService advertisementService;
     private final GeoService geoService;
     private final KufarClient kufarClient;
-    private final List<PostPublisher> postPublishers;
+    private final List<AdvertisementPublisher> advertisementPublishers;
     private final ManufactureService manufactureService;
     private final ModelService modelService;
     private final ConditionAnalyzer conditionAnalyzer;
+    private final PostManager postManager;
 
     @Scheduled(initialDelay = 5_000, fixedDelay = 30_000)
     public void getNewAdsAndSaveIfNotExists() {
@@ -56,11 +57,11 @@ public class ScheduledService {
                 })
                 //.parallel()
                 .forEach(advertisement -> {
-                    postPublishers.forEach(publisher -> {
+                    advertisementPublishers.forEach(publisher -> {
                         try {
                             publisher.publish(advertisement);
                         }catch (TelegramApiRequestException telegramApiRequestException){
-                            log.error("Failed to publish post cause of {}. Try to sleep and push again", telegramApiRequestException.toString());
+                            log.error("Failed to notify post cause of {}. Try to sleep and push again", telegramApiRequestException.toString());
                             try {
                                 sleep(5000);
                                 try {
@@ -69,11 +70,11 @@ public class ScheduledService {
                                     throw new RuntimeException(e);
                                 }
                             } catch (InterruptedException e) {
-                                log.error("Failed to publish post {}", advertisement);
+                                log.error("Failed to notify post {}", advertisement);
                             }
                         } catch (Exception e) {
                             //throw new RuntimeException(e);
-                            log.error("Failed to publish post in {}, Cause: {}. ", publisher.getClass().getName(), e.toString());
+                            log.error("Failed to notify post in {}, Cause: {}. ", publisher.getClass().getName(), e.toString());
                         }
                     });
                 });

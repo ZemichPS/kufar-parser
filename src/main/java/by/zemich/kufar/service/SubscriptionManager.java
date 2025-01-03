@@ -3,7 +3,7 @@ package by.zemich.kufar.service;
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dao.entity.UserSubscription;
 import by.zemich.kufar.dao.redisrepository.UserSubscriptionRepository;
-import by.zemich.kufar.service.api.PostPublisher;
+import by.zemich.kufar.service.api.AdvertisementPublisher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,7 +13,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @Slf4j
-public class SubscriptionManager implements PostPublisher {
+public class SubscriptionManager implements AdvertisementPublisher {
     private final UserSubscriptionRepository subscriptionRepository;
     private final NotificationService notificationService;
 

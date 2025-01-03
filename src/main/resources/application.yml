@@ -11,6 +11,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
+    show-sql: true
 
 server:
   port: 8085
@@ -21,3 +22,7 @@ rest-client:
 telegram:
   token: 7899332979:AAHbNgTpqFhNs3GSFggBduf-kPnLmAZOhPM
   name: KufarSpy
+
+
+minio:
+  notification-image-bucket-name: notification-images

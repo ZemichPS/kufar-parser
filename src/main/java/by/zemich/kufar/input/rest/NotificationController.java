@@ -1,0 +1,57 @@
+package by.zemich.kufar.input.rest;
+
+import by.zemich.kufar.dao.entity.Notification;
+import by.zemich.kufar.input.rest.dto.request.NotificationDto;
+import by.zemich.kufar.input.rest.dto.response.NotificationResponseDto;
+import by.zemich.kufar.input.rest.mapper.NotificationMapper;
+import by.zemich.kufar.service.ImageService;
+import by.zemich.kufar.service.NotificationService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.List;
+import java.util.UUID;
+
+@RestController
+@RequestMapping("api/v1/notifications")
+@RequiredArgsConstructor
+public class NotificationController {
+    private final NotificationService notificationService;
+    private final ImageService imageService;
+
+
+    @PostMapping()
+    public ResponseEntity<URI> publish(
+            @RequestBody NotificationDto notificationDto
+    ) {
+        String imageName = imageService.saveNotificationImage(notificationDto.getImage());
+        Notification notification = NotificationMapper.toEntity(notificationDto);
+        notification.setImageName(imageName);
+        UUID uuid = notificationService.notifyAll(notification);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{notificationId}")
+                .buildAndExpand(uuid)
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
+
+    @GetMapping()
+    public ResponseEntity<List<NotificationResponseDto>> getAll() {
+        List<NotificationResponseDto> responses = notificationService.getAll().stream()
+                .map(NotificationMapper::toResponseDto)
+                .toList();
+
+        return ResponseEntity.ok(responses);
+    }
+
+    @GetMapping("/notificationId")
+    public ResponseEntity<NotificationResponseDto> getById(@PathVariable UUID notificationId) {
+        NotificationResponseDto respons = NotificationMapper.toResponseDto(notificationService.getById(notificationId));
+        return ResponseEntity.ok(respons);
+    }
+
+}
