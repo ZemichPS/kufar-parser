@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class HeaderPostTextProcessor implements PostTextProcessor {
 
     @Override
-    public String getLine(Advertisement advertisement) {
+    public String process(Advertisement advertisement) {
         String brand = advertisement.getBrand();
         String model = advertisement.getModel();
         String header = brand + " " + model;

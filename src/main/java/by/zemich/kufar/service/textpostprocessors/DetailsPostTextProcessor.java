@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 public class DetailsPostTextProcessor implements PostTextProcessor {
 
     @Override
-    public String getLine(Advertisement advertisement) {
+    public String process(Advertisement advertisement) {
         String details = advertisement.getDetails();
         String removed = removeExtraCharacters(details);
         String prepared = reduce(removed);

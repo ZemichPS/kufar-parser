@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class LocationPostTextProcessor implements PostTextProcessor {
     @Override
-    public String getLine(Advertisement advertisement) {
+    public String process(Advertisement advertisement) {
         return "\uD83C\uDF0D %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Адрес")) + advertisement.getFullAddress();
     }
 }

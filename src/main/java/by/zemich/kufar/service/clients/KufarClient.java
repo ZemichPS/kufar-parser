@@ -1,9 +1,6 @@
 package by.zemich.kufar.service.clients;
 
-import by.zemich.kufar.dto.AdDetailsDTO;
-import by.zemich.kufar.dto.AdsDTO;
-import by.zemich.kufar.dto.FilterDto;
-import by.zemich.kufar.dto.GeoDataDTO;
+import by.zemich.kufar.dto.*;
 import by.zemich.kufar.service.AdvertisementService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,6 +24,7 @@ public class KufarClient {
     private final String AD_PHOTO_URL = "https://rms.kufar.by/v1/gallery/adim1/{filename.jpg}";
     private final String FILTER_URL = "https://api.kufar.by/taxonomy-proxy/v1/dispatch?routing=web_generalist&parent=17000&application=ad_listing&platform=web";
     private final String GET_PAGE_BY_FILTER_URL = "https://api.kufar.by/search-api/v2/search/rendered-paginated?cat=17010&cmp=0&cnd=1&lang=ru&pb=5&sort=lst.d";
+    private final String GET_CATEGORIES_URL = "https://api.kufar.by/category-tree/v1/category_tree";
 
     private final RestTemplate restTemplate;
     private final ObjectMapper objectMapper;
@@ -40,14 +38,13 @@ public class KufarClient {
         this.advertisementService = advertisementService;
     }
 
-    public AdsDTO getNewAds() {
+    public AdsDTO getNewAdsByCategoryIdAndByLastSort(String categoryId) {
         URI uri = UriComponentsBuilder.fromHttpUrl(ADVERTISEMENT_URL)
-                .queryParam("cat", "17010")
+                .queryParam("cat", categoryId)
                 .queryParam("lang", "17000")
                 .queryParam("size", "100")
                 .queryParam("sort", "lst.d")
                 .build().toUri();
-
         return restTemplate.getForObject(uri, AdsDTO.class);
     }
 
@@ -123,6 +120,12 @@ public class KufarClient {
                 .queryParam("size", pageSize)
                 .build().toUri();
         return restTemplate.getForObject(uri, AdsDTO.class);
+    }
+
+    public CategoriesDto getCategories() {
+        URI uri = UriComponentsBuilder.fromHttpUrl(GET_CATEGORIES_URL)
+                .build().toUri();
+        return restTemplate.getForObject(uri, CategoriesDto.class);
     }
 
 

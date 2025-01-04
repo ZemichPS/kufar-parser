@@ -25,7 +25,7 @@ public class PriceAnalizerPostTextProcessor implements PostTextProcessor {
     private final MinimumRequredAmountOfDataForMarketPriceCountingPolicy minDataSize = new MinimumRequredAmountOfDataForMarketPriceCountingPolicy();
 
     @Override
-    public String getLine(Advertisement advertisement) {
+    public String process(Advertisement advertisement) {
         if (!advertisement.isFullyFunctional()) return "";
         String brand = advertisement.getBrand();
         String model = advertisement.getModel();

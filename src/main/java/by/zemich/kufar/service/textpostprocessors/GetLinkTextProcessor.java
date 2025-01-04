@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 @Order(Integer.MAX_VALUE)
 public class GetLinkTextProcessor implements PostTextProcessor {
     @Override
-    public String getLine(Advertisement advertisement) {
+    public String process(Advertisement advertisement) {
         return PostTextProcessor.getHtmlLink(advertisement.getLink(), "ссылка");
     }
 

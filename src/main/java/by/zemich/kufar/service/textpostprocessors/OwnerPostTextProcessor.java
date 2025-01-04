@@ -7,7 +7,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class OwnerPostTextProcessor implements PostTextProcessor {
     @Override
-    public String getLine(Advertisement advertisement) {
+    public String process(Advertisement advertisement) {
         String text = PostTextProcessor.getBoldHtmlStyle("Объявление организации");
         return advertisement.isCompanyAd() ? "▫️ %s: да".formatted(text)  : "▫️  %s: нет".formatted(text);
     }

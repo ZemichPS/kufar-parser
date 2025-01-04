@@ -15,7 +15,7 @@ public class WarrantyPostTextProcessor implements PostTextProcessor {
     );
 
     @Override
-    public String getLine(Advertisement advertisement) {
+    public String process(Advertisement advertisement) {
         String details = advertisement.getDetails();
         return "▫️ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Наличие гарантии")) + (warrantyChecker(details) ? "есть": "неизвестно");
     }

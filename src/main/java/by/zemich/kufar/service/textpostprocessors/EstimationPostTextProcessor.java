@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 public class EstimationPostTextProcessor implements PostTextProcessor {
 
     @Override
-    public String getLine(Advertisement advertisement) {
+    public String process(Advertisement advertisement) {
         String line = "▫️ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Оценка состояния"));
         return advertisement.isFullyFunctional() ? line + " ✅" : line + " ⚠️";
     }

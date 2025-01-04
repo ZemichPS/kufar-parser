@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class EmoutOfRamPostTextProcessor implements PostTextProcessor {
 
     @Override
-    public String getLine(Advertisement advertisement) {
+    public String process(Advertisement advertisement) {
 
     String ramAmount = advertisement.getParameterValueByParameterName("phablet_phones_ram")
                 .orElse("");

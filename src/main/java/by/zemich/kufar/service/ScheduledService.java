@@ -1,15 +1,17 @@
 package by.zemich.kufar.service;
 
 import by.zemich.kufar.dao.entity.Advertisement;
+import by.zemich.kufar.dao.entity.Category;
 import by.zemich.kufar.dao.entity.Manufacturer;
+import by.zemich.kufar.dao.entity.Subcategory;
 import by.zemich.kufar.dto.AdDetailsDTO;
 import by.zemich.kufar.dto.AdsDTO;
+import by.zemich.kufar.dto.CategoriesDto;
 import by.zemich.kufar.service.api.AdvertisementPublisher;
 import by.zemich.kufar.service.clients.KufarClient;
 import by.zemich.kufar.utils.Mapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,7 @@ import java.util.Objects;
 import static java.lang.Thread.sleep;
 
 @Service
-//@EnableScheduling
+@EnableScheduling
 @RequiredArgsConstructor
 @Slf4j
 public class ScheduledService {
@@ -32,11 +34,12 @@ public class ScheduledService {
     private final ManufactureService manufactureService;
     private final ModelService modelService;
     private final ConditionAnalyzer conditionAnalyzer;
-    private final PostManager postManager;
+    private final CategoryService categoryService;
 
-    @Scheduled(initialDelay = 5_000, fixedDelay = 30_000)
+    //@Scheduled(initialDelay = 5_000, fixedDelay = 30_000)
     public void getNewAdsAndSaveIfNotExists() {
-        AdsDTO response = kufarClient.getNewAds();
+
+        AdsDTO response = kufarClient.getNewAdsByCategoryIdAndByLastSort("17010");
 
         response.getAds().stream()
                 .filter(dto -> !advertisementService.existsByAdId(dto.getAdId()))
@@ -60,7 +63,7 @@ public class ScheduledService {
                     advertisementPublishers.forEach(publisher -> {
                         try {
                             publisher.publish(advertisement);
-                        }catch (TelegramApiRequestException telegramApiRequestException){
+                        } catch (TelegramApiRequestException telegramApiRequestException) {
                             log.error("Failed to notify post cause of {}. Try to sleep and push again", telegramApiRequestException.toString());
                             try {
                                 sleep(5000);
@@ -80,14 +83,14 @@ public class ScheduledService {
                 });
     }
 
-    @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
+   // @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
     public void updateGeoData() {
         kufarClient.getGeoData().stream()
                 .map(Mapper::mapToEntity)
                 .forEach(geoService::save);
     }
 
-    @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
+   // @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
     public void getAndUpdateManufacturesAndModelsList() {
         kufarClient.getFilledManufacture()
                 .forEach(manufacturerDto -> {
@@ -111,6 +114,22 @@ public class ScheduledService {
                                         manufactureService.save(manufacturer);
                                     });
                 });
+    }
+
+
+    @Scheduled(initialDelay = 5_000, fixedDelay = 20_000)
+    public void getAndUpdateCategories() {
+        CategoriesDto categories = kufarClient.getCategories();
+        categories.getCategories().stream()
+                .map(categoryDto -> {
+                    Category category = Mapper.mapToEntity(categoryDto);
+                    categoryDto.getSubcategories().stream()
+                            .map(Mapper::mapToEntity)
+                            .forEach(category::addSubcategory);
+                    return category;
+                })
+                .forEach(categoryService::save);
+
     }
 
 

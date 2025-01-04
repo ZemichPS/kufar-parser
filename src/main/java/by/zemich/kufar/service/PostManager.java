@@ -10,7 +10,6 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.InputFile;
 
 import java.io.File;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 import java.util.UUID;
@@ -59,7 +58,7 @@ public class PostManager {
 
     private String processPostText(Advertisement advertisement) {
         return postTextProcessors.stream()
-                .map(processor -> processor.getLine(advertisement))
+                .map(processor -> processor.process(advertisement))
                 .filter(s -> !s.isEmpty() && !s.isBlank())
                 .collect(Collectors.joining("\n"));
     }

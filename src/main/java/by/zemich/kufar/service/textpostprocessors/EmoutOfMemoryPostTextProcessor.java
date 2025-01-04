@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 public class EmoutOfMemoryPostTextProcessor implements PostTextProcessor {
 
     @Override
-    public String getLine(Advertisement advertisement) {
+    public String process(Advertisement advertisement) {
         String memoryAmount = advertisement.getParameterValueByParameterName("phablet_phones_memory")
                 .orElse("");
         return memoryAmount.isEmpty() ? "" : "▫️ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Объём памяти")) + memoryAmount;

@@ -18,7 +18,7 @@ public class ReferalPostTextProcessor implements PostTextProcessor {
     private final AdmitadClient admitadClient;
 
     @Override
-    public String getLine(Advertisement advertisement) {
+    public String process(Advertisement advertisement) {
         return marketServices.stream()
                 .map(marketService -> getReferalLine(marketService, advertisement))
                 .collect(Collectors.joining("\n"));

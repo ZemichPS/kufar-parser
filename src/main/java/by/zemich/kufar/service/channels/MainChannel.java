@@ -2,12 +2,15 @@ package by.zemich.kufar.service.channels;
 
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dao.entity.Notification;
+import by.zemich.kufar.policies.impl.CategoryPolicy;
 import by.zemich.kufar.policies.impl.OnlyOriginalDevicesPolicy;
 import by.zemich.kufar.service.PostManager;
 import by.zemich.kufar.service.api.Channel;
 import by.zemich.kufar.service.api.PhotoMessenger;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
+
+import java.util.List;
 
 @Component
 public class MainChannel extends Channel {
@@ -18,7 +21,12 @@ public class MainChannel extends Channel {
                        PostManager postManager
     ) {
         super(messenger, postManager);
-        this.policies.add(new OnlyOriginalDevicesPolicy());
+        this.policies.addAll(
+                List.of(
+                        new OnlyOriginalDevicesPolicy(),
+                        new CategoryPolicy("17010")
+                )
+        );
     }
 
     @Override

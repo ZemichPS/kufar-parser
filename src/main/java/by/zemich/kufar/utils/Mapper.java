@@ -1,10 +1,8 @@
 package by.zemich.kufar.utils;
 
-import by.zemich.kufar.dao.entity.Advertisement;
-import by.zemich.kufar.dao.entity.GeoData;
-import by.zemich.kufar.dao.entity.Manufacturer;
-import by.zemich.kufar.dao.entity.Model;
+import by.zemich.kufar.dao.entity.*;
 import by.zemich.kufar.dto.AdsDTO;
+import by.zemich.kufar.dto.CategoriesDto;
 import by.zemich.kufar.dto.Century21stGoodsPageDTO;
 import by.zemich.kufar.dto.GeoDataDTO;
 import by.zemich.kufar.service.api.MarketService;
@@ -73,4 +71,25 @@ public class Mapper {
     public static MarketService.ProductDataDto mapToDto(Century21stGoodsPageDTO.ProductDTO source){
         return new MarketService.ProductDataDto(source.getLink(), source.getPrice());
     }
+
+    public static Category mapToEntity(CategoriesDto.CategoryDto source) {
+        return Category.builder()
+                .id(source.getId())
+                .name(source.getName())
+                .version(source.getVersion())
+                .ordered(source.getOrder())
+                .subcategories(new ArrayList<>())
+                .build();
+    }
+
+    public static Subcategory mapToEntity(CategoriesDto.CategoryDto.SubcategoryDto source) {
+        return Subcategory.builder()
+                .id(source.getId())
+                .ordered(source.getOrder())
+                .name(source.getName())
+                .redirect(source.getRedirect())
+                .build();
+    }
+
+
 }

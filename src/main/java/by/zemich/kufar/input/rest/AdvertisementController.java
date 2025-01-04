@@ -1,6 +1,7 @@
 package by.zemich.kufar.input.rest;
 
 import by.zemich.kufar.dao.entity.Advertisement;
+import by.zemich.kufar.dto.CategoriesDto;
 import by.zemich.kufar.service.*;
 import by.zemich.kufar.service.clients.KufarClient;
 import lombok.RequiredArgsConstructor;
@@ -96,6 +97,15 @@ public class AdvertisementController {
                 .distinct()
                 .toList();
         return ResponseEntity.ok(list);
+    }
+
+
+    @GetMapping(
+            produces = "application/json",
+            value = "/categories"
+    )
+    public ResponseEntity<CategoriesDto> getCategories() {
+        return ResponseEntity.ok(kufarClient.getCategories());
     }
 
     @GetMapping(

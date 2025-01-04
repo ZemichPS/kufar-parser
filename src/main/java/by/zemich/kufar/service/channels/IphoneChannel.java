@@ -21,13 +21,17 @@ public class IphoneChannel extends Channel {
                          PostManager postManager) {
         super(messenger, postManager);
 
-        this.policies.add(new OnlyDefiniteBrandAndModelAdsPolicy(
-                "Apple",
+        this.policies.addAll(
                 List.of(
-                        "iPhone 14 Pro",
-                        "iPhone 13 Pro"
-                )
-        ));
+                        new OnlyDefiniteBrandAndModelAdsPolicy(
+                                "Apple",
+                                List.of(
+                                        "iPhone 14 Pro",
+                                        "iPhone 13 Pro"
+                                )
+                        ),
+                        new CategoryPolicy("17010"))
+        );
         this.policies.add(new OnlyFullyFunctionalAdsPolicy());
         this.policies.add(new OnlyOriginalDevicesPolicy());
         this.policies.add(new SmartphoneMemoryCapacityAdsPolicy(List.of("256", "512")));
