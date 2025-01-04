@@ -23,6 +23,7 @@ public class ClothesChannel extends Channel {
         this.policies.add(
              new CategoryPolicy("8110").or(new CategoryPolicy("8080"))
         );
+        this.policies.add(new AreaPolicy("Гомель"));
     }
 
     @Override

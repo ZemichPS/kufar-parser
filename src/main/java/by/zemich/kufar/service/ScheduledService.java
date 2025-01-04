@@ -41,14 +41,12 @@ public class ScheduledService {
     public void getNewAdsAndSaveIfNotExists() {
 
         List<String> categories = List.of(
-                //        "17010",
-                "8080"
+                "8080",
+                "17010"
         );
-
 
         categories.forEach(category -> {
             AdsDTO response = kufarClient.getNewAdsByCategoryIdAndByLastSort(category);
-
             response.getAds().stream()
                     .filter(dto -> !advertisementService.existsByAdId(dto.getAdId()))
                     .map(adDTO -> {
@@ -124,7 +122,6 @@ public class ScheduledService {
                                     });
                 });
     }
-
 
     @Scheduled(initialDelay = 10_000, fixedDelay = 21_600_000)
     public void getAndUpdateCategories() {
