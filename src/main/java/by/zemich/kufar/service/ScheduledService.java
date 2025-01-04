@@ -41,7 +41,7 @@ public class ScheduledService {
     public void getNewAdsAndSaveIfNotExists() {
 
         List<String> categories = List.of(
-        //        "17010",
+                //        "17010",
                 "8080"
         );
 
@@ -84,8 +84,8 @@ public class ScheduledService {
                                     log.error("Failed to notify post {}", advertisement);
                                 }
                             } catch (Exception e) {
-                                throw new RuntimeException(e);
-                                //log.error("Failed to notify post in {}, Cause: {}. ", publisher.getClass().getName(), e.getMessage());
+                                //throw new RuntimeException(e);
+                                log.error("Failed to notify post in {}, Cause: {}. ", publisher.getClass().getName(), e.getMessage() + " cause " + e.getCause());
                             }
                         });
                     });

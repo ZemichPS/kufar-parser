@@ -26,12 +26,6 @@ public class ClothesChannel extends Channel {
     }
 
     @Override
-    public void publish(Advertisement advertisement) throws Exception {
-        System.out.println("Я в методе publish ClothesChannel");
-        super.publish(advertisement);
-    }
-
-    @Override
     public String getChannelName() {
         return this.CHANNEL_CHAT_NANE;
     }
