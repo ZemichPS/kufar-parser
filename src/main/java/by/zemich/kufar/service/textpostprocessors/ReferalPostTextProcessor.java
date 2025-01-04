@@ -24,6 +24,11 @@ public class ReferalPostTextProcessor implements PostTextProcessor {
                 .collect(Collectors.joining("\n"));
     }
 
+    @Override
+    public boolean isApplicable(Advertisement advertisement) {
+        return false;
+    }
+
     private String getReferalLine(MarketService marketService, Advertisement advertisement) {
         MarketService.ProductDataDto productData = marketService.getProductDataByAdvertisement(advertisement);
         final String affiliatedLink = admitadClient.getAffiliatedLink(productData.linkOnProductPage());

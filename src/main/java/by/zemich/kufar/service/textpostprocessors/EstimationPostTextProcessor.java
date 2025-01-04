@@ -15,4 +15,9 @@ public class EstimationPostTextProcessor implements PostTextProcessor {
         String line = "▫️ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Оценка состояния"));
         return advertisement.isFullyFunctional() ? line + " ✅" : line + " ⚠️";
     }
+
+    @Override
+    public boolean isApplicable(Advertisement advertisement) {
+        return true;
+    }
 }

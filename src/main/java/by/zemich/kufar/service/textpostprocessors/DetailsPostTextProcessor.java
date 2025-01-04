@@ -23,6 +23,10 @@ public class DetailsPostTextProcessor implements PostTextProcessor {
         return "⋮ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Описание")) + PostTextProcessor.getItalicHtmlStyle(prepared);
     }
 
+    @Override
+    public boolean isApplicable(Advertisement advertisement) {
+        return true;
+    }
 
 
     private String reduce(String source) {

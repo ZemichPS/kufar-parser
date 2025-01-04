@@ -58,6 +58,7 @@ public class PostManager {
 
     private String processPostText(Advertisement advertisement) {
         return postTextProcessors.stream()
+                .filter(postTextProcessor -> postTextProcessor.isApplicable(advertisement))
                 .map(processor -> processor.process(advertisement))
                 .filter(s -> !s.isEmpty() && !s.isBlank())
                 .collect(Collectors.joining("\n"));

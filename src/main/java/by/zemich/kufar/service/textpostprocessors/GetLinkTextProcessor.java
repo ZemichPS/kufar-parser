@@ -14,5 +14,10 @@ public class GetLinkTextProcessor implements PostTextProcessor {
         return PostTextProcessor.getHtmlLink(advertisement.getLink(), "ссылка");
     }
 
+    @Override
+    public boolean isApplicable(Advertisement advertisement) {
+        return true;
+    }
+
 
 }

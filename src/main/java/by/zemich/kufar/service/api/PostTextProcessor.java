@@ -5,6 +5,8 @@ import by.zemich.kufar.dao.entity.Advertisement;
 public interface PostTextProcessor {
     String process(Advertisement advertisement);
 
+    boolean isApplicable(Advertisement advertisement);
+
     static String getItalicHtmlStyle(String source) {
         return "<i>" + source + "</i>";
     }

@@ -16,4 +16,9 @@ public class EmoutOfRamPostTextProcessor implements PostTextProcessor {
                 .orElse("");
         return ramAmount.isEmpty() ? "" : "▫️ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Объём ОЗУ")) + ramAmount;
     }
+
+    @Override
+    public boolean isApplicable(Advertisement advertisement) {
+        return advertisement.getParameterValueByParameterName("phablet_phones_ram").isPresent();
+    }
 }

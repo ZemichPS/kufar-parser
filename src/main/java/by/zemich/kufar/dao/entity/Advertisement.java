@@ -58,18 +58,18 @@ public class Advertisement {
         private String label;
     }
 
-    public String getBrand() {
+    public Optional<String> getBrand() {
         return this.parameters.stream()
                 .filter(param -> "phones_brand".equals(param.identity))
                 .map(param -> param.value)
-                .findFirst().orElseThrow();
+                .findFirst();
     }
 
-    public String getModel() {
+    public Optional<String> getModel() {
         return this.parameters.stream()
                 .filter(param -> "phones_model".equals(param.identity))
                 .map(param -> param.value)
-                .findFirst().orElse("");
+                .findFirst();
     }
 
     public Optional<String> getParameterValueByParameterName(String parameterName) {

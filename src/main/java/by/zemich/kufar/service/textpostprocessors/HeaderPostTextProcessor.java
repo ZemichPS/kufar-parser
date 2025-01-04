@@ -13,10 +13,15 @@ public class HeaderPostTextProcessor implements PostTextProcessor {
 
     @Override
     public String process(Advertisement advertisement) {
-        String brand = advertisement.getBrand();
-        String model = advertisement.getModel();
+        String brand = advertisement.getBrand().orElse("");
+        String model = advertisement.getModel().orElse("");
         String header = brand + " " + model;
         return "\uD83D\uDCF1 %s".formatted(getHtmlStyle(header));
+    }
+
+    @Override
+    public boolean isApplicable(Advertisement advertisement) {
+        return advertisement.getBrand().isPresent() && advertisement.getModel().isPresent();
     }
 
     private String getHtmlStyle(String source) {

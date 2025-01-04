@@ -27,8 +27,10 @@ public class PriceAnalizerPostTextProcessor implements PostTextProcessor {
     @Override
     public String process(Advertisement advertisement) {
         if (!advertisement.isFullyFunctional()) return "";
-        String brand = advertisement.getBrand();
-        String model = advertisement.getModel();
+        if (advertisement.getBrand().isEmpty() || advertisement.getModel().isEmpty()) return "";
+
+        String brand = advertisement.getBrand().orElse("");
+        String model = advertisement.getModel().orElse("");
         String memoryAmount = advertisement.getParameterValueByParameterName("phablet_phones_memory").orElse("");
 
         List<BigDecimal> prices;
@@ -51,5 +53,10 @@ public class PriceAnalizerPostTextProcessor implements PostTextProcessor {
 
         BigDecimal marketPrice = priceAnalyzer.getMarketPrice(prices);
         return "\uD83D\uDCC8 %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Средняя рыночная стоимость (c учётом состояния и объёма памяти) ")) + marketPrice;
+    }
+
+    @Override
+    public boolean isApplicable(Advertisement advertisement) {
+        return advertisement.getBrand() != null && advertisement.getModel() != null;
     }
 }

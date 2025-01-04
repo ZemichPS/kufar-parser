@@ -22,7 +22,13 @@ public class PriceBelowMarketPolicy implements Policy<Advertisement> {
     public boolean isSatisfiedBy(Advertisement advertisement) {
         BigDecimal productPrice = advertisement.getPriceInByn();
 
-        List<BigDecimal> prices = advertisementService.getAllByBrandAndModel(advertisement.getBrand(), advertisement.getModel()).stream()
+        if(advertisement.getModel().isEmpty()) return false;
+        if(advertisement.getBrand().isEmpty()) return false;
+
+        String model = advertisement.getModel().get();
+        String brand = advertisement.getBrand().get();
+
+        List<BigDecimal> prices = advertisementService.getAllByBrandAndModel(brand, model).stream()
                 .map(Advertisement::getPriceInByn)
                 .filter(price -> price.compareTo(BigDecimal.ZERO) > 0)
                 .toList();

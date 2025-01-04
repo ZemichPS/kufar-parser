@@ -1,12 +1,13 @@
 package by.zemich.kufar.dao.jparepository;
 
 import by.zemich.kufar.dao.entity.Category;
+import by.zemich.kufar.dao.entity.Subcategory;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import java.util.Optional;
+import java.util.List;
 
 @Repository
-public interface CategoryRepository extends JpaRepository<Category, String> {
-    Optional<Category> findByName(String name);
+public interface SubcategoryRepository extends JpaRepository<Subcategory, String> {
+    List<Subcategory> findAllByCategory(Category category);
 }

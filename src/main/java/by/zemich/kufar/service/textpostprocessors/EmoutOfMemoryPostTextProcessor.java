@@ -15,4 +15,9 @@ public class EmoutOfMemoryPostTextProcessor implements PostTextProcessor {
                 .orElse("");
         return memoryAmount.isEmpty() ? "" : "▫️ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Объём памяти")) + memoryAmount;
     }
+
+    @Override
+    public boolean isApplicable(Advertisement advertisement) {
+        return advertisement.getParameterValueByParameterName("phablet_phones_memory").isPresent();
+    }
 }

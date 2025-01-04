@@ -17,7 +17,8 @@ public class OnlyDefiniteBrandAndModelAdsPolicy implements Policy<Advertisement>
 
     @Override
     public boolean isSatisfiedBy(Advertisement advertisement) {
-        String model = advertisement.getModel();
-        return advertisement.getBrand().equalsIgnoreCase(BRAND_NAME) &&  models.contains(model);
+        String model = advertisement.getModel().orElse("");
+        String brand = advertisement.getBrand().orElse("");
+        return brand.equalsIgnoreCase(BRAND_NAME) &&  models.contains(model);
     }
 }

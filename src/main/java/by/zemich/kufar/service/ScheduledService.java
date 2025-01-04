@@ -36,61 +36,70 @@ public class ScheduledService {
     private final ConditionAnalyzer conditionAnalyzer;
     private final CategoryService categoryService;
 
-    //@Scheduled(initialDelay = 5_000, fixedDelay = 30_000)
+
+    @Scheduled(initialDelay = 5_000, fixedDelay = 10_000)
     public void getNewAdsAndSaveIfNotExists() {
 
-        AdsDTO response = kufarClient.getNewAdsByCategoryIdAndByLastSort("17010");
+        List<String> categories = List.of(
+        //        "17010",
+                "8080"
+        );
 
-        response.getAds().stream()
-                .filter(dto -> !advertisementService.existsByAdId(dto.getAdId()))
-                .map(adDTO -> {
-                    Advertisement advertisement = Mapper.mapToEntity(adDTO);
-                    adDTO.getAdParameters().stream()
-                            .map(Mapper::mapToEntity)
-                            .forEach(advertisement::addParameter);
-                    return advertisement;
-                })
-                .map(advertisementService::save)
-                .map(advertisement -> {
-                    AdDetailsDTO detailsDTO = kufarClient.getDetails(advertisement.getAdId());
-                    String details = detailsDTO.getResult().getBody();
-                    advertisement.setDetails(details);
-                    advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(details));
-                    return advertisementService.save(advertisement);
-                })
-                //.parallel()
-                .forEach(advertisement -> {
-                    advertisementPublishers.forEach(publisher -> {
-                        try {
-                            publisher.publish(advertisement);
-                        } catch (TelegramApiRequestException telegramApiRequestException) {
-                            log.error("Failed to notify post cause of {}. Try to sleep and push again", telegramApiRequestException.toString());
+
+        categories.forEach(category -> {
+            AdsDTO response = kufarClient.getNewAdsByCategoryIdAndByLastSort(category);
+
+            response.getAds().stream()
+                    .filter(dto -> !advertisementService.existsByAdId(dto.getAdId()))
+                    .map(adDTO -> {
+                        Advertisement advertisement = Mapper.mapToEntity(adDTO);
+                        adDTO.getAdParameters().stream()
+                                .map(Mapper::mapToEntity)
+                                .forEach(advertisement::addParameter);
+                        return advertisement;
+                    })
+                    .map(advertisementService::save)
+                    .map(advertisement -> {
+                        AdDetailsDTO detailsDTO = kufarClient.getDetails(advertisement.getAdId());
+                        String details = detailsDTO.getResult().getBody();
+                        advertisement.setDetails(details);
+                        advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(details));
+                        return advertisementService.save(advertisement);
+                    })
+                    //.parallel()
+                    .forEach(advertisement -> {
+                        advertisementPublishers.forEach(publisher -> {
                             try {
-                                sleep(5000);
+                                publisher.publish(advertisement);
+                            } catch (TelegramApiRequestException telegramApiRequestException) {
+                                log.error("Failed to notify post cause of {}. Try to sleep and push again", telegramApiRequestException.getMessage());
                                 try {
-                                    publisher.publish(advertisement);
-                                } catch (Exception e) {
-                                    throw new RuntimeException(e);
+                                    sleep(5000);
+                                    try {
+                                        publisher.publish(advertisement);
+                                    } catch (Exception e) {
+                                        throw new RuntimeException(e);
+                                    }
+                                } catch (InterruptedException e) {
+                                    log.error("Failed to notify post {}", advertisement);
                                 }
-                            } catch (InterruptedException e) {
-                                log.error("Failed to notify post {}", advertisement);
+                            } catch (Exception e) {
+                                throw new RuntimeException(e);
+                                //log.error("Failed to notify post in {}, Cause: {}. ", publisher.getClass().getName(), e.getMessage());
                             }
-                        } catch (Exception e) {
-                            //throw new RuntimeException(e);
-                            log.error("Failed to notify post in {}, Cause: {}. ", publisher.getClass().getName(), e.toString());
-                        }
+                        });
                     });
-                });
+        });
     }
 
-   // @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
+    @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
     public void updateGeoData() {
         kufarClient.getGeoData().stream()
                 .map(Mapper::mapToEntity)
                 .forEach(geoService::save);
     }
 
-   // @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
+    @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
     public void getAndUpdateManufacturesAndModelsList() {
         kufarClient.getFilledManufacture()
                 .forEach(manufacturerDto -> {
@@ -117,7 +126,7 @@ public class ScheduledService {
     }
 
 
-    @Scheduled(initialDelay = 5_000, fixedDelay = 20_000)
+    @Scheduled(initialDelay = 10_000, fixedDelay = 21_600_000)
     public void getAndUpdateCategories() {
         CategoriesDto categories = kufarClient.getCategories();
         categories.getCategories().stream()

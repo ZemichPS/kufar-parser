@@ -11,4 +11,9 @@ public class LocationPostTextProcessor implements PostTextProcessor {
     public String process(Advertisement advertisement) {
         return "\uD83C\uDF0D %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Адрес")) + advertisement.getFullAddress();
     }
+
+    @Override
+    public boolean isApplicable(Advertisement advertisement) {
+        return true;
+    }
 }

@@ -12,4 +12,9 @@ public class PricePostTextProcessor implements PostTextProcessor {
     public String process(Advertisement advertisement) {
         return "\uD83C\uDFF7\uFE0F %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Цена")) + advertisement.getPriceInByn();
     }
+
+    @Override
+    public boolean isApplicable(Advertisement advertisement) {
+        return true;
+    }
 }

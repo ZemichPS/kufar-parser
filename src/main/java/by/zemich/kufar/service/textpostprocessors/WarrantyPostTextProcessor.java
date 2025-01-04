@@ -20,6 +20,11 @@ public class WarrantyPostTextProcessor implements PostTextProcessor {
         return "▫️ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Наличие гарантии")) + (warrantyChecker(details) ? "есть": "неизвестно");
     }
 
+    @Override
+    public boolean isApplicable(Advertisement advertisement) {
+        return true;
+    }
+
     private boolean warrantyChecker(String details) {
         return WARRANTY_PRESENT_PATTERN.matcher(details).find();
     }

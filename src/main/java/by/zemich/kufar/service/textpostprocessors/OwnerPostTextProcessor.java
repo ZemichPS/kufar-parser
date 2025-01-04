@@ -11,4 +11,9 @@ public class OwnerPostTextProcessor implements PostTextProcessor {
         String text = PostTextProcessor.getBoldHtmlStyle("Объявление организации");
         return advertisement.isCompanyAd() ? "▫️ %s: да".formatted(text)  : "▫️  %s: нет".formatted(text);
     }
+
+    @Override
+    public boolean isApplicable(Advertisement advertisement) {
+        return true;
+    }
 }
