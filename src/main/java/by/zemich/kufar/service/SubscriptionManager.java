@@ -21,7 +21,7 @@ public class SubscriptionManager implements AdvertisementPublisher {
         subscriptionRepository.findAll().stream()
                 .filter(subscription -> subscription.isSatisfied(advertisement))
                 .map(UserSubscription::getSubscriberId)
-                .forEach(userId-> notificationService.notifyMatchingAd(userId, advertisement));
+                .forEach(userId-> notificationService.notifyUserMatchingAd(userId, advertisement));
     }
 
     public void subscribe(UserSubscription subscription) {

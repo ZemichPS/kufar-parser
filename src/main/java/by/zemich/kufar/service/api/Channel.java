@@ -4,7 +4,6 @@ import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dao.entity.Notification;
 import by.zemich.kufar.policies.api.Policy;
 import by.zemich.kufar.service.PostManager;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import java.util.ArrayList;
@@ -27,18 +26,20 @@ public abstract class Channel implements AdvertisementPublisher, Notifiable {
         if (!policyResult) return;
 
         SendPhoto photoPost = postManager.createPhotoPostFromAd(advertisement);
-        photoPost.setChatId(getChannelChatId());
+        photoPost.setChatId(getChannelId());
         photoMessenger.sendPhoto(photoPost);
     }
 
     public abstract String getChannelName();
 
-    public abstract String getChannelChatId();
+    public abstract String getChannelId();
+
+    public abstract String getNotifierId();
 
     @Override
     public void notify(Notification notification) {
         SendPhoto photoPost = postManager.createPostFromNotification(notification);
-        photoPost.setChatId(getChannelChatId());
+        photoPost.setChatId(getChannelId());
         photoMessenger.sendPhoto(photoPost);
     }
 }

@@ -39,8 +39,13 @@ public class IphoneChannel extends Channel {
     }
 
     @Override
-    public String getChannelChatId() {
+    public String getChannelId() {
         return this.CHANNEL_CHAT_ID;
+    }
+
+    @Override
+    public String getNotifierId() {
+        return CHANNEL_CHAT_ID;
     }
 
 

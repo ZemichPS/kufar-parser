@@ -24,35 +24,64 @@ public class NotificationService {
     private final PhotoMessenger<SendPhoto> telegramPhotoMessenger;
     private final List<Notifiable> notifiable;
 
-    public void notifyMatchingAd(UUID userId, Advertisement advertisement) {
+    public void notifyUserMatchingAd(UUID userId, Advertisement advertisement) {
         Long chatId = userService.getById(userId).map(User::getTelegramChatId).orElseThrow();
         SendPhoto adPost = postManager.createPhotoPostFromAd(advertisement);
         adPost.setChatId(chatId);
         telegramPhotoMessenger.sendPhoto(adPost);
     }
 
-    public UUID notifyAll(Notification notification) {
-        notificationRepository.save(notification);
-        notifiable.forEach(
-                notifiable -> notifiable.notify(notification)
-        );
-        notification.setPublishedAt(LocalDateTime.now());
-        notificationRepository.save(notification);
+    public UUID notifyUserById(UUID userId, Notification notification) {
+        User user = userService
+                .getById(userId)
+                .orElseThrow();
+        notifyAndSave(notification, user);
         return notification.getId();
     }
 
-    public UUID notifyByChannelId(Notification notification, String channelId) {
-        //TODO написать логику
-        return null;
+    public UUID notifyAllUsers(Notification notification) {
+        userService.getAll().forEach(
+                user -> notifyAndSave(notification, user)
+        );
+        return notification.getId();
     }
 
-    public List<Notification> getAll(){
+    public UUID notifyAll(Notification notification) {
+        notifiable.forEach(
+                notifiable -> notifyAndSave(notification, notifiable)
+        );
+        return notification.getId();
+    }
+
+    public UUID notifyById(Notification notification, String notifiableId) {
+        final Notifiable foundedNotifiable = notifiable.stream()
+                .filter(notifiable -> notifiable.getNotifierId().equals(notifiableId))
+                .findFirst()
+                .orElseThrow();
+        notifyAndSave(notification, foundedNotifiable);
+        return notification.getId();
+    }
+
+    public List<Notification> getAll() {
         return notificationRepository.findAll();
     }
 
     public Notification getById(UUID id) {
         // TODO создать исключение и выбрасывать его ??????
         return notificationRepository.findById(id).orElseThrow();
+    }
+
+    private void notifyAndSave(Notification notification, Notifiable notifiable) {
+        notificationRepository.save(notification);
+        notifiable.notify(notification);
+        notification.setPublishedAt(LocalDateTime.now());
+        notificationRepository.save(notification);
+    }
+
+    private void notifyAndSave(Notification notification, User user) {
+        SendPhoto adPost = postManager.createPostFromNotification(notification);
+        adPost.setChatId(user.getTelegramChatId());
+        telegramPhotoMessenger.sendPhoto(adPost);
     }
 
 

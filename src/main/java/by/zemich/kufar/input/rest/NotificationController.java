@@ -24,7 +24,7 @@ public class NotificationController {
 
 
     @PostMapping()
-    public ResponseEntity<URI> publish(
+    public ResponseEntity<URI> notify(
             @RequestBody NotificationDto notificationDto
     ) {
         String imageName = imageService.saveNotificationImage(notificationDto.getImage());
@@ -39,12 +39,60 @@ public class NotificationController {
         return ResponseEntity.created(location).build();
     }
 
+    @PostMapping("/{id}")
+    public ResponseEntity<URI> notifyById(
+            @RequestBody NotificationDto notificationDto, @PathVariable String id
+    ) {
+        String imageName = imageService.saveNotificationImage(notificationDto.getImage());
+        Notification notification = NotificationMapper.toEntity(notificationDto);
+        notification.setImageName(imageName);
+        UUID uuid = notificationService.notifyById(notification, id);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{notificationId}")
+                .buildAndExpand(uuid)
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
+
+    @PostMapping("/{userId}")
+    public ResponseEntity<URI> notifyUserById(
+            @RequestBody NotificationDto notificationDto,
+            @PathVariable UUID userId
+    ) {
+        String imageName = imageService.saveNotificationImage(notificationDto.getImage());
+        Notification notification = NotificationMapper.toEntity(notificationDto);
+        notification.setImageName(imageName);
+        UUID uuid = notificationService.notifyUserById(userId, notification);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{notificationId}")
+                .buildAndExpand(uuid)
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
+
+    @PostMapping("/users")
+    public ResponseEntity<URI> notifyAllUsers(
+            @RequestBody NotificationDto notificationDto
+    ) {
+        String imageName = imageService.saveNotificationImage(notificationDto.getImage());
+        Notification notification = NotificationMapper.toEntity(notificationDto);
+        notification.setImageName(imageName);
+        UUID uuid = notificationService.notifyAllUsers(notification);
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{notificationId}")
+                .buildAndExpand(uuid)
+                .toUri();
+        return ResponseEntity.created(location).build();
+    }
+
     @GetMapping()
     public ResponseEntity<List<NotificationResponseDto>> getAll() {
         List<NotificationResponseDto> responses = notificationService.getAll().stream()
                 .map(NotificationMapper::toResponseDto)
                 .toList();
-
         return ResponseEntity.ok(responses);
     }
 
@@ -53,5 +101,6 @@ public class NotificationController {
         NotificationResponseDto respons = NotificationMapper.toResponseDto(notificationService.getById(notificationId));
         return ResponseEntity.ok(respons);
     }
+
 
 }

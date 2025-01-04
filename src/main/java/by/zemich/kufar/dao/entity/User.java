@@ -1,5 +1,6 @@
 package by.zemich.kufar.dao.entity;
 
+import by.zemich.kufar.service.api.Notifiable;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;

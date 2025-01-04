@@ -42,7 +42,8 @@ public class PostManager {
 
     public SendPhoto createPostFromNotification(Notification notification) {
         String imageName = notification.getImageName();
-        try (InputStream postImageInputStream = imageService.downloadNotificationImage(imageName)) {
+        try {
+            InputStream postImageInputStream = imageService.downloadNotificationImage(imageName);
             InputFile photo = new InputFile(postImageInputStream, imageName);
             String text = processPostText(notification.getTitle(), notification.getContent());
             return SendPhoto.builder()
@@ -51,7 +52,7 @@ public class PostManager {
                     .parseMode("HTML")
                     .caption(text)
                     .build();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new RuntimeException(e);
         }
     }
