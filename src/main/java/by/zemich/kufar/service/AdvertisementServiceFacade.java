@@ -24,15 +24,16 @@ public class AdvertisementServiceFacade {
     private final ModelService modelService;
 
     public void updateAdvertisementCauseNewConditionRules() {
-        final List<Advertisement> advertisementList = advertisementService.getAll().stream()
+        final List<Advertisement> advertisementList = advertisementService.getAll().stream().parallel()
                 .peek(advertisement -> {
                     String details = advertisement.getDetails();
                     boolean result = conditionAnalyzer.isFullyFunctional(details);
                     advertisement.setFullyFunctional(result);
                 }).toList();
         log.info("выполнили проверку на состояние.");
-        advertisementList.forEach(advertisementService::save);
-        log.info("выполнили сохранение всех объектов в базу");
+
+        advertisementList.stream().parallel()
+                .forEach(advertisementService::save);
     }
 
     public void parseSmartphonesAdsToDB() {
