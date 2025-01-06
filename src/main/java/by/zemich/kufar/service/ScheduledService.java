@@ -8,6 +8,7 @@ import by.zemich.kufar.dto.AdDetailsDTO;
 import by.zemich.kufar.dto.AdsDTO;
 import by.zemich.kufar.dto.CategoriesDto;
 import by.zemich.kufar.service.api.AdvertisementPublisher;
+import by.zemich.kufar.service.api.ConditionAnalyzer;
 import by.zemich.kufar.service.clients.KufarClient;
 import by.zemich.kufar.utils.Mapper;
 import lombok.RequiredArgsConstructor;

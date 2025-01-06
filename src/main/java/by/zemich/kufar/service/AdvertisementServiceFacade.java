@@ -1,7 +1,6 @@
 package by.zemich.kufar.service;
 
-import by.zemich.kufar.dao.entity.Advertisement;
-import jakarta.websocket.server.ServerEndpoint;
+import by.zemich.kufar.service.api.ConditionAnalyzer;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
