@@ -41,7 +41,7 @@ public class ScheduledService {
     public void getNewAdsAndSaveIfNotExists() {
 
         List<String> categories = List.of(
-                "8080",
+                //"8000"
                 "17010"
         );
 

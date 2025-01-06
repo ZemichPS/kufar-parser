@@ -11,7 +11,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import java.util.List;
 
-@Component
+//@Component
 public class IphoneChannel extends Channel {
 
     private final String CHANNEL_CHAT_ID = "-1002317731094";

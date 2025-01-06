@@ -118,4 +118,29 @@ public class PriceAnalyzer {
             return sortedPrices.get(size / 2);
         }
     }
+
+    public BigDecimal calculatePercentageDifference(BigDecimal value1, BigDecimal value2) {
+        if (value2 == null || value2.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Значение value2 должно быть больше 0");
+        }
+        BigDecimal difference = value2.subtract(value1);
+        return difference
+                .divide(value2, 2, RoundingMode.HALF_UP)
+                .multiply(BigDecimal.valueOf(100));
+    }
+
+    public BigDecimal subtractPercentage(BigDecimal base, BigDecimal percent) {
+        if (base == null || percent == null) {
+            throw new IllegalArgumentException("Base and percent cannot be null");
+        }
+        if (percent.compareTo(BigDecimal.ZERO) < 0 || percent.compareTo(BigDecimal.valueOf(100)) > 0) {
+            throw new IllegalArgumentException("Percent must be in the range [0, 100]");
+        }
+
+        // Вычисляем значение процента
+        BigDecimal percentageValue = base.multiply(percent).divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP);
+
+        // Вычитаем значение процента
+        return base.subtract(percentageValue);
+    }
 }

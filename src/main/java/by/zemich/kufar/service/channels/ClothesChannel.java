@@ -10,7 +10,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import java.util.List;
 
-@Component
+//@Component
 public class ClothesChannel extends Channel {
 
     private final String CHANNEL_CHAT_ID = "-1002387076093";
@@ -21,9 +21,10 @@ public class ClothesChannel extends Channel {
         super(messenger, postManager);
 
         this.policies.add(
-             new CategoryPolicy("8110").or(new CategoryPolicy("8080"))
+                new CategoryPolicy("8110")
+                        .or(new CategoryPolicy("8080"))
+                        .or(new CategoryPolicy("8000"))
         );
-        this.policies.add(new AreaPolicy("Гомель"));
     }
 
     @Override
