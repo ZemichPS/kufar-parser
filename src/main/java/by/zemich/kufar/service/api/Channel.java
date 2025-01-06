@@ -20,7 +20,7 @@ public abstract class Channel implements AdvertisementPublisher, Notifiable {
     }
 
     @Override
-    public void publish(Advertisement advertisement) throws Exception {
+    public void publish(Advertisement advertisement) {
         boolean policyResult = policies.stream()
                 .allMatch(policy -> policy.isSatisfiedBy(advertisement));
         if (!policyResult) return;

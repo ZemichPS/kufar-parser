@@ -33,7 +33,7 @@ public class SubscriptionManager implements AdvertisementPublisher {
     }
 
     @Override
-    public void publish(Advertisement advertisement) throws Exception {
+    public void publish(Advertisement advertisement) {
         this.matchAndNotify(advertisement);
     }
 }

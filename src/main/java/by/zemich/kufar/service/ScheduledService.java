@@ -13,6 +13,7 @@ import by.zemich.kufar.service.clients.KufarClient;
 import by.zemich.kufar.utils.Mapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ public class ScheduledService {
     private final ModelService modelService;
     private final ConditionAnalyzer conditionAnalyzer;
     private final CategoryService categoryService;
+    private final RetryTemplate telegramRetryTemplate;
 
 
     @Scheduled(initialDelay = 5_000, fixedDelay = 10_000)
@@ -65,28 +67,13 @@ public class ScheduledService {
                         advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(details));
                         return advertisementService.save(advertisement);
                     })
-                    //.parallel()
                     .forEach(advertisement -> {
                         advertisementPublishers.forEach(publisher -> {
-                            log.info("устройство: {} исправно: {}", advertisement.getSubject(), advertisement.isFullyFunctional());
-                            try {
-                                publisher.publish(advertisement);
-                            } catch (TelegramApiRequestException telegramApiRequestException) {
-                                log.error("Failed to notify post cause of {}. Try to sleep and push again", telegramApiRequestException.getMessage());
-                                try {
-                                    sleep(5000);
-                                    try {
+                            telegramRetryTemplate.execute(retryContext -> {
                                         publisher.publish(advertisement);
-                                    } catch (Exception e) {
-                                        throw new RuntimeException(e);
+                                        return null;
                                     }
-                                } catch (InterruptedException e) {
-                                    log.error("Failed to notify post {}", advertisement);
-                                }
-                            } catch (Exception e) {
-                                log.error("Failed to notify post in {}, Cause: {}. ", publisher.getClass().getName(), e.getMessage() + " cause " + e.getCause());
-                                throw new RuntimeException(e);
-                            }
+                            );
                         });
                     });
         });

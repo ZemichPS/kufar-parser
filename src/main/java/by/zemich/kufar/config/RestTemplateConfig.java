@@ -4,9 +4,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.retry.backoff.FixedBackOffPolicy;
-import org.springframework.retry.policy.SimpleRetryPolicy;
-import org.springframework.retry.support.RetryTemplate;
 import org.springframework.web.client.ResponseErrorHandler;
 import org.springframework.web.client.RestTemplate;
 
@@ -43,18 +40,6 @@ public class RestTemplateConfig {
                 .build();
     }
 
-    @Bean
-    public RetryTemplate retryTemplate() {
-        RetryTemplate retryTemplate = new RetryTemplate();
 
-        SimpleRetryPolicy retryPolicy = new SimpleRetryPolicy();
-        retryPolicy.setMaxAttempts(5);  // максимальное количество попыток
-        FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
-        backOffPolicy.setBackOffPeriod(5_000);  // задержка в миллисекундах
-        retryTemplate.setRetryPolicy(retryPolicy);
-        retryTemplate.setBackOffPolicy(backOffPolicy);
-
-        return retryTemplate;
-    }
 
 }

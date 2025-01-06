@@ -17,7 +17,6 @@ public class PriceBelowMarketPolicy implements Policy<Advertisement> {
         this.advertisementService = advertisementService;
     }
 
-    // TODO написать логику
     @Override
     public boolean isSatisfiedBy(Advertisement advertisement) {
         BigDecimal productPrice = advertisement.getPriceInByn();
