@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 public class WarrantyPostTextProcessor implements PostTextProcessor {
 
     private final Pattern WARRANTY_PRESENT_PATTERN = Pattern.compile(
-            "\\b(гарантия есть|на гарантии|с гарантией|гарантия до \\d{1,2}\\.\\d{1,2}\\.\\d{4}|есть гарантия)\\b",
+            "гарантия есть|на гарантии|с гарантией|гарантия до",
             Pattern.CASE_INSENSITIVE
     );
 

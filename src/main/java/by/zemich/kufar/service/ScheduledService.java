@@ -68,6 +68,7 @@ public class ScheduledService {
                     //.parallel()
                     .forEach(advertisement -> {
                         advertisementPublishers.forEach(publisher -> {
+                            log.info("устройство: {} исправно: {}", advertisement.getSubject(), advertisement.isFullyFunctional());
                             try {
                                 publisher.publish(advertisement);
                             } catch (TelegramApiRequestException telegramApiRequestException) {
@@ -83,8 +84,8 @@ public class ScheduledService {
                                     log.error("Failed to notify post {}", advertisement);
                                 }
                             } catch (Exception e) {
-                                //throw new RuntimeException(e);
                                 log.error("Failed to notify post in {}, Cause: {}. ", publisher.getClass().getName(), e.getMessage() + " cause " + e.getCause());
+                                throw new RuntimeException(e);
                             }
                         });
                     });

@@ -22,8 +22,8 @@ public class OnlyOriginalDevicesPolicy implements Policy<Advertisement> {
     }
 
     private boolean containsDataAboutUnoriginality(String adDetails) {
-        if(adDetails == null || adDetails.isEmpty()) return false;
-        return DEFECT_PATTERN.matcher(adDetails.toLowerCase()).find();
+        if (adDetails == null || adDetails.isEmpty()) return false;
+        return !DEFECT_PATTERN.matcher(adDetails.toLowerCase()).find();
     }
 
 
