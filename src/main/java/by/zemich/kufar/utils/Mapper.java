@@ -64,6 +64,7 @@ public class Mapper {
     public static Model mapToEntity(ManufacturerDto.ModelDto source) {
         return Model.builder()
                 .name(source.getName())
+                .kufarId(source.getKufarId())
                 .build();
     }
 

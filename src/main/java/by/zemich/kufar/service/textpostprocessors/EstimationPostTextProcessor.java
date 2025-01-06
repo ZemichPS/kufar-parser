@@ -1,7 +1,6 @@
 package by.zemich.kufar.service.textpostprocessors;
 
 import by.zemich.kufar.dao.entity.Advertisement;
-import by.zemich.kufar.service.ConditionAnalyzer;
 import by.zemich.kufar.service.api.PostTextProcessor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;

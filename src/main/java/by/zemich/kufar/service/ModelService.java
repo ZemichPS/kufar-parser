@@ -5,6 +5,7 @@ import by.zemich.kufar.dao.jparepository.ModelRepository;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -23,5 +24,9 @@ public class ModelService {
 
     public boolean existsByName(String name) {
         return modelRepository.existsByName(name);
+    }
+
+    public List<Model> getAll() {
+        return modelRepository.findAll();
     }
 }

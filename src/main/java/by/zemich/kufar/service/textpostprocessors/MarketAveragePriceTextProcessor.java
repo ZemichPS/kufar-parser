@@ -98,7 +98,8 @@ public class MarketAveragePriceTextProcessor implements PostTextProcessor {
                 .filter(ad -> ad.getCondition().equals(condition))
                 .map(Advertisement::getPriceInByn)
                 .toList();
-        if(prices.isEmpty()) return BigDecimal.ZERO;
+
+        if(minDataSize.isSatisfiedBy(prices.size())) return BigDecimal.ZERO;
         return priceAnalyzer.getMarketPrice(prices);
     }
 

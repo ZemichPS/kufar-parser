@@ -12,11 +12,10 @@ import java.util.*;
 
 @Entity
 @Table(name = "advertisements", schema = "app")
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Builder
+@Getter @Setter
+@AllArgsConstructor @NoArgsConstructor @Builder
+@EqualsAndHashCode
+@ToString(exclude = "parameters")
 public class Advertisement {
     @Id
     @UuidGenerator(style = UuidGenerator.Style.TIME)

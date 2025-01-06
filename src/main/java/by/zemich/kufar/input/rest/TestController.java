@@ -1,6 +1,7 @@
 package by.zemich.kufar.input.rest;
 
 import by.zemich.kufar.dao.entity.Advertisement;
+import by.zemich.kufar.dto.AdsDTO;
 import by.zemich.kufar.dto.CategoriesDto;
 import by.zemich.kufar.service.*;
 import by.zemich.kufar.service.clients.KufarClient;
@@ -9,14 +10,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
-
-import static org.springframework.http.ResponseEntity.ok;
 
 @RestController
 @RequestMapping("/api/v1/test")
 @RequiredArgsConstructor
-public class AdvertisementController {
+public class TestController {
 
     private final ScheduledService adParserService;
     private final GeoService geoService;
@@ -31,7 +31,7 @@ public class AdvertisementController {
             produces = "application/json",
             value = "/update_models"
     )
-    public ResponseEntity<Void> getUpdateModels() {
+    public ResponseEntity<Void> updateModels() {
         scheduledService.getAndUpdateManufacturesAndModelsList();
         return ResponseEntity.noContent().build();
     }
@@ -89,7 +89,7 @@ public class AdvertisementController {
             produces = "application/json",
             value = "/locations"
     )
-    public ResponseEntity<List<String>> getLocations() {
+    public ResponseEntity<List<String>> getLocationsFromAds() {
         List<String> list = advertisementService.getAll().stream().
                 map(advertisement -> advertisement.getParameterValueByParameterName("area"))
                 .filter(Optional::isPresent)
@@ -108,20 +108,15 @@ public class AdvertisementController {
         return ResponseEntity.ok(kufarClient.getCategories());
     }
 
-    @GetMapping(
-            produces = "application/json",
-            value = "/by_locations"
-    )
-    public ResponseEntity<List<String>> getByLocations(@RequestParam String location) {
-//        List<String> list = advertisementService.getAll().stream().
-//                map(advertisement -> advertisement.getParameterValueByParameterName("area"))
-//                .filter(Optional::isPresent)
-//                .filter()
-//                .map(Optional::get)
-//                .distinct()
-//                .toList();
-//        return ResponseEntity.ok(list);
-        return null;
+    @GetMapping("/get_ads_by_params")
+    public ResponseEntity<AdsDTO> getAdsByParametersBody(@RequestParam Map<String, String> params) {
+        return ResponseEntity.ok(kufarClient.getAdsByParameters(params));
+    }
+
+    @GetMapping("/parse_ads")
+    public ResponseEntity<Void> parseAdsToDD() {
+        advertisementServiceFacade.parseSmartphonesAdsToDB();
+        return ResponseEntity.noContent().build();
     }
 
 }

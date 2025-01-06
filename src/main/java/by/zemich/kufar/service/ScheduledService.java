@@ -24,7 +24,7 @@ import java.util.Objects;
 import static java.lang.Thread.sleep;
 
 @Service
-@EnableScheduling
+//@EnableScheduling
 @RequiredArgsConstructor
 @Slf4j
 public class ScheduledService {

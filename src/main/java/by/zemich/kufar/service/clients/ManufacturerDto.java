@@ -1,24 +1,25 @@
 package by.zemich.kufar.service.clients;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Data
-@AllArgsConstructor
-@NoArgsConstructor
+@EqualsAndHashCode
+@ToString
+@AllArgsConstructor @NoArgsConstructor @Builder
 public class ManufacturerDto {
     private Long id;
     private String name;
     private List<ModelDto> models;
 
     @Data
-    @AllArgsConstructor
-    @NoArgsConstructor
+    @EqualsAndHashCode
+    @ToString
+    @AllArgsConstructor @NoArgsConstructor @Builder
     public static class ModelDto {
+        private String kufarId;
         private String name;
     }
 }

@@ -14,6 +14,7 @@ public class Model {
     @Id
     @UuidGenerator(style = UuidGenerator.Style.AUTO)
     private UUID id;
+    private String kufarId;
     private String name;
 
     @ManyToOne
