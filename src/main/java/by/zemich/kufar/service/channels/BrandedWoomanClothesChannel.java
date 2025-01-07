@@ -2,8 +2,10 @@ package by.zemich.kufar.service.channels;
 
 import by.zemich.kufar.policies.impl.*;
 import by.zemich.kufar.service.PostManager;
+import by.zemich.kufar.service.SubCategoryService;
 import by.zemich.kufar.service.api.Channel;
 import by.zemich.kufar.service.api.PhotoMessenger;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
@@ -22,11 +24,16 @@ public class BrandedWoomanClothesChannel extends Channel {
         this.policies.addAll(
                 List.of(
                         new OnlyOwnersAds(),
-                        new OnlyDefiniteCategory("8110").or(new OnlyDefiniteCategory("8100")),
+                        new OnlyOwnersAds(),
+                        new OnlyOriginalGoods(),
                         new OnlyBrandClothesPolicy().or(new OnlyBrandWoomanShoesPolicy()),
-                        new OnlyOriginalGoods()
+                        new OnlyDefiniteCategory("8110")
+                                .or(new OnlyDefiniteCategory("8100"))
+                                .or(new OnlyDefiniteCategory("8080"))
+                                .or(new OnlyDefiniteCategory("8020"))
                 )
         );
+
     }
 
     @Override
