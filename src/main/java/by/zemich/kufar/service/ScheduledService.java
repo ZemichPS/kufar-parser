@@ -45,40 +45,40 @@ public class ScheduledService {
 
         List<String> categories = List.of(
                 "8110",
-            //    "8100",
-             //   "8080",
+                "8100",
+                "8080",
                 "17010"
         );
 
-        categories.stream().parallel().forEach(category -> {
-            AdsDTO response = kufarClient.getNewAdsByCategoryIdAndByLastSort(category);
-            response.getAds().stream()
-                    .filter(dto -> !advertisementService.existsByAdId(dto.getAdId()))
-                    .map(adDTO -> {
-                        Advertisement advertisement = Mapper.mapToEntity(adDTO);
-                        adDTO.getAdParameters().stream()
-                                .map(Mapper::mapToEntity)
-                                .forEach(advertisement::addParameter);
-                        return advertisement;
-                    })
-                    .map(advertisementService::save)
-                    .map(advertisement -> {
-                        AdDetailsDTO detailsDTO = kufarClient.getDetails(advertisement.getAdId());
-                        String details = detailsDTO.getResult().getBody();
-                        advertisement.setDetails(details);
-                        advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(details));
-                        return advertisementService.save(advertisement);
-                    })
-                    .forEach(advertisement -> {
-                        advertisementPublishers.forEach(publisher -> {
-                            telegramRetryTemplate.execute(retryContext -> {
-                                        publisher.publish(advertisement);
-                                        return null;
-                                    }
-                            );
-                        });
+        categories.stream().parallel()
+                .map(kufarClient::getNewAdsByCategoryIdAndByLastSort)
+                .flatMap(adsDTO -> adsDTO.getAds().stream().parallel())
+                .filter(Objects::nonNull)
+                .filter(dto -> !advertisementService.existsByAdId(dto.getAdId()))
+                .map(adDTO -> {
+                    Advertisement advertisement = Mapper.mapToEntity(adDTO);
+                    adDTO.getAdParameters().stream()
+                            .map(Mapper::mapToEntity)
+                            .forEach(advertisement::addParameter);
+                    return advertisement;
+                })
+                .peek(advertisementService::save)
+                .map(advertisement -> {
+                    AdDetailsDTO detailsDTO = kufarClient.getDetails(advertisement.getAdId());
+                    String details = detailsDTO.getResult().getBody();
+                    advertisement.setDetails(details);
+                    advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(details));
+                    return advertisementService.save(advertisement);
+                })
+                .forEach(advertisement -> {
+                    advertisementPublishers.forEach(publisher -> {
+                        telegramRetryTemplate.execute(retryContext -> {
+                                    publisher.publish(advertisement);
+                                    return null;
+                                }
+                        );
                     });
-        });
+                });
     }
 
     @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
