@@ -3,7 +3,7 @@ package by.zemich.kufar.policies.impl;
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dao.entity.Subcategory;
 import by.zemich.kufar.policies.api.Policy;
-import by.zemich.kufar.service.textpostprocessors.SubCategoryService;
+import by.zemich.kufar.service.SubCategoryService;
 
 import java.util.Optional;
 

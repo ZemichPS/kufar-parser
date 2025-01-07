@@ -1,4 +1,4 @@
-package by.zemich.kufar.service.textpostprocessors;
+package by.zemich.kufar.service;
 
 import by.zemich.kufar.dao.entity.Subcategory;
 import by.zemich.kufar.dao.jparepository.SubcategoryRepository;

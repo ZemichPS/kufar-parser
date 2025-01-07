@@ -3,10 +3,12 @@ package by.zemich.kufar.service.textpostprocessors;
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.service.api.PostTextProcessor;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
+@Order(value = 3)
 public class EmoutOfMemoryPostTextProcessor implements PostTextProcessor {
 
     @Override

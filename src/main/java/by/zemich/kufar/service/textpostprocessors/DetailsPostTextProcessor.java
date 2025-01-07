@@ -11,7 +11,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Order(value = 3)
+@Order(value = 2)
 @Component
 public class DetailsPostTextProcessor implements PostTextProcessor {
 
@@ -20,7 +20,7 @@ public class DetailsPostTextProcessor implements PostTextProcessor {
         String details = advertisement.getDetails();
         String removed = removeExtraCharacters(details);
         String prepared = reduce(removed);
-        return "⋮ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Описание")) + PostTextProcessor.getItalicHtmlStyle(prepared);
+        return "⋮ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Описание")) + PostTextProcessor.getItalicHtmlStyle(advertisement.getSubject() + ". " + prepared);
     }
 
     @Override
@@ -35,13 +35,14 @@ public class DetailsPostTextProcessor implements PostTextProcessor {
     }
 
     private String removeExtraCharacters(String source) {
-        return source.replaceAll("-{2,}", "")
-                .replaceAll("={2,}", " ")
-                .replaceAll("\\*{2,}", " ")
-                .replaceAll("_{2,}", " ")
-                .replaceAll(",(\\S)", ", $1")
-                .replaceAll("\\.(?!\\s|$)", ". ")
-                .replaceAll("\\s{2,}", " ");
+        return source.replaceAll("-{2,}", "") // Убираем несколько дефисов подряд
+                .replaceAll("={2,}", " ")  // Заменяем несколько знаков равно на пробел
+                .replaceAll("\\*{2,}", " ") // Заменяем несколько звездочек на пробел
+                .replaceAll("_{2,}", " ")   // Заменяем несколько нижних подчеркиваний на пробел
+                .replaceAll(",(\\S)", ", $1") // Добавляем пробел после запятой, если его нет
+                .replaceAll("\\.(?!\\s|$)", ". ") // Добавляем пробел после точки, если его нет
+                .replaceAll("\\s{2,}", " ") // Заменяем несколько пробелов на один
+                .trim();  // Убираем лишние пробелы в начале и в конце строки
     }
 
     private String removeEmptyStrings(String source) {

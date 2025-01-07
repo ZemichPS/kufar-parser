@@ -78,6 +78,12 @@ public class Advertisement {
                 .findFirst();
     }
 
+    public Optional<Parameter> getParameterByIdentity(String identity) {
+        return this.parameters.stream()
+                .filter(param -> identity.equals(param.identity))
+                .findFirst();
+    }
+
     public String getFullAddress() {
         String region = this.parameters.stream()
                 .filter(param -> "region".equals(param.identity))

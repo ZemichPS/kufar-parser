@@ -5,12 +5,8 @@ import by.zemich.kufar.policies.api.Policy;
 
 public class OnlyNotFunctionalPolicy implements Policy<Advertisement> {
     @Override
-    public boolean isSatisfiedBy(Advertisement domainObject) {
-        return false;
+    public boolean isSatisfiedBy(Advertisement advertisement) {
+        return !advertisement.isFullyFunctional();
     }
 
-    // TODO изменить тело метода
-    private boolean containsDataAboutNotFunctional(String adDetails) {
-        return adDetails.toLowerCase().contains("не исправен");
-    }
 }

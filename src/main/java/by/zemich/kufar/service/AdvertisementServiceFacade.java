@@ -60,7 +60,8 @@ public class AdvertisementServiceFacade {
                 advertisement.getCondition()
         );
 
-        return Optional.of(new ComputedPriceStatistics(marketPriceForCommerce,
+        return Optional.of(new ComputedPriceStatistics(
+                marketPriceForCommerce,
                 marketPriceForNotCommerce,
                 commonMarketPrice)
         );
@@ -84,6 +85,7 @@ public class AdvertisementServiceFacade {
                     Map<String, String> paramMap = new HashMap<>();
                     paramMap.put("cat", "17010");
                     paramMap.put("lang", "ru");
+                    paramMap.put("cmp", "0");
                     paramMap.put("pb", manufactureId.toString());
                     paramMap.put("phm", modelKufarId);
                     paramMap.put("prn", "17000");
@@ -122,7 +124,7 @@ public class AdvertisementServiceFacade {
                 .map(Advertisement::getPriceInByn)
                 .toList();
 
-        if (minDataSizePolicy.isSatisfiedBy(prices.size())) return BigDecimal.ZERO;
+        if (!minDataSizePolicy.isSatisfiedBy(prices.size())) return BigDecimal.ZERO;
         return priceAnalyzer.getMarketPrice(prices);
     }
 

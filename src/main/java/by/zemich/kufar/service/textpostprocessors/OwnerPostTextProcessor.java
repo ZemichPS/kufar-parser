@@ -2,9 +2,11 @@ package by.zemich.kufar.service.textpostprocessors;
 
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.service.api.PostTextProcessor;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
+@Order(value = 7)
 public class OwnerPostTextProcessor implements PostTextProcessor {
     @Override
     public String process(Advertisement advertisement) {
@@ -14,6 +16,6 @@ public class OwnerPostTextProcessor implements PostTextProcessor {
 
     @Override
     public boolean isApplicable(Advertisement advertisement) {
-        return true;
+        return advertisement.getCategory().equalsIgnoreCase("17010");
     }
 }

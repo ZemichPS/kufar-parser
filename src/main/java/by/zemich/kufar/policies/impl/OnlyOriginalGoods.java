@@ -5,13 +5,13 @@ import by.zemich.kufar.policies.api.Policy;
 
 import java.util.regex.Pattern;
 
-public class OnlyOriginalDevicesPolicy implements Policy<Advertisement> {
+public class OnlyOriginalGoods implements Policy<Advertisement> {
 
     private final Pattern DEFECT_PATTERN = Pattern.compile(
             "(?i)(?x)" + // Игнорировать регистр и разрешить комментарии
                     "(" +
-                    // копия
-                    "(продам|продаётся\\s+)?(полная|полную|точная|точную\\s+)?копи[ияю]" +
+                    // копия или реплика
+                    "(продам|продаётся)?\\s+(полная|полную|точная|точную)?\\s+(копи[ияю]|реплик[уа])" +
                     ")"
     );
 

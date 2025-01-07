@@ -2,11 +2,13 @@ package by.zemich.kufar.service.textpostprocessors;
 
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.service.api.PostTextProcessor;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.util.regex.Pattern;
 
 @Component
+@Order(value = 8)
 public class WarrantyPostTextProcessor implements PostTextProcessor {
 
     private final Pattern WARRANTY_PRESENT_PATTERN = Pattern.compile(
@@ -22,7 +24,7 @@ public class WarrantyPostTextProcessor implements PostTextProcessor {
 
     @Override
     public boolean isApplicable(Advertisement advertisement) {
-        return true;
+        return advertisement.getCategory().equalsIgnoreCase("17010");
     }
 
     private boolean warrantyChecker(String details) {

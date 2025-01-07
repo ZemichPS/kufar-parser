@@ -38,9 +38,8 @@ public class RetryConfig {
                         TelegramApiValidationException.class, true
                 )
         );
-        retryPolicy.setMaxAttempts(5);  // максимальное количество попыток
         FixedBackOffPolicy backOffPolicy = new FixedBackOffPolicy();
-        backOffPolicy.setBackOffPeriod(10_000);  // задержка в миллисекундах
+        backOffPolicy.setBackOffPeriod(50_000);  // задержка в миллисекундах
         retryTemplate.setRetryPolicy(retryPolicy);
         retryTemplate.setBackOffPolicy(backOffPolicy);
         return retryTemplate;

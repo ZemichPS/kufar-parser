@@ -5,13 +5,13 @@ import by.zemich.kufar.policies.impl.OnlyOwnersAds;
 import by.zemich.kufar.service.PostManager;
 import by.zemich.kufar.service.api.Channel;
 import by.zemich.kufar.service.api.PhotoMessenger;
-import by.zemich.kufar.service.textpostprocessors.SubCategoryService;
+import by.zemich.kufar.service.SubCategoryService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import java.util.List;
 
-@Component
+//@Component
 public class WoomanClothesChannel extends Channel {
 
     private final String CHANNEL_CHAT_ID = "-1002490579807";

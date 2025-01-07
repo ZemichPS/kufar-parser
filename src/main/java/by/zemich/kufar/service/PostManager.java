@@ -12,7 +12,6 @@ import org.telegram.telegrambots.meta.api.objects.InputFile;
 import java.io.File;
 import java.io.InputStream;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -23,11 +22,11 @@ public class PostManager {
     private final List<PostTextProcessor> postTextProcessors;
     private final FileLoader fileLoader;
     private final ImageService imageService;
-    private final PostLimitedCache<UUID, SendPhoto> postLimitedCache = new PostLimitedCache<>(500);
+    private final PostLimitedCache<Long, SendPhoto> postLimitedCache = new PostLimitedCache<>(500);
 
     public SendPhoto createPhotoPostFromAd(Advertisement advertisement) {
         // TODO написать логику создания поста
-        return postLimitedCache.computeIfAbsent(advertisement.getId(), uuid -> {
+        return postLimitedCache.computeIfAbsent(advertisement.getAdId(), id -> {
             InputFile photo = getInputFileFromLink(advertisement.getPhotoLink());
             String text = processPostText(advertisement);
             return SendPhoto.builder()

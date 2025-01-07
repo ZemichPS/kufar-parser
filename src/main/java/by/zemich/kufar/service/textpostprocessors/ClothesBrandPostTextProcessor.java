@@ -2,22 +2,21 @@ package by.zemich.kufar.service.textpostprocessors;
 
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.service.api.PostTextProcessor;
-import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-@Order(12)
-public class GetLinkTextProcessor implements PostTextProcessor {
+@Order(3)
+public class ClothesBrandPostTextProcessor implements PostTextProcessor {
+
+
     @Override
     public String process(Advertisement advertisement) {
-        return PostTextProcessor.getHtmlLink(advertisement.getLink(), "ссылка на страницу товара kufar");
+        return "▫\uFE0F" + PostTextProcessor.getBoldHtmlStyle(" Бренд: ") + advertisement.getParameterValueByParameterName("women_clothes_brand").orElse("");
     }
 
     @Override
     public boolean isApplicable(Advertisement advertisement) {
-        return true;
+        return advertisement.getParameterValueByParameterName("women_clothes_brand").isPresent();
     }
-
-
 }

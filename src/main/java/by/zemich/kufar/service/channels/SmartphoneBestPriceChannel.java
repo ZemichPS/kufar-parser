@@ -1,9 +1,6 @@
 package by.zemich.kufar.service.channels;
 
-import by.zemich.kufar.policies.impl.OnlyCorrectModelPolicy;
-import by.zemich.kufar.policies.impl.CategoryPolicy;
-import by.zemich.kufar.policies.impl.MinPercentagePolicy;
-import by.zemich.kufar.policies.impl.OnlyOriginalDevicesPolicy;
+import by.zemich.kufar.policies.impl.*;
 import by.zemich.kufar.service.AdvertisementService;
 import by.zemich.kufar.service.PostManager;
 import by.zemich.kufar.service.PriceAnalyzer;
@@ -28,7 +25,7 @@ public class SmartphoneBestPriceChannel extends Channel {
         super(messenger, postManager);
         this.policies.addAll(
                 List.of(
-                        new OnlyOriginalDevicesPolicy(),
+                        new OnlyOriginalGoods(),
                         new CategoryPolicy("17010"),
                         new MinPercentagePolicy(
                                 BigDecimal.valueOf(-35),
@@ -36,6 +33,7 @@ public class SmartphoneBestPriceChannel extends Channel {
                                 advertisementService
                         ),
                         new OnlyCorrectModelPolicy()
+                        //new OnlyFullyFunctionalAdsPolicy()
                 )
         );
     }

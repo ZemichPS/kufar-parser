@@ -7,6 +7,7 @@ import by.zemich.kufar.dao.entity.Subcategory;
 import by.zemich.kufar.dto.AdDetailsDTO;
 import by.zemich.kufar.dto.AdsDTO;
 import by.zemich.kufar.dto.CategoriesDto;
+import by.zemich.kufar.service.api.AdvertisementHandler;
 import by.zemich.kufar.service.api.AdvertisementPublisher;
 import by.zemich.kufar.service.api.ConditionAnalyzer;
 import by.zemich.kufar.service.clients.KufarClient;
@@ -38,6 +39,8 @@ public class ScheduledService {
     private final ConditionAnalyzer conditionAnalyzer;
     private final CategoryService categoryService;
     private final RetryTemplate telegramRetryTemplate;
+    private final List<AdvertisementHandler> advertisementHandlers;
+    private final AdvertisementHandler advertisementSaveHandler;
 
 
     @Scheduled(initialDelay = 5_000, fixedDelay = 20_000)
@@ -45,8 +48,8 @@ public class ScheduledService {
 
         List<String> categories = List.of(
                 "8110",
-                "8100",
-                "8080",
+               // "8100",
+                //"8080",
                 "17010"
         );
 
@@ -62,13 +65,15 @@ public class ScheduledService {
                             .forEach(advertisement::addParameter);
                     return advertisement;
                 })
-                .peek(advertisementService::save)
+                .map(this::handleAdvertisement)
                 .map(advertisement -> {
                     AdDetailsDTO detailsDTO = kufarClient.getDetails(advertisement.getAdId());
                     String details = detailsDTO.getResult().getBody();
                     advertisement.setDetails(details);
                     advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(details));
-                    return advertisementService.save(advertisement);
+
+                    if (advertisementSaveHandler.canHandle(advertisement)) return advertisementSaveHandler.handle(advertisement);
+                    return advertisement;
                 })
                 .forEach(advertisement -> {
                     advertisementPublishers.forEach(publisher -> {
@@ -114,7 +119,8 @@ public class ScheduledService {
                 });
     }
 
-    @Scheduled(initialDelay = 10_000, fixedDelay = 21_600_000)
+    //@Scheduled(initialDelay = 10_000, fixedDelay = 21_600_000)
+    @Scheduled(initialDelay = 10_000, fixedDelay = 30_000)
     public void getAndUpdateCategories() {
         CategoriesDto categories = kufarClient.getCategories();
         categories.getCategories().stream()
@@ -127,6 +133,13 @@ public class ScheduledService {
                 })
                 .forEach(categoryService::save);
 
+    }
+
+    private Advertisement handleAdvertisement(Advertisement advertisement) {
+        advertisementHandlers.stream()
+                .filter(advertisementHandler -> advertisementHandler.canHandle(advertisement))
+                .forEach(advertisementHandler -> advertisementHandler.handle(advertisement));
+        return advertisement;
     }
 
 

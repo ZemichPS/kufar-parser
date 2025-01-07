@@ -1,13 +1,9 @@
 package by.zemich.kufar.service.channels;
 
-import by.zemich.kufar.policies.impl.IsChildCategoryPolicy;
-import by.zemich.kufar.policies.impl.OnlyBrandPolicy;
-import by.zemich.kufar.policies.impl.OnlyDefiniteCategory;
-import by.zemich.kufar.policies.impl.OnlyOwnersAds;
+import by.zemich.kufar.policies.impl.*;
 import by.zemich.kufar.service.PostManager;
 import by.zemich.kufar.service.api.Channel;
 import by.zemich.kufar.service.api.PhotoMessenger;
-import by.zemich.kufar.service.textpostprocessors.SubCategoryService;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
@@ -26,8 +22,9 @@ public class BrandedWoomanClothesChannel extends Channel {
         this.policies.addAll(
                 List.of(
                         new OnlyOwnersAds(),
-                        new OnlyDefiniteCategory("8110"),
-                        new OnlyBrandPolicy()
+                        new OnlyDefiniteCategory("8110").or(new OnlyDefiniteCategory("8100")),
+                        new OnlyBrandClothesPolicy().or(new OnlyBrandWoomanShoesPolicy()),
+                        new OnlyOriginalGoods()
                 )
         );
     }

@@ -7,6 +7,7 @@ import by.zemich.kufar.service.PriceAnalyzer;
 import by.zemich.kufar.service.api.PostTextProcessor;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ import java.util.function.Predicate;
 @Component
 @RequiredArgsConstructor
 @Log4j2
+@Order(value = 6)
 public class MarketAveragePriceTextProcessor implements PostTextProcessor {
 
     private final AdvertisementServiceFacade advertisementServiceFacade;
@@ -37,7 +39,7 @@ public class MarketAveragePriceTextProcessor implements PostTextProcessor {
                 computedPriceStatistics.marketPriceForNotCommerce().compareTo(BigDecimal.ZERO) == 0
         ) return "";
 
-        StringBuilder rezult = new StringBuilder("\uD83D\uDCC8 Средняя рыночная стоимость c учётом состояния и объёма памяти:");
+        StringBuilder rezult = new StringBuilder("\uD83D\uDCC8 Средняя рыночная стоимость c учётом состояния и объёма памяти:\n");
         if (computedPriceStatistics.marketPriceForCommerce().compareTo(BigDecimal.ZERO) != 0) {
             rezult.append(" - %.0f (среди коммерческих объявлений). ".formatted(computedPriceStatistics.marketPriceForCommerce()));
             rezult.append("Разница %.0f%%; \n".formatted(priceAnalyzer.calculatePercentageDifference(computedPriceStatistics.marketPriceForCommerce(), currentAdPrice)));
@@ -50,7 +52,7 @@ public class MarketAveragePriceTextProcessor implements PostTextProcessor {
 
         if (computedPriceStatistics.commonMarketPrice().compareTo(BigDecimal.ZERO) != 0) {
             rezult.append(" - %.0f (среди коммерческих и не коммерческих объявлений). ".formatted(computedPriceStatistics.commonMarketPrice()));
-            rezult.append("Разница %.0f%%; \n".formatted(priceAnalyzer.calculatePercentageDifference(computedPriceStatistics.commonMarketPrice(), currentAdPrice)));
+            rezult.append("Разница %.0f%%;".formatted(priceAnalyzer.calculatePercentageDifference(computedPriceStatistics.commonMarketPrice(), currentAdPrice)));
         }
 
         return rezult.toString();

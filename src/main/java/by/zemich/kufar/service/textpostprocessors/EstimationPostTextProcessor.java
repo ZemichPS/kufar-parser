@@ -17,6 +17,6 @@ public class EstimationPostTextProcessor implements PostTextProcessor {
 
     @Override
     public boolean isApplicable(Advertisement advertisement) {
-        return true;
+        return advertisement.getCategory().equalsIgnoreCase("17010");
     }
 }

@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 
 @Component
-@Order(2)
+@Order(9)
 public class ConditionPostTextProcessor implements PostTextProcessor {
 
     @Override
