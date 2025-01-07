@@ -25,7 +25,7 @@ import java.util.Objects;
 import static java.lang.Thread.sleep;
 
 @Service
-//@EnableScheduling
+@EnableScheduling
 @RequiredArgsConstructor
 @Slf4j
 public class ScheduledService {
@@ -40,15 +40,17 @@ public class ScheduledService {
     private final RetryTemplate telegramRetryTemplate;
 
 
-    @Scheduled(initialDelay = 5_000, fixedDelay = 10_000)
+    @Scheduled(initialDelay = 5_000, fixedDelay = 20_000)
     public void getNewAdsAndSaveIfNotExists() {
 
         List<String> categories = List.of(
-                //"8000"
+                "8110",
+            //    "8100",
+             //   "8080",
                 "17010"
         );
 
-        categories.forEach(category -> {
+        categories.stream().parallel().forEach(category -> {
             AdsDTO response = kufarClient.getNewAdsByCategoryIdAndByLastSort(category);
             response.getAds().stream()
                     .filter(dto -> !advertisementService.existsByAdId(dto.getAdId()))

@@ -32,6 +32,10 @@ public class MarketAveragePriceTextProcessor implements PostTextProcessor {
         if (optionalComputedPriceStatistics.isEmpty()) return "";
         ComputedPriceStatistics computedPriceStatistics = optionalComputedPriceStatistics.get();
 
+        if (computedPriceStatistics.commonMarketPrice().compareTo(BigDecimal.ZERO) == 0 &&
+                computedPriceStatistics.marketPriceForCommerce().compareTo(BigDecimal.ZERO) == 0 &&
+                computedPriceStatistics.marketPriceForNotCommerce().compareTo(BigDecimal.ZERO) == 0
+        ) return "";
 
         StringBuilder rezult = new StringBuilder("\uD83D\uDCC8 Средняя рыночная стоимость c учётом состояния и объёма памяти:");
         if (computedPriceStatistics.marketPriceForCommerce().compareTo(BigDecimal.ZERO) != 0) {

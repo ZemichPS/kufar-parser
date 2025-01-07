@@ -19,7 +19,7 @@ public class HeaderPostTextProcessor implements PostTextProcessor {
         String header;
         if (advertisement.getBrand().isPresent()) {
             String brand = advertisement.getBrand().orElse("");
-            String model = advertisement.getModel().orElse("");
+            String model = advertisement.getModel().orElse("(%s)".formatted(advertisement.getSubject()));
             header = brand + " " + model;
         } else {
             header = advertisement.getSubject();
