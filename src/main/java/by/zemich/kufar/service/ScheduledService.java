@@ -43,13 +43,14 @@ public class ScheduledService {
     private final AdvertisementHandler advertisementSaveHandler;
 
 
-    @Scheduled(initialDelay = 5_000, fixedDelay = 20_000)
+    @Scheduled(initialDelay = 1_000, fixedDelay = 20_000)
     public void getNewAdsAndSaveIfNotExists() {
 
         List<String> categories = List.of(
                 "8110",
-               // "8100",
-                //"8080",
+                "8100",
+                "8080",
+                "8020",
                 "17010"
         );
 
@@ -119,8 +120,7 @@ public class ScheduledService {
                 });
     }
 
-    //@Scheduled(initialDelay = 10_000, fixedDelay = 21_600_000)
-    @Scheduled(initialDelay = 10_000, fixedDelay = 30_000)
+    @Scheduled(initialDelay = 10_000, fixedDelay = 30_00_000)
     public void getAndUpdateCategories() {
         CategoriesDto categories = kufarClient.getCategories();
         categories.getCategories().stream()
