@@ -19,8 +19,11 @@ public class DetailsPostTextProcessor implements PostTextProcessor {
     public String process(Advertisement advertisement) {
         String details = advertisement.getDetails();
         String removed = removeExtraCharacters(details);
+        if (advertisement.getCategory().equalsIgnoreCase("17010")) {
+            removed = (advertisement.getSubject() + ". " + removed);
+        }
         String prepared = reduce(removed);
-        return "⋮ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Описание")) + PostTextProcessor.getItalicHtmlStyle(advertisement.getSubject() + ". " + prepared);
+        return "⋮ %s: ".formatted(PostTextProcessor.getBoldHtmlStyle("Описание")) + PostTextProcessor.getItalicHtmlStyle(prepared);
     }
 
     @Override

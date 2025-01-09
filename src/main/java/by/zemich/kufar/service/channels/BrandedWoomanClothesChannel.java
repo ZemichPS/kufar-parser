@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Component
@@ -30,7 +31,8 @@ public class BrandedWoomanClothesChannel extends Channel {
                         new OnlyDefiniteCategory("8110")
                                 .or(new OnlyDefiniteCategory("8100"))
                                 .or(new OnlyDefiniteCategory("8080"))
-                                .or(new OnlyDefiniteCategory("8020"))
+                                .or(new OnlyDefiniteCategory("8020")),
+                        new MinPriceForNewGoodsPolicy(new BigDecimal(40))
                 )
         );
 

@@ -73,7 +73,8 @@ public class ScheduledService {
                     advertisement.setDetails(details);
                     advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(details));
 
-                    if (advertisementSaveHandler.canHandle(advertisement)) return advertisementSaveHandler.handle(advertisement);
+                    if (advertisementSaveHandler.canHandle(advertisement))
+                        return advertisementSaveHandler.handle(advertisement);
                     return advertisement;
                 })
                 .forEach(advertisement -> {

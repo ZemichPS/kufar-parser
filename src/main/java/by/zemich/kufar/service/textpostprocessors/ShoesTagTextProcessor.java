@@ -6,18 +6,18 @@ import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
 @Component
-@Order(3)
-public class ClothesBrandPostTextProcessor implements PostTextProcessor {
-
-
+@Order(12)
+public class ShoesTagTextProcessor implements PostTextProcessor {
     @Override
     public String process(Advertisement advertisement) {
-        String brand = advertisement.getParameterValueByParameterName("women_clothes_brand").get();
-        return "▫\uFE0F" + PostTextProcessor.getBoldHtmlStyle(" Бренд: ") + "#" + brand;
+        String value = advertisement.getParameterValueByParameterName("women_shoes_type").get();
+        return "#" + value;
     }
 
     @Override
     public boolean isApplicable(Advertisement advertisement) {
-        return advertisement.getParameterValueByParameterName("women_clothes_brand").isPresent();
+        return advertisement.getParameterValueByParameterName("women_shoes_type").isPresent();
     }
+
+
 }
