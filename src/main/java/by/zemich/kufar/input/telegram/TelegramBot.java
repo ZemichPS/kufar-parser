@@ -57,6 +57,7 @@ public class TelegramBot extends TelegramLongPollingBot implements TextMessenger
             this.execute(message);
         } catch (TelegramApiException e) {
             log.error("Failed to sendText message to chatId {}, cause:", message.getChatId(), e);
+            log.error("text: {}", message.getCaption());
             throw new RuntimeException(e);
         }
     }

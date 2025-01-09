@@ -11,13 +11,12 @@ public class ShoesTagTextProcessor implements PostTextProcessor {
     @Override
     public String process(Advertisement advertisement) {
         String value = advertisement.getParameterValueByParameterName("women_shoes_type").get();
-        return "#" + value;
+        if (value.isEmpty() || value.isBlank()) return "";
+        return PostTextProcessor.getTag(value);
     }
 
     @Override
     public boolean isApplicable(Advertisement advertisement) {
         return advertisement.getParameterValueByParameterName("women_shoes_type").isPresent();
     }
-
-
 }

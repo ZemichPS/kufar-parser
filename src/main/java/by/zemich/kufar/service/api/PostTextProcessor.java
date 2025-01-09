@@ -20,4 +20,12 @@ public interface PostTextProcessor {
                 <a href="%s">%s</a>
                 """.formatted(targetLink, textLink);
     }
+
+    static String getTag(String source) {
+        return "#" + source.trim()
+                .replaceAll("&", "and")
+                .replaceAll(",","")
+                .replaceAll("\\s+","_");
+    }
+
 }

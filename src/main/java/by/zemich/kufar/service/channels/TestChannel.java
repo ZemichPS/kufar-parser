@@ -1,7 +1,5 @@
 package by.zemich.kufar.service.channels;
 
-import by.zemich.kufar.dao.entity.Advertisement;
-import by.zemich.kufar.policies.impl.ExcludedWomenClosesBrandPolicy;
 import by.zemich.kufar.policies.impl.*;
 import by.zemich.kufar.service.PostManager;
 import by.zemich.kufar.service.api.Channel;
@@ -11,21 +9,16 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
-import static java.lang.Thread.sleep;
+@Component
+@Profile("test")
+public class TestChannel extends Channel {
+    private final String CHANNEL_CHAT_ID = "-1002350825182";
+    private final String CHANNEL_CHAT_NANE = "Выгодные объявления с Kufar";
 
-//@Component
-@Profile("prod")
-public class BrandedWoomanClothesChannel extends Channel {
-
-    private final String CHANNEL_CHAT_ID = "-1002270323996";
-    private final String CHANNEL_CHAT_NANE = "Брендовая женская одежда";
-
-    public BrandedWoomanClothesChannel(PhotoMessenger<SendPhoto> messenger,
-                                       PostManager postManager
+    public TestChannel(PhotoMessenger<SendPhoto> messenger,
+                       PostManager postManager
     ) {
         super(messenger, postManager);
         this.policies.addAll(
@@ -38,22 +31,9 @@ public class BrandedWoomanClothesChannel extends Channel {
                                 .or(new OnlyDefiniteCategory("8100"))
                                 .or(new OnlyDefiniteCategory("8080"))
                                 .or(new OnlyDefiniteCategory("8020")),
-                        new MinPriceForNewGoodsPolicy(new BigDecimal(40)),
-                        new ExcludedWomenClosesBrandPolicy(List.of(
-                                "твое"
-                        )).or( new ExcludedWomenShoesBrandPolicy(List.of(
-                                "мегатоп"
-                        )))
-
+                        new MinPriceForNewGoodsPolicy(new BigDecimal(40))
                 )
         );
-
-    }
-
-    @Override
-    public void publish(Advertisement advertisement) {
-
-        super.publish(advertisement);
     }
 
     @Override
@@ -70,6 +50,4 @@ public class BrandedWoomanClothesChannel extends Channel {
     public String getNotifierId() {
         return CHANNEL_CHAT_ID;
     }
-
-
 }

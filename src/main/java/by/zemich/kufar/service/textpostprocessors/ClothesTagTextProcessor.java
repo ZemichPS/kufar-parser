@@ -8,10 +8,12 @@ import org.springframework.stereotype.Component;
 @Component
 @Order(12)
 public class ClothesTagTextProcessor implements PostTextProcessor {
+
     @Override
     public String process(Advertisement advertisement) {
         String value = advertisement.getParameterValueByParameterName("women_clothes_type").get();
-        return "#" + value;
+        if (value.isEmpty() || value.isBlank()) return "";
+        return PostTextProcessor.getTag(value);
     }
 
     @Override

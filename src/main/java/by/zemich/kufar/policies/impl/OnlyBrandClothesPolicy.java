@@ -8,7 +8,7 @@ public class OnlyBrandClothesPolicy implements Policy<Advertisement> {
     public boolean isSatisfiedBy(Advertisement advertisement) {
         if(advertisement.getParameterValueByParameterName("women_clothes_brand").isPresent()) {
             String brand = advertisement.getParameterValueByParameterName("women_clothes_brand").get();
-            return !brand.equalsIgnoreCase("Другой");
+            return !brand.equalsIgnoreCase("Другой") && !brand.isEmpty();
         }
         return false;
     }

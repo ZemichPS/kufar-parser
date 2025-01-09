@@ -38,8 +38,9 @@ public class Advertisement {
     @Column(columnDefinition = "jsonb")
     private List<Parameter> parameters = new ArrayList<>();
 
-    public void addParameter(Parameter parameter) {
+    public Advertisement addParameter(Parameter parameter) {
         parameters.add(parameter);
+        return this;
     }
 
     @Data
@@ -113,7 +114,12 @@ public class Advertisement {
     }
 
     public String getPhotoLink() {
-        String imageFilePath =  this.images.split(";")[0];
+        if (images.isEmpty()) return "";
+
+        String imageFilePath;
+        if(images.contains(";")) {
+            imageFilePath =  this.images.split(";")[0];
+        } else imageFilePath = images;
         return "https://rms.kufar.by/v1/gallery/{filename.jpg}".replace("{filename.jpg}", imageFilePath);
     }
 }

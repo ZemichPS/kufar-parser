@@ -47,10 +47,10 @@ public class ScheduledService {
     public void getNewAdsAndSaveIfNotExists() {
 
         List<String> categories = List.of(
-                "8110",
-                "8100",
-                "8080",
-                "8020",
+           //     "8110",
+            //    "8100",
+            //    "8080",
+             //   "8020",
                 "17010"
         );
 

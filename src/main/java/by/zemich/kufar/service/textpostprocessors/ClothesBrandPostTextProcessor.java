@@ -13,7 +13,7 @@ public class ClothesBrandPostTextProcessor implements PostTextProcessor {
     @Override
     public String process(Advertisement advertisement) {
         String brand = advertisement.getParameterValueByParameterName("women_clothes_brand").get();
-        return "▫\uFE0F" + PostTextProcessor.getBoldHtmlStyle(" Бренд: ") + "#" + brand;
+        return "▫\uFE0F" + PostTextProcessor.getBoldHtmlStyle(" Бренд: ") + PostTextProcessor.getTag(brand);
     }
 
     @Override

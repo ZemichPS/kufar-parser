@@ -73,11 +73,12 @@ public class PostManager {
     }
 
     private InputFile getInputFileFromLink(String photoLink) {
-        File imageFile;
+        File imageFile = null;
         try {
-            imageFile = fileLoader.downloadImage(photoLink);
+            imageFile = photoLink.isEmpty() ? fileLoader.loadFileFromResources("images/default.jpg") : fileLoader.downloadImage(photoLink);
         } catch (Exception e) {
-            log.error("Error downloading original advertisement image. Try to download default image from resources", e);
+            log.error("Error downloading original advertisement image. Try to download default image from resources.", e);
+            log.error("Photo link: {}", photoLink);
             try {
                 imageFile = fileLoader.loadFileFromResources("images/default.jpg");
             } catch (Exception ex) {
