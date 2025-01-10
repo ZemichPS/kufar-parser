@@ -1,8 +1,6 @@
 package by.zemich.kufar.policies.impl;
 
 import by.zemich.kufar.dao.entity.Advertisement;
-import jakarta.el.MethodReference;
-import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;
@@ -23,26 +21,54 @@ class WomenClothingPricePolicyTest {
     private final WomenClothingPricePolicy policy = new WomenClothingPricePolicy(
             Map.of(
                     "верхняя одежда", new BigDecimal(100),
-                    "свитеры и толстовки", new BigDecimal(50),
-                    "джинсы, брюки", new BigDecimal(50)
+                    "свитеры и толстовки", new BigDecimal(60),
+                    "джинсы, брюки", new BigDecimal(50),
+                    "костюмы, пиджаки и жакеты", new BigDecimal(60)
             )
     );
 
 
-    @ParameterizedTest
-    @MethodSource("provideAdvertisements")
-    void isSatisfiedBy_WhenAppropriatePriceAccordingToCategory_ShouldReturnTrue(Advertisement advertisement) {
-
+    @Test
+    void isSatisfiedBy_WhenInappropriatePricesHigherAccordingToCategory_ShouldReturnFalse() {
+        Advertisement advertisement = getAdvertisement();
+        advertisement.addParameter(Advertisement.Parameter.builder()
+                .label("Вид одежды")
+                .identity("women_clothes_type")
+                .value("Костюмы, пиджаки и жакеты")
+                .build()
+        ).setPriceInByn(new BigDecimal(61));
+        assertFalse(policy.isSatisfiedBy(advertisement));
     }
 
-    private static Stream<Arguments> provideAdvertisements() {
+    @ParameterizedTest
+    @MethodSource("provideAppropriateAdvertisements")
+    void isSatisfiedBy_WhenAppropriatePricesLessOrEqualAccordingToCategory_ShouldReturnTrue(Advertisement advertisement) {
+        assertTrue(policy.isSatisfiedBy(advertisement));
+    }
+
+
+    private static Stream<Arguments> provideAppropriateAdvertisements() {
         return Stream.of(
                 Arguments.of(getAdvertisement().addParameter(Advertisement.Parameter.builder()
                         .label("Вид одежды")
                         .identity("women_clothes_type")
                         .value("Джинсы, брюки")
                         .build()
-                ))
+                ).setPriceInByn(new BigDecimal(50))),
+
+                Arguments.of(getAdvertisement().addParameter(Advertisement.Parameter.builder()
+                        .label("Вид одежды")
+                        .identity("women_clothes_type")
+                        .value("Верхняя одежда")
+                        .build()
+                ).setPriceInByn(new BigDecimal(80))),
+
+                Arguments.of(getAdvertisement().addParameter(Advertisement.Parameter.builder()
+                        .label("Вид одежды")
+                        .identity("women_clothes_type")
+                        .value("Костюмы, пиджаки и жакеты")
+                        .build()
+                ).setPriceInByn(new BigDecimal(40)))
         );
     }
 
@@ -51,7 +77,6 @@ class WomenClothingPricePolicyTest {
                 .subject("Female clothes")
                 .companyAd(false)
                 .fullyFunctional(true)
-                .priceInByn(new BigDecimal(70))
                 .parameters(new ArrayList<>())
                 .build();
     }

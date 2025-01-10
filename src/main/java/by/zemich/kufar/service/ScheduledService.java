@@ -3,9 +3,7 @@ package by.zemich.kufar.service;
 import by.zemich.kufar.dao.entity.Advertisement;
 import by.zemich.kufar.dao.entity.Category;
 import by.zemich.kufar.dao.entity.Manufacturer;
-import by.zemich.kufar.dao.entity.Subcategory;
 import by.zemich.kufar.dto.AdDetailsDTO;
-import by.zemich.kufar.dto.AdsDTO;
 import by.zemich.kufar.dto.CategoriesDto;
 import by.zemich.kufar.service.api.AdvertisementHandler;
 import by.zemich.kufar.service.api.AdvertisementPublisher;
@@ -18,7 +16,6 @@ import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import org.telegram.telegrambots.meta.exceptions.TelegramApiRequestException;
 
 import java.util.List;
 import java.util.Objects;
@@ -71,7 +68,7 @@ public class ScheduledService {
                     AdDetailsDTO detailsDTO = kufarClient.getDetails(advertisement.getAdId());
                     String details = detailsDTO.getResult().getBody();
                     advertisement.setDetails(details);
-                    advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(details));
+                    advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(advertisement));
 
                     if (advertisementSaveHandler.canHandle(advertisement))
                         return advertisementSaveHandler.handle(advertisement);

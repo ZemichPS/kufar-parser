@@ -21,6 +21,7 @@ public class WomenClothingPricePolicy implements Policy<Advertisement> {
 
         return advertisement.getParameterByIdentity("women_clothes_type")
                 .map(Advertisement.Parameter::getValue)
+                .map(String::toLowerCase)
                 .map(clothingType -> pricesMap.getOrDefault(clothingType, new BigDecimal(50)))
                 .map(maxPrice -> currentPriceOfClothing.compareTo(maxPrice) <= 0)
                 .orElse(false);

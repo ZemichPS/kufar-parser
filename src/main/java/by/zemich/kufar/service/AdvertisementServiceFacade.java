@@ -70,8 +70,7 @@ public class AdvertisementServiceFacade {
     public void updateAdvertisementCauseNewConditionRules() {
         advertisementService.getAll().stream().parallel()
                 .peek(advertisement -> {
-                    String details = advertisement.getDetails();
-                    boolean result = conditionAnalyzer.isFullyFunctional(details);
+                    boolean result = conditionAnalyzer.isFullyFunctional(advertisement);
                     advertisement.setFullyFunctional(result);
                 }).toList().stream().parallel()
                 .forEach(advertisementService::save);
@@ -109,7 +108,7 @@ public class AdvertisementServiceFacade {
                     AdDetailsDTO detailsDTO = kufarClient.getDetails(advertisement.getAdId());
                     String details = detailsDTO.getResult().getBody();
                     advertisement.setDetails(details);
-                    advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(details));
+                    advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(advertisement));
                 })
                 .forEach(advertisementService::save);
     }

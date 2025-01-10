@@ -12,7 +12,6 @@ import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -31,7 +30,7 @@ public class SmartphoneBestPriceChannel extends Channel {
         super(messenger, postManager);
         this.policies.addAll(
                 List.of(
-                        new OnlyOriginalGoods(),
+                        new OnlyOriginalGoodsPolicy(),
                         new CategoryPolicy("17010"),
                         new MinPercentagePolicy(
                                 BigDecimal.valueOf(-35),

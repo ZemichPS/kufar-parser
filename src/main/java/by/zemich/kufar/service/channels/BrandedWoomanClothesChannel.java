@@ -7,13 +7,10 @@ import by.zemich.kufar.service.PostManager;
 import by.zemich.kufar.service.api.Channel;
 import by.zemich.kufar.service.api.PhotoMessenger;
 import org.springframework.context.annotation.Profile;
-import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 
 import java.math.BigDecimal;
-import java.time.Duration;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import static java.lang.Thread.sleep;
 
@@ -32,7 +29,7 @@ public class BrandedWoomanClothesChannel extends Channel {
                 List.of(
                         new OnlyOwnersAds(),
                         new OnlyOwnersAds(),
-                        new OnlyOriginalGoods(),
+                        new OnlyOriginalGoodsPolicy(),
                         new OnlyBrandClothesPolicy().or(new OnlyBrandWoomanShoesPolicy()),
                         new OnlyDefiniteCategory("8110")
                                 .or(new OnlyDefiniteCategory("8100"))

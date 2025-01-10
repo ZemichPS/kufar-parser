@@ -1,7 +1,7 @@
 package by.zemich.kufar.service.channels;
 
 import by.zemich.kufar.policies.impl.CategoryPolicy;
-import by.zemich.kufar.policies.impl.OnlyOriginalGoods;
+import by.zemich.kufar.policies.impl.OnlyOriginalGoodsPolicy;
 import by.zemich.kufar.service.PostManager;
 import by.zemich.kufar.service.api.Channel;
 import by.zemich.kufar.service.api.PhotoMessenger;
@@ -23,7 +23,7 @@ public class MainChannel extends Channel {
         super(messenger, postManager);
         this.policies.addAll(
                 List.of(
-                        new OnlyOriginalGoods(),
+                        new OnlyOriginalGoodsPolicy(),
                         new CategoryPolicy("17010")
                 )
         );

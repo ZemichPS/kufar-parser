@@ -25,7 +25,7 @@ public class TestChannel extends Channel {
                 List.of(
                         new OnlyOwnersAds(),
                         new OnlyOwnersAds(),
-                        new OnlyOriginalGoods(),
+                        new OnlyOriginalGoodsPolicy(),
                         new OnlyBrandClothesPolicy().or(new OnlyBrandWoomanShoesPolicy()),
                         new OnlyDefiniteCategory("8110")
                                 .or(new OnlyDefiniteCategory("8100"))

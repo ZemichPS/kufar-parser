@@ -43,6 +43,11 @@ public class Advertisement {
         return this;
     }
 
+    public Advertisement setPriceInByn(BigDecimal priceInByn) {
+        this.priceInByn = priceInByn;
+        return this;
+    }
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor
