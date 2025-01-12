@@ -41,8 +41,8 @@ public class BrandedWoomanClothesChannel extends Channel {
 
                         new OnlyOwnersAds(),
                         new OnlyOriginalGoodsPolicy(),
-                        new OnlyBrandClothesPolicy().or(new OnlyBrandWoomanShoesPolicy()),
-                        new OnlyDefinedClothingBrandPolicy(getBrands()),
+                       // new OnlyBrandClothesPolicy().or(new OnlyBrandWoomanShoesPolicy()),
+                        new OnlyDefinedClothingBrandPolicy(getBrands()).or(new OnlyDefinedShoesBrandPolicy(getBrands())),
 
                         new MinPriceForNewGoodsPolicy(new BigDecimal(40)),
                         new WomenClothingPricePolicy(getCategoryClothesPriceList())
