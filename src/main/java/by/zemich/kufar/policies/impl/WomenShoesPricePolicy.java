@@ -20,7 +20,7 @@ public class WomenShoesPricePolicy implements Policy<Advertisement> {
 
         BigDecimal currentPriceOfClothing = advertisement.getPriceInByn();
 
-        return advertisement.getParameterByIdentity("women_clothes_type")
+        return advertisement.getParameterByIdentity("women_shoes_type")
                 .map(Advertisement.Parameter::getValue)
                 .map(String::toLowerCase)
                 .map(clothingType -> pricesMap.getOrDefault(clothingType, new BigDecimal(50)))
