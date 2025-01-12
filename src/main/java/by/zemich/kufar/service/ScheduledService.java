@@ -9,14 +9,19 @@ import by.zemich.kufar.service.api.AdvertisementHandler;
 import by.zemich.kufar.service.api.AdvertisementPublisher;
 import by.zemich.kufar.service.api.ConditionAnalyzer;
 import by.zemich.kufar.service.clients.KufarClient;
+import by.zemich.kufar.service.clients.NIOKufarClient;
 import by.zemich.kufar.utils.Mapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.query.sqm.TemporalUnit;
 import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.time.Duration;
+import java.time.LocalDateTime;
+import java.time.Period;
 import java.util.List;
 import java.util.Objects;
 
@@ -38,17 +43,20 @@ public class ScheduledService {
     private final RetryTemplate telegramRetryTemplate;
     private final List<AdvertisementHandler> advertisementHandlers;
     private final AdvertisementHandler advertisementSaveHandler;
+    private final NIOKufarClient nioKufarClient;
 
 
-    @Scheduled(initialDelay = 1_000, fixedDelay = 20_000)
+    @Scheduled(initialDelay = 1_000, fixedDelay = 10_000)
     public void getNewAdsAndSaveIfNotExists() {
+        LocalDateTime startWorkTime = LocalDateTime.now();
+        log.info("Начинаем выполнение метода: {}", startWorkTime);
 
         List<String> categories = List.of(
+                "17010",
                 "8110",
                 "8100",
                 "8080",
-                "8020",
-                "17010"
+                "8020"
         );
 
         categories.stream()
@@ -65,25 +73,34 @@ public class ScheduledService {
                     return advertisement;
                 })
                 .map(this::handleAdvertisement)
-                .map(advertisement -> {
-                    AdDetailsDTO detailsDTO = kufarClient.getDetails(advertisement.getAdId());
-                    String details = detailsDTO.getResult().getBody();
-                    advertisement.setDetails(details);
-                    advertisement.setFullyFunctional(conditionAnalyzer.isFullyFunctional(advertisement));
-
-                    if (advertisementSaveHandler.canHandle(advertisement))
-                        return advertisementSaveHandler.handle(advertisement);
-                    return advertisement;
-                })
                 .forEach(advertisement -> {
-                    advertisementPublishers.forEach(publisher -> {
-                        telegramRetryTemplate.execute(retryContext -> {
-                                    publisher.publish(advertisement);
-                                    return null;
-                                }
-                        );
-                    });
+                    nioKufarClient.getDetails(advertisement.getAdId())
+                            .map(detailsDTO -> {
+                                String details = detailsDTO.getResult().getBody();
+                                advertisement.setDetails(details);
+                                return advertisement;
+                            }).map(ad -> {
+                                ad.setFullyFunctional(conditionAnalyzer.isFullyFunctional(advertisement));
+                                advertisementService.save(ad);
+                                return ad;
+                            }).doOnSuccess(ad ->
+                                    {
+                                        advertisementPublishers.forEach(publisher -> {
+                                            telegramRetryTemplate.execute(retryContext -> {
+                                                        publisher.publish(ad);
+                                                        return null;
+                                                    }
+                                            );
+                                        });
+                                    }
+                            ).doOnError(error -> log.error("Error: {}", error.getMessage()))
+                            .subscribe();
                 });
+        LocalDateTime endWorkTime = LocalDateTime.now();
+
+        log.info("Закончили выполнение метода: {}. Разница: {}",
+                endWorkTime, Duration.between(startWorkTime, endWorkTime).getSeconds()
+        );
     }
 
     @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)

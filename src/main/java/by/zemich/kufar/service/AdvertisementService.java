@@ -86,6 +86,11 @@ public class AdvertisementService {
         return adsRepository.existsByAdId(adId);
     }
 
+
+    @Cacheable(
+            value = "advertisements",
+            key = "'publishedAt-' + #dateTime + '-adId-' + #adId + '-category-' + #category"
+    )
     public boolean existsByPublishedAt(LocalDateTime dateTime, Long adId, String category) {
         return adsRepository.existsByPublishedAtAndAdIdAndCategory(dateTime, adId, category);
     }
