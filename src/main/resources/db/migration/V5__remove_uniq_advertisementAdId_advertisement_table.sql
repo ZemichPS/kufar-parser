@@ -1,1 +1,0 @@
-ALTER TABLE app.advertisements DROP CONSTRAINT uniq_ad_id;

@@ -1,6 +1,3 @@
- DROP TABLE IF EXISTS app.categories CASCADE;
- DROP TABLE IF EXISTS app.subcategories CASCADE;
-
 CREATE TABLE app.categories
 (
     id      varchar(20) PRIMARY KEY,

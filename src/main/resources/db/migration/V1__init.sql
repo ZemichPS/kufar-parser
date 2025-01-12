@@ -1,10 +1,6 @@
-DROP TABLE IF EXISTS app.users CASCADE;
-DROP TABLE IF EXISTS app.advertisements CASCADE;
-DROP TABLE IF EXISTS app.geo CASCADE;
-DROP TABLE IF EXISTS app.manufactures CASCADE;
-DROP TABLE IF EXISTS app.models CASCADE ;
+SET timezone = 'Europe/Minsk';
 
-CREATE SCHEMA IF NOT EXISTS app;
+CREATE SCHEMA app;
 
 CREATE TABLE app.advertisements
 (
@@ -14,7 +10,7 @@ CREATE TABLE app.advertisements
     category     VARCHAR(100),
     company_ad   BOOLEAN,
     currency     VARCHAR(10),
-    published_at TIMESTAMP,
+    published_at TIMESTAMP WITHOUT TIME ZONE,
     subject      TEXT,
     type         VARCHAR(10),
     price_in_byn NUMERIC,
@@ -22,8 +18,7 @@ CREATE TABLE app.advertisements
     details      TEXT,
     parameters   JSONB,
     fully_functional BOOLEAN,
-    images TEXT,
-    CONSTRAINT uniq_ad_id UNIQUE (ad_id)
+    images TEXT
 );
 
 CREATE TABLE app.users
@@ -57,6 +52,7 @@ CREATE TABLE app.manufactures
 CREATE TABLE app.models
 (
     id             UUID PRIMARY KEY,
+    kufar_id VARCHAR(100),
     manufacture_id BIGSERIAL,
     name           VARCHAR(100),
     FOREIGN KEY (manufacture_id) REFERENCES app.manufactures (id)

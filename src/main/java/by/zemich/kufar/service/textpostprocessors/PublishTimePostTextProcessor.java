@@ -5,18 +5,24 @@ import by.zemich.kufar.service.api.PostTextProcessor;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-//@Component
+@Component
 @Order(9)
 public class PublishTimePostTextProcessor implements PostTextProcessor {
     @Override
     public String process(Advertisement advertisement) {
         if(!isApplicable(advertisement)) return "";
 
-        LocalDateTime publishedAt = advertisement.getPublishedAt();
-        return PostTextProcessor.getBoldHtmlStyle("▫️ Время публикации: ") + publishedAt.format(DateTimeFormatter.ISO_DATE_TIME);
+        LocalDateTime utcPublishedAt = advertisement.getPublishedAt();
+        ZonedDateTime utcTime = utcPublishedAt.atZone(ZoneId.of("UTC"));
+        ZoneId zoneId = ZoneId.systemDefault();
+        ZonedDateTime localDatetimeWithZoneId = utcTime.withZoneSameInstant(zoneId);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+
+        return PostTextProcessor.getBoldHtmlStyle("▫️ Время публикации: ") + formatter.format(localDatetimeWithZoneId);
     }
 
     @Override
