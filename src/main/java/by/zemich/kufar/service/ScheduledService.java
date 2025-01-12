@@ -88,17 +88,10 @@ public class ScheduledService {
                             }).doOnSuccess(ad ->
                                     {
                                         advertisementPublishers.forEach(publisher -> {
-
                                             Mono.fromRunnable(() -> publisher.publish(ad))
-                                                    .retryWhen(Retry.backoff(20, Duration.ofSeconds(1)).maxBackoff(Duration.ofSeconds(10))) // 3 попытки с экспоненциальной задержкой
+                                                    .retryWhen(Retry.backoff(15, Duration.ofSeconds(10)).maxBackoff(Duration.ofSeconds(20)))
                                                     .doOnError(e -> log.error("Failed to publish advertisement with id: {}", ad.getId(), e))
                                                     .subscribe(); // Подписываемся, чтобы запустить выполнение
-
-//                                            telegramRetryTemplate.execute(retryContext -> {
-//                                                        publisher.publish(ad);
-//                                                        return null;
-//                                                    }
-//                                            );
                                         });
                                     }
                             ).doOnError(error -> log.error("Error: {}", error.getMessage()))

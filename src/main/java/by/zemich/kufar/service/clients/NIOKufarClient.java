@@ -54,14 +54,22 @@ public class NIOKufarClient {
         this.webClient = webClient;
     }
 
-    public AdsDTO getNewAdsByCategoryIdAndByLastSort(String categoryId) {
+    public Mono<AdsDTO> getNewAdsByCategoryIdAndByLastSort(String categoryId) {
+
         URI uri = UriComponentsBuilder.fromHttpUrl(ADVERTISEMENT_URL)
                 .queryParam("cat", categoryId)
                 .queryParam("lang", "17000")
                 .queryParam("size", "100")
                 .queryParam("sort", "lst.d")
                 .build().toUri();
-        return restTemplate.getForObject(uri, AdsDTO.class);
+
+        return webClient.get().uri(uri)
+                .retrieve()
+                .bodyToMono(AdsDTO.class)
+                .timeout(Duration.ofSeconds(10)).retryWhen(
+                        Retry.backoff(20, Duration.ofMillis(1_000))
+                                .maxBackoff(Duration.ofSeconds(10))
+                );
     }
 
     public List<GeoDataDTO> getGeoData() {
