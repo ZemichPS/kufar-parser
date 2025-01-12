@@ -74,6 +74,7 @@ public class ScheduledService {
                             .forEach(advertisement::addParameter);
                     return advertisement;
                 })
+                .peek(ad-> log.info("Объявление с id {}: успешно спаршено", ad.getAdId()))
                 .map(this::handleAdvertisement)
                 .forEach(advertisement -> {
                     nioKufarClient.getDetails(advertisement.getAdId())
@@ -81,7 +82,9 @@ public class ScheduledService {
                                 String details = detailsDTO.getResult().getBody();
                                 advertisement.setDetails(details);
                                 return advertisement;
-                            }).map(ad -> {
+                            })
+                            .doOnSuccess(ad -> log.info("Объявление с id {}: успешно обогащено деталями", ad.getAdId()))
+                            .map(ad -> {
                                 ad.setFullyFunctional(conditionAnalyzer.isFullyFunctional(advertisement));
                                 advertisementService.save(ad);
                                 return ad;
@@ -91,6 +94,7 @@ public class ScheduledService {
                                             Mono.fromRunnable(() -> publisher.publish(ad))
                                                     .retryWhen(Retry.backoff(15, Duration.ofSeconds(10)).maxBackoff(Duration.ofSeconds(20)))
                                                     .doOnError(e -> log.error("Failed to publish advertisement with id: {}", ad.getId(), e))
+                                                    .doOnSuccess(o -> log.info("Объявление с id {}: успешно опубликовано", ad.getAdId()))
                                                     .subscribe(); // Подписываемся, чтобы запустить выполнение
                                         });
                                     }
