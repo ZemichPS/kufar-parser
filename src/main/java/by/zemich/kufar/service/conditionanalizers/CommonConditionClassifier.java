@@ -44,10 +44,9 @@ public class CommonConditionClassifier implements ProductConditionClassifier {
 
     @Override
     public boolean isApplicable(Advertisement advertisement) {
-        if (advertisement == null) return false;
-        if (advertisement.getDetails() == null) return false;
-        return advertisement.getCategory().equalsIgnoreCase("17010")
-                && !advertisement.getDetails().isEmpty()
+        return advertisement != null
+                && "17010".equalsIgnoreCase(advertisement.getCategory())
+                && advertisement.getDetails() != null
                 && !advertisement.getDetails().isBlank();
     }
 }

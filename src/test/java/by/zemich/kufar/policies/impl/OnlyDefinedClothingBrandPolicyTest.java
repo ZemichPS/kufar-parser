@@ -22,7 +22,7 @@ class OnlyDefinedClothingBrandPolicyTest {
     );
 
     @ParameterizedTest(name = "value is -> {0}")
-    @ValueSource(strings = {"Armani", "Nike", "Adidas"})
+    @ValueSource(strings = {"Armani", "nike", "Adidas"})
     void isSatisfiedBy_WhenAdvertisementBrandIsAppropriate_thenReturnsTrue(String brand) {
         Advertisement advertisement = getAdvertisement();
         advertisement.addParameter(Advertisement.Parameter.builder()

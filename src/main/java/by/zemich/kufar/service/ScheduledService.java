@@ -44,18 +44,19 @@ public class ScheduledService {
     public void getNewAdsAndSaveIfNotExists() {
 
         List<String> categories = List.of(
-           //     "8110",
-            //    "8100",
-            //    "8080",
-             //   "8020",
+                "8110",
+                "8100",
+                "8080",
+                "8020",
                 "17010"
         );
 
-        categories.stream().parallel()
+        categories.stream()
+                .parallel()
                 .map(kufarClient::getNewAdsByCategoryIdAndByLastSort)
                 .flatMap(adsDTO -> adsDTO.getAds().stream().parallel())
                 .filter(Objects::nonNull)
-                .filter(dto -> !advertisementService.existsByAdId(dto.getAdId()))
+                .filter(dto -> !advertisementService.existsByPublishedAt(dto.getListTime(), dto.getAdId(), dto.getCategory()))
                 .map(adDTO -> {
                     Advertisement advertisement = Mapper.mapToEntity(adDTO);
                     adDTO.getAdParameters().stream()
