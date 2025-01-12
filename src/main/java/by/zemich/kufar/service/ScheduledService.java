@@ -18,6 +18,8 @@ import org.springframework.retry.support.RetryTemplate;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import reactor.core.publisher.Mono;
+import reactor.util.retry.Retry;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
@@ -86,11 +88,17 @@ public class ScheduledService {
                             }).doOnSuccess(ad ->
                                     {
                                         advertisementPublishers.forEach(publisher -> {
-                                            telegramRetryTemplate.execute(retryContext -> {
-                                                        publisher.publish(ad);
-                                                        return null;
-                                                    }
-                                            );
+
+                                            Mono.fromRunnable(() -> publisher.publish(ad))
+                                                    .retryWhen(Retry.backoff(20, Duration.ofSeconds(1)).maxBackoff(Duration.ofSeconds(10))) // 3 попытки с экспоненциальной задержкой
+                                                    .doOnError(e -> log.error("Failed to publish advertisement with id: {}", ad.getId(), e))
+                                                    .subscribe(); // Подписываемся, чтобы запустить выполнение
+
+//                                            telegramRetryTemplate.execute(retryContext -> {
+//                                                        publisher.publish(ad);
+//                                                        return null;
+//                                                    }
+//                                            );
                                         });
                                     }
                             ).doOnError(error -> log.error("Error: {}", error.getMessage()))

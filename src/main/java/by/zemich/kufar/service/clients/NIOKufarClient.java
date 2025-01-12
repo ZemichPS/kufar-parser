@@ -84,8 +84,8 @@ public class NIOKufarClient {
                 .bodyToMono(AdDetailsDTO.class)
                 .timeout(Duration.ofSeconds(10))
                 .retryWhen(
-                        Retry.backoff(10, Duration.ofMillis(1_000))
-                                .maxBackoff(Duration.ofSeconds(20))
+                        Retry.backoff(20, Duration.ofMillis(1_000))
+                                .maxBackoff(Duration.ofSeconds(10))
                 );
     }
 
