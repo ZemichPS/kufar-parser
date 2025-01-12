@@ -38,7 +38,6 @@ public class TestChannel extends Channel {
                         new OnlyOriginalGoodsPolicy(),
                         new OnlyBrandClothesPolicy().or(new OnlyBrandWoomanShoesPolicy()),
                         new OnlyDefinedClothingBrandPolicy(getBrands()),
-
                         new MinPriceForNewGoodsPolicy(new BigDecimal(40)),
                         new WomenClothingPricePolicy(getCategoryClothesPriceList())
                                 .or(new WomenShoesPricePolicy(getCategoryShoesPriceList()))

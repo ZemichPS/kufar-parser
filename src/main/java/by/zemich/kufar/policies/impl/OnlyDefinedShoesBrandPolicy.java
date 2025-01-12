@@ -25,7 +25,7 @@ public class OnlyDefinedShoesBrandPolicy implements Policy<Advertisement> {
 
     private boolean isApplicable(Advertisement advertisement) {
         if (Objects.isNull(advertisement)) return false;
-        return advertisement.getParameterValueByParameterName("women_shoes_brand")
+        return advertisement.getParameterValueByParameterName("women_clothes_brand")
                 .map(param -> !param.isEmpty() && !param.isBlank())
                 .orElse(false);
     }

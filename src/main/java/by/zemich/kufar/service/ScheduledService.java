@@ -74,7 +74,7 @@ public class ScheduledService {
                             .forEach(advertisement::addParameter);
                     return advertisement;
                 })
-                .peek(ad-> log.info("Объявление с id {}: успешно спаршено", ad.getAdId()))
+                .peek(ad-> log.info("Объявление с id {}: успешно спаршено. CategoryId: {}", ad.getAdId(), ad.getCategory()))
                 .map(this::handleAdvertisement)
                 .forEach(advertisement -> {
                     nioKufarClient.getDetails(advertisement.getAdId())

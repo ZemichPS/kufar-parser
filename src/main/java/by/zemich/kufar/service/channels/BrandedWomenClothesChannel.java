@@ -39,13 +39,12 @@ public class BrandedWomenClothesChannel extends Channel {
 
                         new OnlyOwnersAds(),
                         new OnlyOriginalGoodsPolicy(),
-                       // new OnlyBrandClothesPolicy().or(new OnlyBrandWoomanShoesPolicy()),
-                        new OnlyDefinedClothingBrandPolicy(getBrands())
-                                .or(new OnlyDefinedShoesBrandPolicy(getBrands())),
-
+                        new OnlyBrandClothesPolicy().or(new OnlyBrandWoomanShoesPolicy()),
+                        new OnlyDefinedClothingBrandPolicy(getBrands()),
                         new MinPriceForNewGoodsPolicy(new BigDecimal(40)),
                         new WomenClothingPricePolicy(getCategoryClothesPriceList())
                                 .or(new WomenShoesPricePolicy(getCategoryShoesPriceList()))
+
                 )
         );
 
