@@ -1,7 +1,5 @@
 package by.zemich.kufar.service.channels;
 
-import by.zemich.kufar.dao.entity.Advertisement;
-import by.zemich.kufar.policies.impl.ExcludedWomenClosesBrandPolicy;
 import by.zemich.kufar.policies.impl.*;
 import by.zemich.kufar.service.PostManager;
 import by.zemich.kufar.service.api.Channel;
@@ -23,13 +21,13 @@ import static java.lang.Thread.sleep;
 
 @Component
 @Profile("prod")
-public class BrandedWoomanClothesChannel extends Channel {
+public class BrandedWomenClothesChannel extends Channel {
 
     private final String CHANNEL_CHAT_ID = "-1002270323996";
     private final String CHANNEL_CHAT_NANE = "Брендовая женская одежда";
 
-    public BrandedWoomanClothesChannel(PhotoMessenger<SendPhoto> messenger,
-                                       PostManager postManager
+    public BrandedWomenClothesChannel(PhotoMessenger<SendPhoto> messenger,
+                                      PostManager postManager
     ) {
         super(messenger, postManager);
         this.policies.addAll(
