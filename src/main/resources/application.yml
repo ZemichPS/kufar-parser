@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: test
+    active: prod
 
   application:
     name: kufar-spy-bot

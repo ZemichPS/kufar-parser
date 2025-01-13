@@ -32,7 +32,7 @@ public class MinPercentagePolicy implements Policy<Advertisement> {
     public boolean isSatisfiedBy(Advertisement advertisement) {
         BigDecimal currentAdPrice = advertisement.getPriceInByn();
 
-        if (!advertisement.isFullyFunctional()) return false;
+       // if (!advertisement.isFullyFunctional()) return false;
         if (currentAdPrice.compareTo(BigDecimal.ZERO) == 0) return false;
         if (advertisement.getBrand().isEmpty() || advertisement.getModel().isEmpty()) return false;
 
