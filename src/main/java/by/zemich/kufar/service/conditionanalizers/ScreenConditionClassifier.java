@@ -10,7 +10,8 @@ import java.util.regex.Pattern;
 public class ScreenConditionClassifier implements ProductConditionClassifier {
 
     private final Pattern DEFECT_PATTERN = Pattern.compile(
-            "(?i)(разбит,\\s+но\\s+работает|" +
+            "(?i)(" +
+                    "(раз|по)?бит,\\s+но\\s+(работает|функционирует)|" +
                     "(треснут[оыа]?|(раз)?бит[аоы]?)\\s+(экран|стекло|диспле[йи]|матриц[аы])|" +
                     "(треснут[оыа]?|(раз)?бит[аоы]?)\\s+(\\S+\\s+){2,}и\\s+(экран|стекло|диспле[йи]|матриц[аы])|" +
                     "(экран|стекло|дисплей|матрица)\\s+(оригинальное|оригинальный),?\\s*но (по)?бит(о|ый|а)|" +
@@ -18,6 +19,7 @@ public class ScreenConditionClassifier implements ProductConditionClassifier {
                     "упал\\sне\\s*удачно|" +
                     "не\\s*удачно\\s+упал|" +
                     "была\\s+(произведена\\s+)?замена\\s+(экрана|матрицы|дисплея|стекла)|" +
+                    "(вопросы?|нюансы?)\\s+(по|на)\\s+(экран\\w*|матриц\\w*|диспл\\w*|стекл\\w*|тачскрин\\w*)|" +
                     "(экран|матрица|дисплей|стекло)\\s+(раз)?бит(о|ый|а)?|" +
                     "дефект(ом)?\\s+(экрана?|матрицы|диспл(ея|й)|стекл[ао])|" +
                     "сколы?\\s+(в\\s+)?(углу|уголк[еу]|(с)?верху)?\\s*(экрана|матрицы|дисплея|стекла)?|" +
@@ -72,8 +74,8 @@ public class ScreenConditionClassifier implements ProductConditionClassifier {
     @Override
     public boolean analyze(Advertisement advertisement) {
         if (!isApplicable(advertisement)) return false;
-        String details = advertisement.getDetails();
-        return DEFECT_PATTERN.matcher(details.toLowerCase()).find();
+        String details = advertisement.getDetails().toLowerCase();
+        return DEFECT_PATTERN.matcher(details).find();
     }
 
     @Override

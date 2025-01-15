@@ -90,9 +90,9 @@ public class NIOKufarClient {
         return webClient.get().uri(fullAdDetailsUrl)
                 .retrieve()
                 .bodyToMono(AdDetailsDTO.class)
-                .timeout(Duration.ofSeconds(10))
+                .timeout(Duration.ofSeconds(20))
                 .retryWhen(
-                        Retry.backoff(20, Duration.ofMillis(1_000))
+                        Retry.backoff(40, Duration.ofMillis(3_000))
                                 .maxBackoff(Duration.ofSeconds(10))
                 );
     }

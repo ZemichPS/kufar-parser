@@ -52,13 +52,17 @@ public class ScheduledService {
     public void getNewAdsAndSaveIfNotExists() {
         LocalDateTime startWorkTime = LocalDateTime.now();
         log.info("Начинаем выполнение метода: {}", startWorkTime);
+//
+//        List<String> categories = List.of(
+//                "17010",
+//                "8110",
+//                "8100",
+//                "8080",
+//                "8020"
+//        );
 
         List<String> categories = List.of(
-                "17010",
-                "8110",
-                "8100",
-                "8080",
-                "8020"
+                "17010"
         );
 
         categories.stream()
@@ -92,7 +96,7 @@ public class ScheduledService {
                                     {
                                         advertisementPublishers.forEach(publisher -> {
                                             Mono.fromRunnable(() -> publisher.publish(ad))
-                                                    .retryWhen(Retry.backoff(15, Duration.ofSeconds(10)).maxBackoff(Duration.ofSeconds(20)))
+                                                    .retryWhen(Retry.backoff(50, Duration.ofSeconds(14)).maxBackoff(Duration.ofSeconds(20)))
                                                     .doOnError(e -> log.error("Failed to publish advertisement with id: {}", ad.getId(), e))
                                                     .doOnSuccess(o -> log.info("Объявление с id {}: успешно опубликовано", ad.getAdId()))
                                                     .subscribe(); // Подписываемся, чтобы запустить выполнение

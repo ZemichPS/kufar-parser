@@ -69,6 +69,7 @@ public class AdvertisementServiceFacade {
 
     public void updateAdvertisementCauseNewConditionRules() {
         advertisementService.getAll().stream().parallel()
+                .filter(advertisement -> advertisement.getCategory().equalsIgnoreCase("17010"))
                 .peek(advertisement -> {
                     boolean result = conditionAnalyzer.isFullyFunctional(advertisement);
                     advertisement.setFullyFunctional(result);

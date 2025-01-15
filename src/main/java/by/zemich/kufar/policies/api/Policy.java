@@ -17,8 +17,8 @@ public interface Policy<T> {
         return domainObject -> isSatisfiedBy(domainObject) || other.isSatisfiedBy(domainObject);
     }
 
-    default Policy<T> not() {
-        return domainObject -> !isSatisfiedBy(domainObject);
+    default Policy<T> not(Policy<T> other) {
+        return domainObject -> !other.isSatisfiedBy(domainObject);
     }
 
 }

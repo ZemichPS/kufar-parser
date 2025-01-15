@@ -33,7 +33,7 @@ public class DetailsPostTextProcessor implements PostTextProcessor {
 
 
     private String reduce(String source) {
-        if (source.length() >= 400) return source.substring(0, 400) + "...(смотри на сайте)";
+        if (source.length() >= 350) return source.substring(0, 350) + "...(смотри на сайте)";
         return source;
     }
 

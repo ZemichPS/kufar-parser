@@ -14,15 +14,13 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import java.math.BigDecimal;
 import java.util.List;
 
-import static java.lang.Thread.sleep;
-
 @Component
 @Profile("prod")
-public class SmartphoneBestPriceChannel extends Channel {
-    private final String CHANNEL_CHAT_ID = "-1002367745711";
-    private final String CHANNEL_CHAT_NANE = "Лушие цены на смартфоны c куфар";
+public class FastSmartphoneSalesChannel extends Channel {
+    private final String CHANNEL_CHAT_ID = "-1002499186724";
+    private final String CHANNEL_CHAT_NANE = "Срочные продажи смартфонов";
 
-    public SmartphoneBestPriceChannel(PhotoMessenger<SendPhoto> messenger,
+    public FastSmartphoneSalesChannel(PhotoMessenger<SendPhoto> messenger,
                                       PostManager postManager,
                                       PriceAnalyzer priceAnalyzer,
                                       AdvertisementService advertisementService
@@ -30,15 +28,16 @@ public class SmartphoneBestPriceChannel extends Channel {
         super(messenger, postManager);
         this.policies.addAll(
                 List.of(
-                        new OnlyOriginalGoodsPolicy().not(new FastSalesPolicy()),
+                        new OnlyOriginalGoodsPolicy(),
                         new CategoryPolicy("17010"),
                         new MinPercentagePolicy(
-                                BigDecimal.valueOf(-35),
+                                BigDecimal.valueOf(-50),
                                 priceAnalyzer,
                                 advertisementService
                         ),
-                        new OnlyCorrectModelPolicy()
-                        //new OnlyFullyFunctionalAdsPolicy()
+                        new OnlyCorrectModelPolicy(),
+                        new OnlyFullyFunctionalAdsPolicy(),
+                        new FastSalesPolicy()
                 )
         );
     }
