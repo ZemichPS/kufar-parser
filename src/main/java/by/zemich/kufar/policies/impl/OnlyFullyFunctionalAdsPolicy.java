@@ -8,4 +8,5 @@ public class OnlyFullyFunctionalAdsPolicy implements Policy<Advertisement> {
     public boolean isSatisfiedBy(Advertisement advertisement) {
         return advertisement.isFullyFunctional();
     }
+
 }
