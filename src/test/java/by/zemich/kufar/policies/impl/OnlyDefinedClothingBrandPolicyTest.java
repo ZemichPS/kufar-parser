@@ -1,6 +1,7 @@
 package by.zemich.kufar.policies.impl;
 
-import by.zemich.kufar.dao.entity.Advertisement;
+import by.zemich.kufar.domain.model.Advertisement;
+import by.zemich.kufar.domain.policy.OnlyDefinedClothingBrandPolicy;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;

@@ -1,6 +1,6 @@
 //package by.zemich.kufar.service;
 //
-//import by.zemich.kufar.dao.entity.Advertisement;
+//import by.zemich.kufar.domain.model.Advertisement;
 //import by.zemich.kufar.extensions.AdvertisementParameterResolver;
 //import by.zemich.kufar.service.api.ProductConditionClassifier;
 //import org.junit.jupiter.api.DisplayNameGeneration;

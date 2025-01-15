@@ -1,6 +1,6 @@
 package by.zemich.kufar.extensions;
 
-import by.zemich.kufar.dao.entity.Advertisement;
+import by.zemich.kufar.domain.model.Advertisement;
 import org.junit.jupiter.api.extension.ExtensionContext;
 import org.junit.jupiter.api.extension.ParameterContext;
 import org.junit.jupiter.api.extension.ParameterResolutionException;

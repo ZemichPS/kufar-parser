@@ -1,7 +1,8 @@
 package by.zemich.kufar.policies.impl;
 
 
-import by.zemich.kufar.dao.entity.Advertisement;
+import by.zemich.kufar.domain.model.Advertisement;
+import by.zemich.kufar.domain.policy.ExcludedWomenClosesBrandPolicy;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
 import org.junit.jupiter.api.Test;

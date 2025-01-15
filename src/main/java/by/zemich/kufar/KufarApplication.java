@@ -1,7 +1,7 @@
 package by.zemich.kufar;
 
-import by.zemich.kufar.properties.MinioProperties;
-import by.zemich.kufar.properties.TelegramProperties;
+import by.zemich.kufar.infrastructure.properties.MinioProperties;
+import by.zemich.kufar.infrastructure.properties.TelegramProperties;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;

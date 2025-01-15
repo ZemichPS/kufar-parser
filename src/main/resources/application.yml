@@ -26,3 +26,22 @@ telegram:
 
 minio:
   notification-image-bucket-name: notification-images
+
+
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+    access:
+      default: unrestricted
+  endpoint:
+    beans:
+      cache:
+        time-to-live: "5s"
+    scheduledtasks:
+      access: read_only
+    shutdown:
+      access: read_only
+

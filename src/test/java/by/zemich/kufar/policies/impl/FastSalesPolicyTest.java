@@ -1,6 +1,7 @@
 package by.zemich.kufar.policies.impl;
 
-import by.zemich.kufar.dao.entity.Advertisement;
+import by.zemich.kufar.domain.model.Advertisement;
+import by.zemich.kufar.domain.policy.FastSalesPolicy;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 

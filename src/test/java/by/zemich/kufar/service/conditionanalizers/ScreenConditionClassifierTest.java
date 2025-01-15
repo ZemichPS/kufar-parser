@@ -1,14 +1,12 @@
 package by.zemich.kufar.service.conditionanalizers;
 
-import by.zemich.kufar.dao.entity.Advertisement;
+import by.zemich.kufar.domain.service.conditionanalizers.classifiers.ScreenConditionClassifier;
+import by.zemich.kufar.domain.model.Advertisement;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvFileSource;
 
 import java.util.ArrayList;
-
-import static org.junit.jupiter.api.Assertions.*;
 
 class ScreenConditionClassifierTest {
 

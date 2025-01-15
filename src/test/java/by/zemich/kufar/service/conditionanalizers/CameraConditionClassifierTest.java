@@ -1,6 +1,7 @@
 package by.zemich.kufar.service.conditionanalizers;
 
-import by.zemich.kufar.dao.entity.Advertisement;
+import by.zemich.kufar.domain.service.conditionanalizers.classifiers.CameraConditionClassifier;
+import by.zemich.kufar.domain.model.Advertisement;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayNameGeneration;
 import org.junit.jupiter.api.DisplayNameGenerator;
