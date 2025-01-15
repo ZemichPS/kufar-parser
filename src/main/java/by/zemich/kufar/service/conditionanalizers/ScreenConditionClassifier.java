@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 @Component
 public class ScreenConditionClassifier implements ProductConditionClassifier {
 
-    private final String SCREEN_PATTERN_GROUP = "(экран\\w*|матриц\\w*|диспл\\w*|стекл\\w*|тачскрин\\w*|молул\\w*|модуль|сенсор)";
+    private final String SCREEN_PATTERN_GROUP = "(экран\\w*|матриц\\w*|диспл\\w*|стекл\\w*|тачскрин\\w*|молул\\w*|модуль|сенсор|тач)";
 
     private final Pattern DEFECT_PATTERN = Pattern.compile(
             "(?i)(" +
