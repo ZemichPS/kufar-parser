@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: prod
+    active: test
 
   application:
     name: kufar-spy-bot
@@ -23,25 +23,37 @@ telegram:
   token: 7899332979:AAHbNgTpqFhNs3GSFggBduf-kPnLmAZOhPM
   name: KufarSpy
 
-
 minio:
   notification-image-bucket-name: notification-images
 
-
-
 management:
+  metrics:
+    enable:
+      all: true
+
   endpoints:
-    web:
-      exposure:
-        include: "*"
     access:
       default: unrestricted
+    web:
+      exposure:
+        include: metrics, health, info, env, prometheus
+
+  prometheus:
+    metrics:
+      export:
+        enabled: true
+        step: "5s"
+
   endpoint:
-    beans:
-      cache:
-        time-to-live: "5s"
+    health:
+      show-details: always
+    prometheus:
+      access: read_only
     scheduledtasks:
       access: read_only
     shutdown:
       access: read_only
+
+
+
 

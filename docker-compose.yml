@@ -17,3 +17,19 @@ services:
     restart: always
     ports:
       - "6379:6379"
+
+  prometheus:
+    container_name: prometheus
+    image: prom/prometheus:latest
+    restart: always
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml
+     # - prometheus-data:/prometheus
+    command:
+        - '--config.file=/etc/prometheus/prometheus.yml'
+        - '--storage.tsdb.retention.time=90d'
+        - '--storage.tsdb.retention.size=3GB'
+        - '--web.enable-lifecycle'
+

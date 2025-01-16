@@ -3,7 +3,6 @@ package by.zemich.kufar.application.service.channels;
 import by.zemich.kufar.domain.model.Advertisement;
 import by.zemich.kufar.domain.policy.*;
 import by.zemich.kufar.application.service.channels.api.Channel;
-import by.zemich.kufar.policies.impl.*;
 import by.zemich.kufar.application.service.AdvertisementService;
 import by.zemich.kufar.application.service.PostManager;
 import by.zemich.kufar.domain.service.PriceAnalyzer;

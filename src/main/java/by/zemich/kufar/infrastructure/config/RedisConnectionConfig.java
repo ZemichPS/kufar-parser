@@ -10,7 +10,7 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 import java.time.Duration;
 
 @Configuration
-@EnableRedisRepositories(basePackages = "by.zemich.kufar.dao.redisrepository")
+@EnableRedisRepositories(basePackages = "by.zemich.kufar.infrastructure.repository.redisrepository")
 public class RedisConnectionConfig {
 
     @Bean

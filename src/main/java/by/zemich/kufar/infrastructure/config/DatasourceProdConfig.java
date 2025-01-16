@@ -10,7 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import javax.sql.DataSource;
 
 @Configuration
-@EnableJpaRepositories(basePackages = "by.zemich.kufar.dao.jparepository")
+@EnableJpaRepositories(basePackages = "by.zemich.kufar.infrastructure.repository.jparepository")
 public class DatasourceProdConfig {
 
     @Bean

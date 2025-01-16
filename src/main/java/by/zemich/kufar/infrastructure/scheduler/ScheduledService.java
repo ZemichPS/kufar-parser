@@ -11,6 +11,7 @@ import by.zemich.kufar.domain.service.conditionanalizers.ConditionAnalyzer;
 import by.zemich.kufar.infrastructure.clients.KufarClient;
 import by.zemich.kufar.infrastructure.clients.NIOKufarClient;
 import by.zemich.kufar.infrastructure.utils.Mapper;
+import io.micrometer.core.annotation.Timed;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.retry.support.RetryTemplate;
@@ -48,20 +49,15 @@ public class ScheduledService {
 
     @Scheduled(initialDelay = 1_000, fixedDelay = 10_000)
     public void getNewAdsAndSaveIfNotExists() {
-        LocalDateTime startWorkTime = LocalDateTime.now();
-        log.info("Начинаем выполнение метода: {}", startWorkTime);
-//
-//        List<String> categories = List.of(
-//                "17010",
-//                "8110",
-//                "8100",
-//                "8080",
-//                "8020"
-//        );
 
         List<String> categories = List.of(
-                "17010"
+                "17010",
+                "8110",
+                "8100",
+                "8080",
+                "8020"
         );
+
 
         categories.stream()
                 .parallel()
@@ -76,7 +72,6 @@ public class ScheduledService {
                             .forEach(advertisement::addParameter);
                     return advertisement;
                 })
-                .peek(ad-> log.info("Объявление с id {}: успешно спаршено. CategoryId: {}", ad.getAdId(), ad.getCategory()))
                 .map(this::handleAdvertisement)
                 .forEach(advertisement -> {
                     nioKufarClient.getDetails(advertisement.getAdId())
@@ -85,7 +80,6 @@ public class ScheduledService {
                                 advertisement.setDetails(details);
                                 return advertisement;
                             })
-                            .doOnSuccess(ad -> log.info("Объявление с id {}: успешно обогащено деталями", ad.getAdId()))
                             .map(ad -> {
                                 ad.setFullyFunctional(conditionAnalyzer.isFullyFunctional(advertisement));
                                 advertisementService.save(ad);
@@ -103,11 +97,8 @@ public class ScheduledService {
                             ).doOnError(error -> log.error("Error: {}", error.getMessage()))
                             .subscribe();
                 });
-        LocalDateTime endWorkTime = LocalDateTime.now();
 
-        log.info("Закончили выполнение метода: {}. Разница: {}",
-                endWorkTime, Duration.between(startWorkTime, endWorkTime).getSeconds()
-        );
+
     }
 
     @Scheduled(initialDelay = 5_000, fixedDelay = 21_600_000)
