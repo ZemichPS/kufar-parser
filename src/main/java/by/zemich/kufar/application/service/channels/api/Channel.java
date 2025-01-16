@@ -23,14 +23,16 @@ public abstract class Channel implements AdvertisementPublisher, Notifiable {
     }
 
     @Override
-    public void publish(Advertisement advertisement) {
+    public boolean publish(Advertisement advertisement) {
         boolean policyResult = policies.stream()
                 .allMatch(policy -> policy.isSatisfiedBy(advertisement));
-        if (!policyResult) return;
+        if (!policyResult) return false;
 
         SendPhoto photoPost = postManager.createPhotoPostFromAd(advertisement);
         photoPost.setChatId(getChannelId());
         photoMessenger.sendPhoto(photoPost);
+        return true;
+
     }
 
     public abstract String getChannelName();

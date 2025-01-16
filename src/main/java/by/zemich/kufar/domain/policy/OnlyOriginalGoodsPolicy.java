@@ -9,7 +9,7 @@ public class OnlyOriginalGoodsPolicy implements Policy<Advertisement> {
 
     // Паттерн для поиска копий или реплик
     private static final Pattern DEFECT_PATTERN = Pattern.compile(
-            "(?i)(продам|продаётся)?\\s*(полная|точная)?\\s*(копи[ияю]|реплик[уа]|паль|под(д)?елка)"
+            "(?i)(продам|продаётся)?\\s*(полная|точная)?\\s*(копи[ияю]|реплика|реплик[уа]|паль|под(д)?елка)"
     );
 
     private static final Pattern ORIGINAL_PATTERN = Pattern.compile(

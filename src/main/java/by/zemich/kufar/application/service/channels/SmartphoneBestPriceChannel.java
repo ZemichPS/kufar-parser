@@ -44,8 +44,8 @@ public class SmartphoneBestPriceChannel extends Channel {
     }
 
     @Override
-    public void publish(Advertisement advertisement) {
-        super.publish(advertisement);
+    public boolean publish(Advertisement advertisement) {
+        return super.publish(advertisement);
     }
 
     @Override

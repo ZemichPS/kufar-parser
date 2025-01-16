@@ -18,15 +18,16 @@ public class PublishCounterAspect {
     }
 
     @AfterReturning(
-            value = "by.zemich.kufar.aspect.pointcut.PublisherPointcut.publishMethodWithoutArgs()"
+            value = "by.zemich.kufar.aspect.pointcut.PublisherPointcut.publishMethodWithoutArgs()",
+            returning = "result"
     )
-    public void countAdvertisementPublishMethodInvocation(JoinPoint joinPoint) throws Throwable {
-
-        String consumerClass = joinPoint.getTarget().getClass().getSimpleName();
-
-        Counter counter = Counter.builder("publisher.advertisement.count")
-                .tag("consumer", consumerClass)
-                .register(meterRegistry);
-        counter.increment();
+    public void countAdvertisementPublishMethodInvocation(JoinPoint joinPoint, boolean result) throws Throwable {
+        if (result) {
+            String consumerClass = joinPoint.getTarget().getClass().getSimpleName();
+            Counter counter = Counter.builder("publisher.advertisement.count")
+                    .tag("consumer", consumerClass)
+                    .register(meterRegistry);
+            counter.increment();
+        }
     }
 }

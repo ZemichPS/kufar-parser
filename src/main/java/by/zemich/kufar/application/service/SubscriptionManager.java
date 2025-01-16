@@ -33,7 +33,8 @@ public class SubscriptionManager implements AdvertisementPublisher {
     }
 
     @Override
-    public void publish(Advertisement advertisement) {
+    public boolean publish(Advertisement advertisement) {
         this.matchAndNotify(advertisement);
+        return true;
     }
 }
