@@ -1,5 +1,6 @@
 package by.zemich.kufar.application.service.channels;
 
+import by.zemich.kufar.application.service.channels.api.TelegramChannel;
 import by.zemich.kufar.domain.model.Advertisement;
 import by.zemich.kufar.domain.policy.*;
 import by.zemich.kufar.application.service.channels.api.Channel;
@@ -18,7 +19,7 @@ import static java.lang.Thread.sleep;
 
 @Component
 @Profile("prod")
-public class SmartphoneBestPriceChannel extends Channel {
+public class SmartphoneBestPriceChannel extends TelegramChannel {
     private final String CHANNEL_CHAT_ID = "-1002367745711";
     private final String CHANNEL_CHAT_NANE = "Лушие цены на смартфоны c куфар";
 
@@ -30,7 +31,8 @@ public class SmartphoneBestPriceChannel extends Channel {
         super(messenger, postManager);
         this.policies.addAll(
                 List.of(
-                        new OnlyOriginalGoodsPolicy().not(new FastSalesPolicy()),
+                 //       new OnlyOriginalGoodsPolicy().not(new FastSalesPolicy()),
+                        new OnlyOriginalGoodsPolicy(),
                         new CategoryPolicy("17010"),
                         new MinPercentagePolicy(
                                 BigDecimal.valueOf(-35),

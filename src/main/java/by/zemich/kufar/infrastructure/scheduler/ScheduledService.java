@@ -41,9 +41,7 @@ public class ScheduledService {
     private final ModelService modelService;
     private final ConditionAnalyzer conditionAnalyzer;
     private final CategoryService categoryService;
-    private final RetryTemplate telegramRetryTemplate;
     private final List<AdvertisementHandler> advertisementHandlers;
-    private final AdvertisementHandler advertisementSaveHandler;
     private final NIOKufarClient nioKufarClient;
 
 
@@ -51,11 +49,7 @@ public class ScheduledService {
     public void getNewAdsAndSaveIfNotExists() {
 
         List<String> categories = List.of(
-                "17010",
-                "8110",
-                "8100",
-                "8080",
-                "8020"
+                "17010"
         );
 
 
@@ -84,17 +78,23 @@ public class ScheduledService {
                                 ad.setFullyFunctional(conditionAnalyzer.isFullyFunctional(advertisement));
                                 advertisementService.save(ad);
                                 return ad;
-                            }).doOnSuccess(ad ->
+                            })
+                            .doOnSuccess(ad ->
                                     {
                                         advertisementPublishers.forEach(publisher -> {
-                                            Mono.fromRunnable(() -> publisher.publish(ad))
-                                                    .retryWhen(Retry.backoff(50, Duration.ofSeconds(14)).maxBackoff(Duration.ofSeconds(20)))
+                                            Mono.fromCallable(() -> publisher.publish(ad))
+                                                    .retryWhen(
+                                                            Retry.backoff(50, Duration.ofSeconds(5))
+                                                                    .maxBackoff(Duration.ofSeconds(25))
+                                                                    .doBeforeRetry(retrySignal ->
+                                                                            log.warn("Retry to send advertisement... attempt {}, cause: {}", retrySignal.totalRetries(), retrySignal.failure().getMessage()))
+                                                    )
                                                     .doOnError(e -> log.error("Failed to publish advertisement with id: {}", ad.getId(), e))
-                                                    .doOnSuccess(o -> log.info("Объявление с id {}: успешно опубликовано", ad.getAdId()))
                                                     .subscribe(); // Подписываемся, чтобы запустить выполнение
                                         });
                                     }
-                            ).doOnError(error -> log.error("Error: {}", error.getMessage()))
+                            )
+                            .doOnError(error -> log.error("Error: {}", error.getMessage()))
                             .subscribe();
                 });
 

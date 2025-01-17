@@ -1,5 +1,7 @@
 package by.zemich.kufar.application.service.channels;
 
+import by.zemich.kufar.application.service.channels.api.TelegramChannel;
+import by.zemich.kufar.domain.model.Advertisement;
 import by.zemich.kufar.domain.policy.*;
 import by.zemich.kufar.application.service.PostManager;
 import by.zemich.kufar.application.service.api.PhotoMessenger;
@@ -21,7 +23,7 @@ import static java.lang.Thread.sleep;
 
 @Component
 @Profile("prod")
-public class BrandedWomenClothesChannel extends Channel {
+public class BrandedWomenClothesChannel extends TelegramChannel {
 
     private final String CHANNEL_CHAT_ID = "-1002270323996";
     private final String CHANNEL_CHAT_NANE = "Брендовая женская одежда";
@@ -48,6 +50,11 @@ public class BrandedWomenClothesChannel extends Channel {
                 )
         );
 
+    }
+
+    @Override
+    public boolean publish(Advertisement advertisement) {
+        return super.publish(advertisement);
     }
 
     @Override

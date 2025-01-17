@@ -1,5 +1,6 @@
 package by.zemich.kufar.application.service.channels;
 
+import by.zemich.kufar.application.service.channels.api.TelegramChannel;
 import by.zemich.kufar.domain.policy.*;
 import by.zemich.kufar.application.service.channels.api.Channel;
 import by.zemich.kufar.application.service.PostManager;
@@ -19,7 +20,7 @@ import java.util.stream.Collectors;
 
 @Component
 @Profile("test")
-public class TestChannel extends Channel {
+public class TestChannel extends TelegramChannel {
     private final String CHANNEL_CHAT_ID = "-1002350825182";
     private final String CHANNEL_CHAT_NANE = "Выгодные объявления с Kufar";
 

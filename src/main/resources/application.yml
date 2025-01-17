@@ -1,6 +1,6 @@
 spring:
   profiles:
-    active: test
+    active: prod
 
   application:
     name: kufar-spy-bot
@@ -48,7 +48,7 @@ management:
     health:
       show-details: always
     prometheus:
-      access: read_only
+      access: unrestricted
     scheduledtasks:
       access: read_only
     shutdown:

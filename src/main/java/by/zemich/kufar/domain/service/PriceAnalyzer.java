@@ -118,15 +118,21 @@ public class PriceAnalyzer {
         }
     }
 
-    public BigDecimal calculatePercentageDifference(BigDecimal value1, BigDecimal value2) {
-        if (value2 == null || value2.compareTo(BigDecimal.ZERO) <= 0) {
-            throw new IllegalArgumentException("Значение value2 должно быть больше 0");
+    public BigDecimal calculatePercentageDifference(BigDecimal val1, BigDecimal value2) {
+        if (val1 == null || val1.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Стоимость нового товара должна быть больше 0");
         }
-        BigDecimal difference = value2.subtract(value1);
+        if (value2 == null || value2.compareTo(BigDecimal.ZERO) <= 0) {
+            throw new IllegalArgumentException("Стоимость б/у товара должна быть больше 0");
+        }
+
+        // Разница: (б/у цена - новая цена) / новая цена * 100
+        BigDecimal difference = value2.subtract(val1);
         return difference
-                .divide(value2, 2, RoundingMode.HALF_UP)
+                .divide(val1, 2, RoundingMode.HALF_UP)
                 .multiply(BigDecimal.valueOf(100));
     }
+
 
     public BigDecimal subtractPercentage(BigDecimal base, BigDecimal percent) {
         if (base == null || percent == null) {

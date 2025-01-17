@@ -25,11 +25,12 @@ public class WebClientsConfig {
     @Bean
     WebClient kufarWebClient() {
         HttpClient httpClient = HttpClient.create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000)
-                .responseTimeout(Duration.ofSeconds(30))
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000) // время на установление соединения (TCP handshake).
+                .responseTimeout(Duration.ofSeconds(10)) // общее время на получение ответа от сервера (оно включает и чтение, и запись).
                 .doOnConnected(conn -> conn
-                        .addHandlerLast(new ReadTimeoutHandler(10))
-                        .addHandlerLast(new WriteTimeoutHandler(5)));
+                        .addHandlerLast(new ReadTimeoutHandler(10)) // Если сервер не отправляет данные в указанный промежуток времени, возникает исключение io.netty.handler.timeout.ReadTimeoutException.
+                        .addHandlerLast(new WriteTimeoutHandler(5)) // Если клиент не успевает отправить данные на сервер в указанный промежуток времени, возникает исключение io.netty.handler.timeout.WriteTimeoutException.
+                );
 
         return WebClient.builder()
                 .defaultHeader("User-agent", useragent)

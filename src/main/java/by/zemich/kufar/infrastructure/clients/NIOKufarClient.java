@@ -90,11 +90,16 @@ public class NIOKufarClient {
         return webClient.get().uri(fullAdDetailsUrl)
                 .retrieve()
                 .bodyToMono(AdDetailsDTO.class)
-                .timeout(Duration.ofSeconds(60))
                 .retryWhen(
                         Retry.backoff(40, Duration.ofMillis(3_000))
                                 .maxBackoff(Duration.ofSeconds(10))
-                );
+                                .doBeforeRetry(retrySignal ->
+                                        log.warn("Retry to get ad details... attempt {}, cause: {}", retrySignal.totalRetries(), retrySignal.failure().getMessage()))
+                                .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
+                                    throw new RuntimeException("Превышено количество попыток при получении деталей объявления.", retrySignal.failure());
+                                })
+                )
+                .timeout(Duration.ofSeconds(60));
     }
 
     public void getPhoto(String fileName) {
