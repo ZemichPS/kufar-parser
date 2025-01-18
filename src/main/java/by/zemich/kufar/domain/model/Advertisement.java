@@ -118,13 +118,15 @@ public class Advertisement {
         return Arrays.stream(this.images.split(";")).toList();
     }
 
-    public String getPhotoLink() {
-        if (images.isEmpty()) return "";
+    public Optional<String> getPhotoLink() {
+        if (images.isEmpty()) return Optional.empty();
 
         String imageFilePath;
         if(images.contains(";")) {
             imageFilePath =  this.images.split(";")[0];
         } else imageFilePath = images;
-        return "https://rms.kufar.by/v1/gallery/{filename.jpg}".replace("{filename.jpg}", imageFilePath);
+
+        String url = "https://rms.kufar.by/v1/gallery/{filename.jpg}".replace("{filename.jpg}", imageFilePath);
+        return Optional.of(url);
     }
 }

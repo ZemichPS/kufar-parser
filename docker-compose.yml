@@ -22,7 +22,7 @@ services:
       - MINIO_ROOT_PASSWORD=minio-root-password
 
   redis:
-    container_name: cache
+    container_name: redis-cache
     image: redis:8.0-M02-alpine
     restart: always
     ports:

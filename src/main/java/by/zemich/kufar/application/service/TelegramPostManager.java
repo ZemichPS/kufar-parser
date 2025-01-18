@@ -21,14 +21,21 @@ import java.util.stream.Collectors;
 public class TelegramPostManager {
 
     private final List<PostTextProcessor> postTextProcessors;
-    private final FileLoader fileLoader;
-    private final ImageService imageService;
     private final PostLimitedCache<UUID, SendPhoto> postLimitedCache = new PostLimitedCache<>(500);
+    private final ImageService imageService;
+    private final FileLoader fileLoader;
 
     public SendPhoto createPhotoPostFromAd(Advertisement advertisement) {
-        // TODO написать логику создания поста
         return postLimitedCache.computeIfAbsent(advertisement.getId(), id -> {
-            InputFile photo = getInputFileFromLink(advertisement.getPhotoLink());
+
+            InputFile photo = advertisement.getPhotoLink()
+                    .map(fileLoader::downloadFileAsInputStream)
+                    .map(inputStream -> new InputFile(inputStream, UUID.randomUUID() + "jpg"))
+                    .orElseGet(()-> {
+                        InputStream inputStream = fileLoader.loadResourcesFileAsInputStream("default.jpg");
+                        return new InputFile(inputStream, UUID.randomUUID() + "jpg");
+                    });
+
             String text = processPostText(advertisement);
             return SendPhoto.builder()
                     .photo(photo)
@@ -71,23 +78,6 @@ public class TelegramPostManager {
                 .append(content)
                 .toString();
 
-    }
-
-    private InputFile getInputFileFromLink(String photoLink) {
-        File imageFile = null;
-        try {
-            imageFile = photoLink.isEmpty() ? fileLoader.loadFileFromResources("images/default.jpg") : fileLoader.downloadImage(photoLink);
-        } catch (Exception e) {
-            log.error("Error downloading original advertisement image. Try to download default image from resources.", e);
-            log.error("Photo link: {}", photoLink);
-            try {
-                imageFile = fileLoader.loadFileFromResources("images/default.jpg");
-            } catch (Exception ex) {
-                log.error("Error downloading image from resources", ex);
-                return new InputFile();
-            }
-        }
-        return new InputFile(imageFile);
     }
 
 

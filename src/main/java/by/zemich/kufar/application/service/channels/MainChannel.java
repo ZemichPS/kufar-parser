@@ -1,10 +1,12 @@
 package by.zemich.kufar.application.service.channels;
 
 import by.zemich.kufar.application.service.channels.api.TelegramChannel;
+import by.zemich.kufar.domain.model.Advertisement;
 import by.zemich.kufar.domain.policy.CategoryPolicy;
 import by.zemich.kufar.domain.policy.OnlyOriginalGoodsPolicy;
 import by.zemich.kufar.application.service.TelegramPostManager;
 import by.zemich.kufar.application.service.api.PhotoMessenger;
+import by.zemich.kufar.domain.policy.api.Policy;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
@@ -21,12 +23,6 @@ public class MainChannel extends TelegramChannel {
                        TelegramPostManager telegramPostManager
     ) {
         super(messenger, telegramPostManager);
-        this.policies.addAll(
-                List.of(
-                        new OnlyOriginalGoodsPolicy(),
-                        new CategoryPolicy("17010")
-                )
-        );
     }
 
     @Override
@@ -42,5 +38,13 @@ public class MainChannel extends TelegramChannel {
     @Override
     public String getNotifierId() {
         return CHANNEL_CHAT_ID;
+    }
+
+    @Override
+    protected List<Policy<Advertisement>> createPolicies() {
+        return List.of(
+                new OnlyOriginalGoodsPolicy(),
+                new CategoryPolicy("17010")
+        );
     }
 }

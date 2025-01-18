@@ -25,7 +25,7 @@ public class WebClientsConfig {
     @Bean
     WebClient kufarWebClient() {
         HttpClient httpClient = HttpClient.create()
-                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 5000) // время на установление соединения (TCP handshake).
+                .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 15_000) // время на установление соединения (TCP handshake).
                 .responseTimeout(Duration.ofSeconds(10)) // общее время на получение ответа от сервера (оно включает и чтение, и запись).
                 .doOnConnected(conn -> conn
                         .addHandlerLast(new ReadTimeoutHandler(10)) // Если сервер не отправляет данные в указанный промежуток времени, возникает исключение io.netty.handler.timeout.ReadTimeoutException.

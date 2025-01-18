@@ -5,6 +5,7 @@ import by.zemich.kufar.domain.model.Advertisement;
 import by.zemich.kufar.domain.policy.*;
 import by.zemich.kufar.application.service.AdvertisementService;
 import by.zemich.kufar.application.service.TelegramPostManager;
+import by.zemich.kufar.domain.policy.api.Policy;
 import by.zemich.kufar.domain.service.PriceAnalyzer;
 import by.zemich.kufar.application.service.api.PhotoMessenger;
 import org.springframework.context.annotation.Profile;
@@ -21,6 +22,8 @@ import static java.lang.Thread.sleep;
 public class SmartphoneBestPriceChannel extends TelegramChannel {
     private final String CHANNEL_CHAT_ID = "-1002367745711";
     private final String CHANNEL_CHAT_NANE = "Лушие цены на смартфоны c куфар";
+    private final PriceAnalyzer priceAnalyzer;
+    private final AdvertisementService advertisementService;
 
     public SmartphoneBestPriceChannel(PhotoMessenger<SendPhoto> messenger,
                                       TelegramPostManager telegramPostManager,
@@ -28,20 +31,8 @@ public class SmartphoneBestPriceChannel extends TelegramChannel {
                                       AdvertisementService advertisementService
     ) {
         super(messenger, telegramPostManager);
-        this.policies.addAll(
-                List.of(
-                 //       new OnlyOriginalGoodsPolicy().not(new FastSalesPolicy()),
-                        new OnlyOriginalGoodsPolicy(),
-                        new CategoryPolicy("17010"),
-                        new MinPercentagePolicy(
-                                BigDecimal.valueOf(-35),
-                                priceAnalyzer,
-                                advertisementService
-                        ),
-                        new OnlyCorrectModelPolicy()
-                        //new OnlyFullyFunctionalAdsPolicy()
-                )
-        );
+        this.priceAnalyzer = priceAnalyzer;
+        this.advertisementService = advertisementService;
     }
 
     @Override
@@ -62,5 +53,19 @@ public class SmartphoneBestPriceChannel extends TelegramChannel {
     @Override
     public String getNotifierId() {
         return CHANNEL_CHAT_ID;
+    }
+
+    @Override
+    protected List<Policy<Advertisement>> createPolicies() {
+        return List.of(
+                new OnlyOriginalGoodsPolicy(),
+                new CategoryPolicy("17010"),
+                new MinPercentagePolicy(
+                        BigDecimal.valueOf(-35),
+                        priceAnalyzer,
+                        advertisementService
+                ),
+                // new OnlyOriginalGoodsPolicy().not(new FastSalesPolicy()),
+                new OnlyCorrectModelPolicy());
     }
 }

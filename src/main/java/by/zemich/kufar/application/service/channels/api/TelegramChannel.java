@@ -14,19 +14,15 @@ public abstract class TelegramChannel extends Channel {
     private final PhotoMessenger<SendPhoto> photoMessenger;
     private final TelegramPostManager telegramPostManager;
 
-    protected TelegramChannel(List<Policy<Advertisement>> policies,
-                              PhotoMessenger<SendPhoto> photoMessenger,
-                              TelegramPostManager telegramPostManager
-
-    ) {
-        super(policies);
+    protected TelegramChannel(PhotoMessenger<SendPhoto> photoMessenger, TelegramPostManager telegramPostManager) {
+        super();
         this.photoMessenger = photoMessenger;
         this.telegramPostManager = telegramPostManager;
     }
 
     @Override
     public boolean publish(Advertisement advertisement) {
-        if (super.checkPolicies(advertisement)) return false;
+        if (!super.checkPolicies(advertisement)) return false;
         SendPhoto photoPost = telegramPostManager.createPhotoPostFromAd(advertisement);
         photoPost.setChatId(getChannelId());
         photoMessenger.sendPhoto(photoPost);
