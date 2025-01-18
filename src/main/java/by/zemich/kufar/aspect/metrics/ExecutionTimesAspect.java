@@ -28,7 +28,7 @@ public class ExecutionTimesAspect {
                 .tag("method", methodName)
                 .register(meterRegistry);
 
-        timer.recordCallable(() -> {
+        timer.record(() -> {
             try {
                 return proceedingJoinPoint.proceed();
             } catch (Throwable throwable) {

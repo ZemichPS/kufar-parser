@@ -32,7 +32,7 @@ public class TelegramPostManager {
                     .map(fileLoader::downloadFileAsInputStream)
                     .map(inputStream -> new InputFile(inputStream, UUID.randomUUID() + "jpg"))
                     .orElseGet(()-> {
-                        InputStream inputStream = fileLoader.loadResourcesFileAsInputStream("default.jpg");
+                        InputStream inputStream = fileLoader.loadResourcesFileAsInputStream("images/default.jpg");
                         return new InputFile(inputStream, UUID.randomUUID() + "jpg");
                     });
 

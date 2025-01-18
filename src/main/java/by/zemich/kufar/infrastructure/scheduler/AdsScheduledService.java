@@ -22,6 +22,7 @@ import reactor.util.retry.Retry;
 import java.time.Duration;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.ThreadLocalRandom;
 
 @Service
 @EnableScheduling
@@ -78,6 +79,7 @@ public class AdsScheduledService {
                                     {
                                         advertisementPublishers.forEach(publisher -> {
                                             Mono.fromRunnable(() -> publisher.publish(ad))
+                                                    .delayElement(generateRandomDelay())
                                                     .retryWhen(
                                                             Retry.backoff(20, Duration.ofSeconds(15))
                                                                     .maxBackoff(Duration.ofSeconds(20))
@@ -103,5 +105,10 @@ public class AdsScheduledService {
         return advertisement;
     }
 
+
+    private Duration generateRandomDelay() {
+        long randomMillis = ThreadLocalRandom.current().nextLong(1_200, 5_000);
+        return Duration.ofMillis(randomMillis);
+    }
 
 }

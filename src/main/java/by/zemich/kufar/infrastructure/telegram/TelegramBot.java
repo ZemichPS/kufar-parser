@@ -11,6 +11,8 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto;
 import org.telegram.telegrambots.meta.api.objects.Update;
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException;
 
+import static java.lang.Thread.sleep;
+
 @Slf4j
 @Component
 public class TelegramBot extends TelegramLongPollingBot implements TextMessenger<SendMessage>, PhotoMessenger<SendPhoto> {
@@ -46,8 +48,7 @@ public class TelegramBot extends TelegramLongPollingBot implements TextMessenger
         try {
             this.execute(message);
         } catch (TelegramApiException e) {
-            log.error("Failed to sendText message to chatId {}, cause:", message.getChatId(), e);
-            throw new RuntimeException(e);
+            log.error("Failed to SendMessage message to chatId {}, cause: {}", message.getChatId(), e.getMessage());
         }
     }
 
@@ -56,7 +57,7 @@ public class TelegramBot extends TelegramLongPollingBot implements TextMessenger
         try {
             this.execute(message);
         } catch (TelegramApiException e) {
-            log.error("Failed to sendText message to chatId {}, cause:", message.getChatId(), e);
+            log.error("Failed to sendPhoto message to chatId {}, cause: {}", message.getChatId(), e.getMessage());
         }
     }
 }

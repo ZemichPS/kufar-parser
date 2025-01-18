@@ -5,6 +5,7 @@ import by.zemich.kufar.infrastructure.clients.dto.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import io.netty.handler.timeout.TimeoutException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.retry.support.RetryTemplate;
@@ -92,14 +93,18 @@ public class NIOKufarClient {
                 .bodyToMono(AdDetailsDTO.class)
                 .retryWhen(
                         Retry.backoff(40, Duration.ofMillis(3_000))
-                                .maxBackoff(Duration.ofSeconds(10))
+                                .maxBackoff(Duration.ofSeconds(20))
                                 .doBeforeRetry(retrySignal ->
                                         log.warn("Retry to get ad details... attempt {}, cause: {}", retrySignal.totalRetries(), retrySignal.failure().getMessage()))
                                 .onRetryExhaustedThrow((retryBackoffSpec, retrySignal) -> {
                                     throw new RuntimeException("Превышено количество попыток при получении деталей объявления.", retrySignal.failure());
                                 })
                 )
-                .timeout(Duration.ofSeconds(60));
+                .timeout(Duration.ofSeconds(60))
+                .onErrorResume(TimeoutException.class, e -> {
+                    log.error("Timeout occurred: {}", e.getMessage());
+                    return Mono.empty(); // Возвращаем пустой результат или fallback
+                });
     }
 
     public void getPhoto(String fileName) {
