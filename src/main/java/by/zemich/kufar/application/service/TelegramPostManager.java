@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class PostManager {
+public class TelegramPostManager {
 
     private final List<PostTextProcessor> postTextProcessors;
     private final FileLoader fileLoader;

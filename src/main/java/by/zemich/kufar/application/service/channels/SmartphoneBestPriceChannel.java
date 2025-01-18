@@ -3,9 +3,8 @@ package by.zemich.kufar.application.service.channels;
 import by.zemich.kufar.application.service.channels.api.TelegramChannel;
 import by.zemich.kufar.domain.model.Advertisement;
 import by.zemich.kufar.domain.policy.*;
-import by.zemich.kufar.application.service.channels.api.Channel;
 import by.zemich.kufar.application.service.AdvertisementService;
-import by.zemich.kufar.application.service.PostManager;
+import by.zemich.kufar.application.service.TelegramPostManager;
 import by.zemich.kufar.domain.service.PriceAnalyzer;
 import by.zemich.kufar.application.service.api.PhotoMessenger;
 import org.springframework.context.annotation.Profile;
@@ -24,11 +23,11 @@ public class SmartphoneBestPriceChannel extends TelegramChannel {
     private final String CHANNEL_CHAT_NANE = "Лушие цены на смартфоны c куфар";
 
     public SmartphoneBestPriceChannel(PhotoMessenger<SendPhoto> messenger,
-                                      PostManager postManager,
+                                      TelegramPostManager telegramPostManager,
                                       PriceAnalyzer priceAnalyzer,
                                       AdvertisementService advertisementService
     ) {
-        super(messenger, postManager);
+        super(messenger, telegramPostManager);
         this.policies.addAll(
                 List.of(
                  //       new OnlyOriginalGoodsPolicy().not(new FastSalesPolicy()),

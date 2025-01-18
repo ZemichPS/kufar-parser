@@ -2,8 +2,7 @@ package by.zemich.kufar.application.service.channels;
 
 import by.zemich.kufar.application.service.channels.api.TelegramChannel;
 import by.zemich.kufar.domain.policy.*;
-import by.zemich.kufar.application.service.channels.api.Channel;
-import by.zemich.kufar.application.service.PostManager;
+import by.zemich.kufar.application.service.TelegramPostManager;
 import by.zemich.kufar.application.service.api.PhotoMessenger;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
@@ -25,9 +24,9 @@ public class TestChannel extends TelegramChannel {
     private final String CHANNEL_CHAT_NANE = "Выгодные объявления с Kufar";
 
     public TestChannel(PhotoMessenger<SendPhoto> messenger,
-                       PostManager postManager
+                       TelegramPostManager telegramPostManager
     ) {
-        super(messenger, postManager);
+        super(messenger, telegramPostManager);
         this.policies.addAll(
                 List.of(
                         new OnlyDefiniteCategory("8110")

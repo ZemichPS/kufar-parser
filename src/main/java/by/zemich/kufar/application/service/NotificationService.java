@@ -20,13 +20,13 @@ public class NotificationService {
 
     private final NotificationRepository notificationRepository;
     private final UserService userService;
-    private final PostManager postManager;
+    private final TelegramPostManager telegramPostManager;
     private final PhotoMessenger<SendPhoto> telegramPhotoMessenger;
     private final List<Notifiable> notifiable;
 
     public void notifyUserMatchingAd(UUID userId, Advertisement advertisement) {
         Long chatId = userService.getById(userId).map(User::getTelegramChatId).orElseThrow();
-        SendPhoto adPost = postManager.createPhotoPostFromAd(advertisement);
+        SendPhoto adPost = telegramPostManager.createPhotoPostFromAd(advertisement);
         adPost.setChatId(chatId);
         telegramPhotoMessenger.sendPhoto(adPost);
     }
@@ -79,7 +79,7 @@ public class NotificationService {
     }
 
     private void notifyAndSave(Notification notification, User user) {
-        SendPhoto adPost = postManager.createPostFromNotification(notification);
+        SendPhoto adPost = telegramPostManager.createPostFromNotification(notification);
         adPost.setChatId(user.getTelegramChatId());
         telegramPhotoMessenger.sendPhoto(adPost);
     }
