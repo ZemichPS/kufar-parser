@@ -18,8 +18,8 @@ public class RestTemplateConfig {
     @Bean
     RestTemplate priorityRestTemplate(RestTemplateBuilder builder, ResponseErrorHandler errorHandler) {
         return builder
-                .connectTimeout(Duration.ofSeconds(20))
-                .readTimeout(Duration.ofSeconds(20))
+                .setConnectTimeout(Duration.ofSeconds(20))
+                .setReadTimeout(Duration.ofSeconds(20))
                 .defaultHeader("User-agent", useragent)
                 .defaultHeader("content-type", "application/json")
                 .errorHandler(errorHandler)
@@ -29,8 +29,8 @@ public class RestTemplateConfig {
     @Bean
     RestTemplate vek21restTemplate(RestTemplateBuilder builder, ResponseErrorHandler errorHandler) {
         return builder
-                .connectTimeout(Duration.ofSeconds(10))
-                .readTimeout(Duration.ofSeconds(10))
+                .setConnectTimeout(Duration.ofSeconds(10))
+                .setReadTimeout(Duration.ofSeconds(10))
                 .defaultHeader("User-agent", useragent)
                 .defaultHeader("Accept", "application/json")
                 .defaultHeader("sec-ch-ua", "\"Google Chrome\";v=\"131\", \"Chromium\";v=\"131\", \"Not_A Brand\";v=\"24\"")

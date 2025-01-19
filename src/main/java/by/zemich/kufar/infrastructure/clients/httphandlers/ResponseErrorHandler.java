@@ -13,7 +13,6 @@ import java.net.URI;
 @Slf4j
 @Component
 public class ResponseErrorHandler extends DefaultResponseErrorHandler {
-    @Override
     protected void handleError(ClientHttpResponse response, HttpStatusCode statusCode, URI url, HttpMethod method) throws IOException {
         log.error("HTTP Error: {}. Status code: {}", response.getBody(), statusCode);
     }

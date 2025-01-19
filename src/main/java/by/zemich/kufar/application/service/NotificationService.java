@@ -27,7 +27,7 @@ public class NotificationService {
     public void notifyUserMatchingAd(UUID userId, Advertisement advertisement) {
         Long chatId = userService.getById(userId).map(User::getTelegramChatId).orElseThrow();
         SendPhoto adPost = telegramPostManager.createPhotoPostFromAd(advertisement);
-        adPost.setChatId(chatId);
+        adPost.setChatId(chatId.toString());
         telegramPhotoMessenger.sendPhoto(adPost);
     }
 
@@ -80,7 +80,7 @@ public class NotificationService {
 
     private void notifyAndSave(Notification notification, User user) {
         SendPhoto adPost = telegramPostManager.createPostFromNotification(notification);
-        adPost.setChatId(user.getTelegramChatId());
+        adPost.setChatId(user.getTelegramChatId().toString());
         telegramPhotoMessenger.sendPhoto(adPost);
     }
 
